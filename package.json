@@ -1,0 +1,37 @@
+{
+  "name": "mcutils",
+  "version": "1.0.0",
+  "description": "SoundsMC Utils Mod Bot",
+  "main": "dist/bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fullbuild": "npm i --production && npm i typescript --save-dev && npm run compile",
+    "compile": "tsc",
+    "start": "node dist/src/bot.js",
+    "start:dev": "nodemon src/bot.ts"
+  },
+  "dependencies": {
+    "@picklerickdev/discord-webhooks": "^1.1.1",
+    "@typegoose/auto-increment": "^0.6.0",
+    "@typegoose/typegoose": "^7.4.5",
+    "axios": "^0.21.0",
+    "chalk": "^4.1.0",
+    "common-tags": "^1.8.0",
+    "discord-akairo": "^8.1.0",
+    "discord.js": "^12.5.1",
+    "mathjs": "^8.1.0",
+    "moment": "^2.29.1",
+    "mongoose": "^5.11.8",
+    "ms": "^2.1.2",
+    "quick.db": "^7.1.3",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/common-tags": "^1.8.0",
+    "@types/mongoose": "^5.7.36",
+    "@types/ms": "^0.7.31",
+    "@types/node": "^14.14.2",
+    "nodemon": "^2.0.6",
+    "prettier": "^2.2.1"
+  }
+}
