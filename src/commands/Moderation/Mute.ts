@@ -29,7 +29,7 @@ export default class Mute extends Command {
       args: [
         {
           id: "member",
-          type: "member",
+          type: "member" ?? "memberMention",
           prompt: {
             start: (msg: Message) =>
               `${msg.author}, please provide a member to mute...`,
@@ -129,7 +129,6 @@ export default class Mute extends Command {
 
     const caseInfo = {
       caseID: caseNum,
-      channel: message.channel.id,
       moderator: message.author.id,
       user: `${member.user.tag} (${member.user.id})`,
       date: utc().format("MMMM Do YYYY, h:mm:ss a"),
@@ -137,6 +136,12 @@ export default class Mute extends Command {
       reason,
       time,
     };
+
+    const muteInformation = {
+      muted: true,
+      endDate: ms(time),
+      case: caseNum
+    }
 
     const sanctionsModel = getModelForClass(memberModel);
     try {
@@ -150,6 +155,9 @@ export default class Mute extends Command {
           id: userId,
           $push: {
             sanctions: caseInfo
+          },
+          $set: {
+            mute: muteInformation
           }
         },
         {

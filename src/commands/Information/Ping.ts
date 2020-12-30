@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 
 export default class Ping extends Command {
   public constructor() {
@@ -16,7 +16,15 @@ export default class Ping extends Command {
     });
   }
 
-  public exec(message: Message): Promise<Message> {
-    return message.util.send(`\`${this.client.ws.ping}ms\``);
+  public async exec(message: Message): Promise<Message> {
+    const msg = await message.channel.send("Pinging...");
+    const ping = msg.createdTimestamp - message.createdTimestamp;
+    await msg.delete();
+    const embed = new MessageEmbed()
+      .setTitle("Ping Information")
+      .setColor("GREEN")
+      .addField("Discord Latency", this.client.ws.ping + "ms")
+      .addField("Message Latency", ping + "ms");
+    return message.util.send(embed);
   }
 }

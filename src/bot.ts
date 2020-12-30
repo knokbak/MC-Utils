@@ -6,8 +6,4 @@ const owners: string[] = config.bot.owners;
 
 const client = new BotClient({ token, owners });
 
-client.on("message", (message) => {
-    
-})
-
 client.start();

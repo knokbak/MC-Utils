@@ -20,7 +20,7 @@ export default class Avatar extends Command {
       args: [
         {
           id: "member",
-          type: "member",
+          type: "member" ?? "memberMention" ?? "user",
           match: "rest",
           default: (msg: Message) => msg.member,
         },
@@ -36,7 +36,7 @@ export default class Avatar extends Command {
           },
           match: "option",
           flag: ["-size "],
-          default: 512,
+          default: 128,
         },
       ],
     });

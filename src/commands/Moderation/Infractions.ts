@@ -1,9 +1,5 @@
 import { Command } from "discord-akairo";
-import {
-  Message,
-  GuildMember,
-  MessageEmbed,
-} from "discord.js";
+import { Message, GuildMember, MessageEmbed } from "discord.js";
 import { getModelForClass } from "@typegoose/typegoose";
 import MemberModel from "../../models/MemberModel";
 
@@ -23,7 +19,7 @@ export default class Infractions extends Command {
       args: [
         {
           id: "member",
-          type: "member",
+          type: "member" ?? "memberMention",
           default: (msg: Message) => msg.member,
         },
       ],
@@ -37,27 +33,33 @@ export default class Infractions extends Command {
     const embed = new MessageEmbed().setColor(0x00ff0c);
     let userId = member.id;
     const sanctionsModel = getModelForClass(MemberModel);
-    const memberData = await sanctionsModel.findOne(
-      { id: userId, guildId: message.guild.id }
-    );
-    if (memberData.sanctions.length < 1 ?? false) {
-      embed.setDescription(`No modlogs found for that user`);
-      return message.util.send(embed);
-    } else {
-      embed.setAuthor(
-        `${member.user.tag}'s Modlogs`,
-        member.user.displayAvatarURL({ dynamic: true })
-      );
-      embed.setDescription("All times are in UTC");
-      for (const s of memberData.sanctions) {
-        embed.addField(
-          s.type + " | #" + s.caseID,
-          `Moderator: \`${s.moderator}\`\nReason: \`${s.reason}\`\nDate: \`${s.date}\``,
-          false
-        );
+    try {
+      var memberData = await sanctionsModel.findOne({
+        id: userId,
+        guildId: message.guild.id,
+      });
+      if (memberData.sanctions === null) {
+        if (memberData.sanctions.length < 1) {
+          embed.setDescription(`No modlogs found for that user`);
+          return message.util.send(embed);
+        }
+      } else {
+        return;
       }
-      embed.setFooter(`ID: ${userId}`);
-      return message.util.send(embed);
+    } catch (e) {}
+    embed.setAuthor(
+      `${member.user.tag}'s Modlogs`,
+      member.user.displayAvatarURL({ dynamic: true }) 
+    ); 
+    embed.setDescription("All times are in UTC"); 
+    for (const s of memberData.sanctions) { 
+      embed.addField(
+        s.type + " | #" + s.caseID,
+        `Moderator: \`${s.moderator}\`\nReason: \`${s.reason}\`\nDate: \`${s.date}\``,
+        false
+      );
     }
+    embed.setFooter(`ID: ${userId}`);
+    return message.util.send(embed);
   }
 }

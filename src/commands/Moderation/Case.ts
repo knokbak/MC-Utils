@@ -42,14 +42,13 @@ export default class Case extends Command {
           embed.setDescription(`Case is not valid.`);
           return message.util.send(embed);
         } else {
-          const s = e.sanctions.filter(r => r.caseID === id);
-          const c = s[0];
+          const s = e.sanctions.filter(r => r.caseID === id)[0];
           embed.setAuthor(
             `Case - ${id}`,
             message.author.displayAvatarURL({ dynamic: true })
           );
           embed.setDescription("All times are in UTC");
-          embed.addField(c.type, `Moderator: **${c.moderator}**\nUser: **${c.user}**\nReason: **${c.reason}**\nDate: **${c.date}**`)
+          embed.addField(s.type, `Moderator: **${s.moderator}**\nUser: **${s.user}**\nReason: **${s.reason}**\nDate: **${s.date}**`)
           return message.util.send(embed);
         }
       });

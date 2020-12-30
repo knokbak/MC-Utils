@@ -44,7 +44,18 @@ export default class DelWarn extends Command {
       }*/
       const caseID = id;
       const sanctionsModel = getModelForClass(memberModel);
-      await sanctionsModel.deleteMany({
+      try {
+        const pendingDeletion = await sanctionsModel.findOne({
+          guildId: message.guild.id,
+          "sanctions.caseID": caseID
+        });
+        if (!pendingDeletion.sanctions.filter(n => n.caseID === caseID)) {
+          return message.util.send("Couldn't find warn ID " + caseID);
+        }
+      } catch (e) {
+        return message.util.send("Couldn't find warn ID " + caseID);
+      }
+      await sanctionsModel.findOneAndDelete({
         guildId: message.guild.id,
         "sanctions.caseID": caseID
       })
@@ -55,6 +66,6 @@ export default class DelWarn extends Command {
         .setDescription('This case ID was not found!')
         return message.util.send(errorEmbed);
       })
-      await message.util.send(`Case ID ${caseID} has been deleted`);
+      await message.util.send(`Case ID ${caseID} has been deleted.`);
     }
 }

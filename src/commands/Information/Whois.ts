@@ -12,7 +12,7 @@ export default class Whois extends Command {
       args: [
         {
           id: "member",
-          type: "member",
+          type: "member" ?? "memberMention",
           match: "rest",
           default: (msg: Message) => msg.member,
         },
@@ -31,7 +31,7 @@ export default class Whois extends Command {
     { member }: { member: GuildMember }
   ): Promise<Message> {
     const roles = member.roles.cache.map((r) => r).join(", ") || "None";
-    const isBanned: boolean = await checkBanFromGuild(
+    const isBanned = await checkBanFromGuild(
       this.client,
       message.guild.id,
       member.id

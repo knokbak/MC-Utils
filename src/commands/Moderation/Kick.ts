@@ -23,7 +23,7 @@ export default class Kick extends Command {
       args: [
         {
           id: "member",
-          type: "member",
+          type: "member" ?? "memberMention",
           prompt: {
             start: (msg: Message) =>
               `${msg.author}, please provide a member to kick...`,
@@ -95,7 +95,6 @@ export default class Kick extends Command {
         let caseNum = Math.random().toString(16).substr(2, 8);
         const caseInfo = {
           caseID: caseNum,
-          channel: message.channel.id,
           moderator: message.author.id,
           user: `${member.user.tag} (${member.user.id})`,
           date: dateString,

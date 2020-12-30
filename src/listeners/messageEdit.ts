@@ -14,6 +14,9 @@ export default class messageEdit extends Listener {
   }
 
   public async exec(oldMessage: Message, newMessage: Message): Promise<void> {
+    if (oldMessage.author.bot) {
+      return;
+    }
     let logChannel: TextChannel = this.client.guilds.cache.get("719977718858514483").channels.cache.get(
       config.channels.logChannel
     ) as TextChannel;

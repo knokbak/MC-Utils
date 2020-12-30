@@ -7,6 +7,7 @@ import {
   Client,
   GuildMember,
   Role,
+  User
 } from "discord.js";
 import guildModel from "../models/GuildModel";
 import memberModel from "../models/MemberModel";
@@ -141,4 +142,9 @@ export async function sendLogToChannel(
     ) as TextChannel;
     return c.send(embed);
   }
+}
+
+export async function dmUserOnInfraction(user: User, dmMessage: MessageEmbed): Promise<void> {
+  await user.send(dmMessage)
+    .catch((e) => e);
 }

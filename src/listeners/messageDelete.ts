@@ -14,6 +14,9 @@ export default class messageDelete extends Listener {
   }
 
   public async exec(message: Message): Promise<void> {
+    if (message.author.bot) {
+      return;
+    }
     let logChannel: TextChannel = message.guild.channels.cache.get(
       config.channels.logChannel
     ) as TextChannel;

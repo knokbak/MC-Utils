@@ -4,7 +4,7 @@ import { Message, TextChannel } from "discord.js";
 export default class Purge extends Command {
   public constructor() {
     super("purge", {
-      aliases: ["purge", "clear"],
+      aliases: ["purge", "clear", "clean"],
       channel: "guild",
       category: "Utilities",
       userPermissions: ["MANAGE_MESSAGES"],

@@ -23,7 +23,7 @@ export default class Warn extends Command {
       args: [
         {
           id: "member",
-          type: "member",
+          type: "member" ?? "memberMention",
           prompt: {
             start: (msg: Message) =>
               `${msg.author}, please provide a member to warn...`,
@@ -57,7 +57,7 @@ export default class Warn extends Command {
       !(moderationPosition >= memberPosition)
     ) {
       embed.setDescription(
-        `You cannot mute a member with a role superior (or equal) to yours!`
+        `You cannot warn a member with a role superior (or equal) to yours!`
       );
       await message.util.send(embed);
       return;
@@ -69,7 +69,6 @@ export default class Warn extends Command {
 
     const caseInfo = {
       caseID: caseNum,
-      channel: message.channel.id,
       moderator: message.author.tag,
       user: `${member.user.tag} (${member.user.id})`,
       date: dateString,
