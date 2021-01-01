@@ -1,8 +1,9 @@
 import { ModelOptions, prop, Severity } from "@typegoose/typegoose";
 
 interface CaseInfo {
-  caseID: string;
+  caseID: any;
   moderator: string;
+  moderatorId: string;
   user: string;
   date: string;
   type: string;
@@ -18,5 +19,5 @@ export default class MemberModel {
   @prop({ default: [] })
   sanctions!: Array<CaseInfo>;
   @prop({ default: { muted: false, endDate: null, case: null }})
-  mute!: object
+  mute!: any
 }

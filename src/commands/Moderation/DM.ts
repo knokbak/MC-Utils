@@ -6,6 +6,7 @@ import { utc } from "moment";
 import Logger from "../../structures/Logger";
 import memberModel from "../../models/MemberModel";
 import { getModelForClass } from "@typegoose/typegoose";
+import uniqid from "uniqid";
 
 export default class Warn extends Command {
     public constructor() {
@@ -42,7 +43,7 @@ export default class Warn extends Command {
     ): Promise<Message> {
         const embed = new MessageEmbed().setColor(0x00ff0c);
         if (member.id === message.author.id) {
-          embed.setDescription("You cannot dm warn yourself!");
+          embed.setDescription("You cannot DM warn yourself!");
           return message.util.send(embed);
         }
         const memberPosition = member.roles.highest.position;
@@ -62,9 +63,9 @@ export default class Warn extends Command {
         const alreadyDMwarnedCheck = await sanctionsModel.findOne({
             guildID: message.guild.id, 
             userID: member.id, 
-            caseInfo: { reason: "DM advertising (1st)".toLowerCase() }
+            caseInfo: { reason: "DM advertising (1st)".trim() }
         });
-        if (alreadyDMwarnedCheck.sanctions.filter((r) => r.reason === "DM advertising (1st)")) { 
+        if (!alreadyDMwarnedCheck === null || !alreadyDMwarnedCheck === undefined && alreadyDMwarnedCheck.sanctions.find((r) => r.reason === "DM advertising (1st)".trim())) { 
             if (!member.bannable) {
             embed.setDescription(
                 "User has reached DM 2:\n\nYou cannot ban this user as they are considered not bannable."
@@ -93,6 +94,7 @@ export default class Warn extends Command {
             const caseInfo = {
                 caseID: caseNum,
                 moderator: message.author.tag,
+                moderatorId: message.author.id,
                 user: `${member.user.tag} (${userId})`,
                 date: dateString,
                 type: "Ban",
@@ -132,7 +134,7 @@ export default class Warn extends Command {
                     "User has reached DM 2:\n\nCouldn't send them a ban message! Continuing..."
                 );
             }
-            await member.ban({ reason: "DM advertising (2nd)" });
+            // await member.ban({ reason: "DM advertising (2nd)" });
             const logEmbed = new MessageEmbed()
                 .setTitle(`Member Banned | Case \`${caseNum}\` | ${member.user.tag}`)
                 .addField(`User:`, `<@${member.id}>`, true)
@@ -149,15 +151,15 @@ export default class Warn extends Command {
             return message.channel.send(embed);
         }; 
 
-        let caseNum = Math.random().toString(16).substr(2, 8);
+        let caseNum = uniqid();
         let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
         let userId = member.id;
         let guildID = message.guild.id;
         
         const caseInfo = {
             caseID: caseNum,
-            channel: message.channel.id,
             moderator: message.author.tag,
+            moderatorId: message.author.id,
             user: `${member.user.tag} (${member.user.id})`,
             date: dateString,
             type: "Warn",

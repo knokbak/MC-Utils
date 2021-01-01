@@ -34,23 +34,25 @@ export default class Case extends Command {
     public async exec(message: Message, { id }: { id: string }): Promise<void | Message> {
       const embed = new MessageEmbed().setColor(0x00ff0c);
       const sanctionsModel = getModelForClass(MemberModel);
-      await sanctionsModel.findOne(
-        { guildId: message.guild.id, "sanctions.caseID": id }
-      )
-        .then((e) => {
-        if (!e.sanctions.filter(r => r.caseID === id)) {
-          embed.setDescription(`Case is not valid.`);
+      try {
+        var sanctionsData = await sanctionsModel.findOne(
+          { guildId: message.guild.id, "sanctions.caseID": id }
+        )
+        if (!sanctionsData ?? sanctionsData.sanctions === null ?? sanctionsData.sanctions.length < 1 ?? sanctionsData.sanctions === undefined) {
+          embed.setDescription(`No modlogs found for that user.`);
           return message.util.send(embed);
-        } else {
-          const s = e.sanctions.filter(r => r.caseID === id)[0];
-          embed.setAuthor(
-            `Case - ${id}`,
-            message.author.displayAvatarURL({ dynamic: true })
-          );
-          embed.setDescription("All times are in UTC");
-          embed.addField(s.type, `Moderator: **${s.moderator}**\nUser: **${s.user}**\nReason: **${s.reason}**\nDate: **${s.date}**`)
+        } else if (!sanctionsData.sanctions.filter((r) => r.caseID === id)) {
+          embed.setDescription(`No case matching provided ID found.`);
           return message.util.send(embed);
         }
-      });
+      } catch (e) {}
+      const s = sanctionsData.sanctions.filter(r => r.caseID === id)[0];
+      embed.setAuthor(
+        `Case - ${id}`,
+        message.author.displayAvatarURL({ dynamic: true })
+      );
+      embed.setDescription("All times are in UTC");
+      embed.addField(s.type, `Moderator: **${s.moderator} (${s.moderatorId})**\nUser: **${s.user}**\nReason: **${s.reason}**\nDate: **${s.date}**`)
+      return message.util.send(embed);
     }
 }

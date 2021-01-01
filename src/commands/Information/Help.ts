@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { MessageEmbed, Message } from "discord.js";
+import { MessageEmbed, Message, BitFieldResolvable, PermissionString } from "discord.js";
 import { stripIndents } from "common-tags";
 
 export default class Help extends Command {
@@ -69,7 +69,7 @@ export default class Help extends Command {
       em1.addField(
         `${category.id} [${category.size}]`,
         category
-          .filter((cmd) => cmd.aliases.length > 0)
+          .filter((cmd) => cmd.aliases.length > 0 && message.member.permissions.has(cmd.userPermissions as BitFieldResolvable<PermissionString>))
           .map((cmd) => `**\`${cmd}\`**`)
           .join(", ") || "No commands in this category!"
       );

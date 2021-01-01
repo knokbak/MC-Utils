@@ -6,6 +6,7 @@ import { utc } from "moment";
 import Logger from "../../structures/Logger";
 import memberModel from "../../models/MemberModel";
 import { getModelForClass } from "@typegoose/typegoose";
+import uniqid from "uniqid";
 
 export default class Warn extends Command {
   public constructor() {
@@ -46,10 +47,10 @@ export default class Warn extends Command {
     { member, reason }: { member: GuildMember; reason: string }
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
-    // if (member.id === message.author.id) {
-    //   embed.setDescription("You cannot warn yourself!");
-    //   return message.util.send(embed);
-    // }
+    if (member.id === message.author.id) {
+      embed.setDescription("You cannot warn yourself!");
+      return message.util.send(embed);
+    }
     const memberPosition = member.roles.highest.position;
     const moderationPosition = message.member.roles.highest.position;
     if (
@@ -62,7 +63,7 @@ export default class Warn extends Command {
       await message.util.send(embed);
       return;
     }
-    let caseNum = Math.random().toString(16).substr(2, 8);
+    let caseNum = uniqid();
     let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
     let userId = member.id;
     let guildID = message.guild.id;
@@ -70,6 +71,7 @@ export default class Warn extends Command {
     const caseInfo = {
       caseID: caseNum,
       moderator: message.author.tag,
+      moderatorId: message.author.id,
       user: `${member.user.tag} (${member.user.id})`,
       date: dateString,
       type: "Warn",

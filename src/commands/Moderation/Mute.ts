@@ -1,7 +1,5 @@
 import { Command } from "discord-akairo";
 import {
-  muteUser,
-  restoreRoles,
   modLog,
   findChannel,
 } from "../../structures/Utils";
@@ -12,6 +10,7 @@ import memberModel from "../../models/MemberModel";
 import { Message, GuildMember, MessageEmbed } from "discord.js";
 import Logger from "../../structures/Logger";
 import { getModelForClass } from "@typegoose/typegoose";
+import uniqid from "uniqid";
 
 export default class Mute extends Command {
   public constructor() {
@@ -70,14 +69,22 @@ export default class Mute extends Command {
     const moderationPosition = message.member.roles.highest.position;
 
     if (
+      message.author.id === member.id
+    ) {
+      embed.setDescription(
+        "You cannot mute yourself!"
+      )
+      return message.util.send(embed);
+    }
+
+    if (
       message.member.guild.ownerID !== message.author.id &&
       !(moderationPosition >= memberPosition)
     ) {
       embed.setDescription(
         `You cannot mute a member with a role superior (or equal) to yours!`
       );
-      message.util.send(embed);
-      return;
+      return message.util.send(embed);
     }
 
     const user = await message.guild.members.fetch(member.id).catch(() => {});
@@ -116,7 +123,7 @@ export default class Mute extends Command {
 
     await user.roles.add(muteRole);
 
-    let caseNum = Math.random().toString(16).substr(2, 8);
+    let caseNum = uniqid();
 
     member.send(
       `Hello ${user.user.tag},\nYou have just been muted in **${message.guild.name}** for **${time}** for **${reason}**!`
@@ -129,7 +136,8 @@ export default class Mute extends Command {
 
     const caseInfo = {
       caseID: caseNum,
-      moderator: message.author.id,
+      moderator: message.author.tag,
+      moderatorId: message.author.id,
       user: `${member.user.tag} (${member.user.id})`,
       date: utc().format("MMMM Do YYYY, h:mm:ss a"),
       type: "Mute",
@@ -144,6 +152,20 @@ export default class Mute extends Command {
     }
 
     const sanctionsModel = getModelForClass(memberModel);
+    try {
+      var isMuted = await sanctionsModel.findOne({
+        guildId: guildID,
+        id: userId
+      });
+      if (!isMuted) {
+        embed.setDescription(`No modlogs found for that user`);
+        return message.util.send(embed);
+      } else if (isMuted.sanctions === null ?? isMuted.sanctions.length < 1 ?? isMuted.sanctions === undefined) {
+        embed.setDescription(`No modlogs found for that user`);
+        return message.util.send(embed);
+      }
+    } catch (e) {}
+
     try {
       await sanctionsModel.findOneAndUpdate(
         {
@@ -182,19 +204,19 @@ export default class Mute extends Command {
     let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
     modLog(modlogChannel, logEmbed, message.guild.iconURL());
 
-    setTimeout(async () => {
-      await user.roles.remove(muteRole);
-      const logEmbedUnmute = new MessageEmbed()
-      .setTitle(`Member Unmuted | ${member.user.tag}`)
-      .addField(`User:`, `<@${member.id}>`, true)
-      .addField(`Moderator:`, `<@${message.author.id}>`, true)
-      .setFooter(
-        `ID: ${member.id} | ${utc().format("MMMM Do YYYY, h:mm:ss a")}`
-      )
-      .setColor("RED");
+    // setTimeout(async () => {
+    //   await user.roles.remove(muteRole);
+    //   const logEmbedUnmute = new MessageEmbed()
+    //   .setTitle(`Member Unmuted | ${member.user.tag}`)
+    //   .addField(`User:`, `<@${member.id}>`, true)
+    //   .addField(`Moderator:`, `<@${message.author.id}>`, true)
+    //   .setFooter(
+    //     `ID: ${member.id} | ${utc().format("MMMM Do YYYY, h:mm:ss a")}`
+    //   )
+    //   .setColor("RED");
 
-    let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
-    modLog(modlogChannel, logEmbedUnmute, message.guild.iconURL());
-    }, ms(time));
+    // let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
+    // modLog(modlogChannel, logEmbedUnmute, message.guild.iconURL());
+    // }, ms(time));
   }
 }

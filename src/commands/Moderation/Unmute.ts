@@ -1,0 +1,151 @@
+import { Command } from "discord-akairo";
+import {
+  modLog,
+  findChannel,
+} from "../../structures/Utils";
+import ms from "ms";
+import { utc } from "moment";
+import config from "../../config";
+import memberModel from "../../models/MemberModel";
+import { Message, GuildMember, MessageEmbed } from "discord.js";
+import Logger from "../../structures/Logger";
+import { getModelForClass } from "@typegoose/typegoose";
+import uniqid from "uniqid";
+
+export default class Unmute extends Command {
+  public constructor() {
+    super("unmute", {
+      aliases: ["unmute"],
+      channel: "guild",
+      category: "Moderation",
+      userPermissions: ["MANAGE_MESSAGES"],
+      ratelimit: 3,
+      description: {
+        content: "Unmute a member in the server.",
+        usage: "unmute [ID or Mention] <reason>",
+        examples: ["unmute @Axis#0001 mistake!"],
+      },
+      args: [
+        {
+          id: "member",
+          type: "member" ?? "memberMention",
+          prompt: {
+            start: (msg: Message) =>
+              `${msg.author}, please provide a member to unmute...`,
+            retry: (msg: Message) =>
+              `${msg.author}, please provide a valid member to unmute...`,
+          },
+        },
+        {
+          id: "reason",
+          type: "string",
+          match: "rest",
+          default: "No reason provided.",
+        },
+      ],
+    });
+  }
+
+  public async exec(
+    message: Message,
+    {
+      member,
+      reason,
+    }: { member: GuildMember; reason: string }
+  ): Promise<Message> {
+    const embed = new MessageEmbed().setColor(0x1abc9c);
+
+    if (
+        message.author.id === member.id
+    ) {
+        embed.setDescription(
+          "You cannot unmute yourself!"
+        )
+        return message.util.send(embed);
+    }
+
+    const user = await message.guild.members.fetch(member.id).catch(() => {});
+
+    if (!user) {
+      embed.setDescription("This user does not exist. Please try again.");
+      message.util.send(embed);
+      return;
+    }
+
+    let muteRole = message.guild.roles.cache.get("726601422438924309");
+
+    if (!muteRole) {
+      embed.setDescription(
+        "There is no `Muted` role setup. Contact one of the devs to fix!"
+      );
+      return message.util.send(embed);
+    }
+
+    await user.roles.add(muteRole);
+
+    let caseNum = uniqid();
+
+    member.send(
+      `Hello ${user.user.tag},\nYou have just been unmuted in **${message.guild.name}** immediately for **${reason}**!`
+    );
+    embed.setDescription(`Unmuted **${user.user.tag}** | \`${caseNum}\``);
+    message.channel.send(embed);
+
+    let userId = member.id;
+    let guildID = message.guild.id;
+
+    const caseInfo = {
+      caseID: caseNum,
+      moderator: message.author.tag,
+      moderatorId: message.author.id,
+      user: `${member.user.tag} (${member.user.id})`,
+      date: utc().format("MMMM Do YYYY, h:mm:ss a"),
+      type: "Unmute",
+      reason,
+    };
+
+    const muteInformation = {
+      muted: false,
+      endDate: null,
+      case: caseNum
+    }
+
+    const sanctionsModel = getModelForClass(memberModel);
+    try {
+      await sanctionsModel.findOneAndUpdate(
+        {
+          guildId: guildID,
+          id: userId
+        },
+        {
+          guildId: guildID,
+          id: userId,
+          $push: {
+            sanctions: caseInfo
+          },
+          $set: {
+            mute: muteInformation
+          }
+        },
+        {
+          upsert: true
+        }
+      ).catch((e) => message.channel.send(`Error Logging Mute to DB: ${e}`));
+    } catch(e) {
+      Logger.error("DB", e);
+    }
+
+    const logEmbed = new MessageEmbed()
+      .setTitle(`Member Unmuted | Case \`${caseNum}\` | ${member.user.tag}`)
+      .addField(`User:`, `<@${member.id}>`, true)
+      .addField(`Moderator:`, `<@${message.author.id}>`, true)
+      .addField(`Reason:`, reason, true)
+      .setFooter(
+        `ID: ${member.id} | ${utc().format("MMMM Do YYYY, h:mm:ss a")}`
+      )
+      .setColor("RED");
+
+    let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
+    modLog(modlogChannel, logEmbed, message.guild.iconURL());
+  }
+}

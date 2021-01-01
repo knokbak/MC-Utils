@@ -6,6 +6,7 @@ import utc from "moment";
 import Logger from "../../structures/Logger";
 import memberModel from "../../models/MemberModel";
 import { getModelForClass } from "@typegoose/typegoose";
+import uniqid from "uniqid";
 
 export default class Kick extends Command {
   public constructor() {
@@ -92,10 +93,11 @@ export default class Kick extends Command {
         let userId = member.id;
         let guildID = message.guild.id;
 
-        let caseNum = Math.random().toString(16).substr(2, 8);
+        let caseNum = uniqid();
         const caseInfo = {
           caseID: caseNum,
           moderator: message.author.id,
+          moderatorId: message.author.id,
           user: `${member.user.tag} (${member.user.id})`,
           date: dateString,
           type: "Kick",

@@ -38,34 +38,50 @@ export default class DelWarn extends Command {
     }
 
     public async exec(message: Message, { id, reason }: { id: string, reason: string }): Promise<void | Message> {
-      const role = message.guild.roles.cache.get("720411099148845137");
-      /*if(message.member.roles.highest.position < role.position) {
-        return;
-      }*/
-      const caseID = id;
+      const embed = new MessageEmbed().setColor(0x1abc9c);
       const sanctionsModel = getModelForClass(memberModel);
       try {
-        const pendingDeletion = await sanctionsModel.findOne({
+        var pendingDeletion = await sanctionsModel.findOne({
           guildId: message.guild.id,
-          "sanctions.caseID": caseID
+          "sanctions.caseID": id
         });
-        if (!pendingDeletion.sanctions.filter(n => n.caseID === caseID)) {
-          return message.util.send("Couldn't find warn ID " + caseID);
+        if (!pendingDeletion.sanctions) {
+          embed.setDescription("No modlogs found for the user.");
+          return message.util.send(embed);
+        } else if (pendingDeletion.sanctions === null ?? pendingDeletion.sanctions === undefined ?? !pendingDeletion.sanctions.filter(n => n.caseID === id)) {
+          embed.setDescription(`Couldn't find warn ID \`${id}\``);
+          return message.util.send(embed);
         }
       } catch (e) {
-        return message.util.send("Couldn't find warn ID " + caseID);
+        embed.setDescription(`Couldn't find warn ID \`${id}\``);
+        return message.util.send(embed);
       }
-      await sanctionsModel.findOneAndDelete({
-        guildId: message.guild.id,
-        "sanctions.caseID": caseID
-      })
-      .catch(() => {
-        const errorEmbed = new MessageEmbed()
-        .setColor('#ff0000')
-        .setAuthor('Error')
-        .setDescription('This case ID was not found!')
-        return message.util.send(errorEmbed);
-      })
-      await message.util.send(`Case ID ${caseID} has been deleted.`);
+      if (pendingDeletion.sanctions.filter((r) => r.caseID === id && r.moderatorId !== message.author.id)) {
+        if (message.member.roles.cache.has("726771392913080421") || message.member.permissions.has("ADMINISTRATOR") || message.member.permissions.has("MANAGE_GUILD")) { //Hmod Role OR Admin OR Manage Guild
+          try {
+            await sanctionsModel.findOneAndDelete({
+              guildId: message.guild.id,
+              "sanctions.caseID": id
+            });
+            await message.util.send(`Case ID ${id} has been deleted.`);
+          } catch (e) {
+            embed.setDescription(`Error occurred while deleting case: **${e}**`);
+            return message.util.send(embed);
+          }
+        } else {
+          embed.setDescription("You cannot delete this case because it is not yours.");
+          return message.util.send(embed);
+        }
+      }
+      try {
+        await sanctionsModel.findOneAndDelete({
+          guildId: message.guild.id,
+          "sanctions.caseID": id
+        });
+        await message.util.send(`Case ID ${id} has been deleted.`);
+      } catch (e) {
+        embed.setDescription(`Error occurred while deleting case: **${e}**`);
+        return message.util.send(embed);
+      }
     }
 }

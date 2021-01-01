@@ -9,7 +9,6 @@ import {
   Role,
   User
 } from "discord.js";
-import guildModel from "../models/GuildModel";
 import memberModel from "../models/MemberModel";
 import config from "../config";
 import { AkairoClient } from "discord-akairo";
@@ -133,7 +132,7 @@ export async function sendLogToChannel(
     for (const s of memberData.sanctions) {
       embed.addField(
         s.type + " | #" + s.caseID,
-        `Moderator: \`${s.moderator}\`\nReason: \`${s.reason}\`\nDate: \`${s.date}\``,
+        `Moderator: **${s.moderator}**\nReason: **${s.reason}**\nDate: **${s.date}**`,
         false
       );
     }

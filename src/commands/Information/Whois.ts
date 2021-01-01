@@ -31,17 +31,6 @@ export default class Whois extends Command {
     { member }: { member: GuildMember }
   ): Promise<Message> {
     const roles = member.roles.cache.map((r) => r).join(", ") || "None";
-    const isBanned = await checkBanFromGuild(
-      this.client,
-      message.guild.id,
-      member.id
-    );
-    let banned: string;
-    if (isBanned) {
-      banned = "<:Check:775723152521035776> User is Banned from this Guild";
-    } else if (!isBanned) {
-      banned = "<:Cross:775723152692346910> User is not Banned from this Guild";
-    }
     return message.util.send(
       new MessageEmbed()
         .setAuthor(
@@ -66,7 +55,6 @@ export default class Whois extends Command {
         )
         .addField("User ID", member.user.id, true)
         .addField("Roles", roles, false)
-        .addField("Is Banned?", banned, false)
     );
   }
 }
