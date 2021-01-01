@@ -1,5 +1,9 @@
 import { Command } from "discord-akairo";
-import { modLog, findChannel, dmUserOnInfraction } from "../../structures/Utils";
+import {
+  modLog,
+  findChannel,
+  dmUserOnInfraction,
+} from "../../structures/Utils";
 import ms from "ms";
 import { utc } from "moment";
 import config from "../../config";
@@ -76,15 +80,14 @@ export default class Unmute extends Command {
 
     let caseNum = uniqid();
 
-    const dmEmbed = new MessageEmbed().setColor(0x1abc9c).setDescription(
-      `Hello ${user.user.tag},\nYou have just been unmuted in **${message.guild.name}** immediately for **${reason}**!`
-    );
+    const dmEmbed = new MessageEmbed()
+      .setColor(0x1abc9c)
+      .setDescription(
+        `Hello ${user.user.tag},\nYou have just been unmuted in **${message.guild.name}** immediately for **${reason}**!`
+      );
 
     try {
-      await dmUserOnInfraction(
-        actualUser,
-        dmEmbed
-      )
+      await dmUserOnInfraction(actualUser, dmEmbed);
     } catch (e) {}
 
     embed.setDescription(`Unmuted **${user.user.tag}** | \`${caseNum}\``);

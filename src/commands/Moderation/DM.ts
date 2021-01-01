@@ -28,6 +28,16 @@ export default class Warn extends Command {
       userPermissions: ["MANAGE_MESSAGES"],
       args: [
         {
+          id: "type",
+          type: "string",
+          prompt: {
+            start: (msg: Message) =>
+              `${msg.author}, please provide a number \`ex. <dm 1 or 2\`...`,
+            retry: (msg: Message) =>
+              `${msg.author}, please provide a valid number...`,
+          },
+        },
+        {
           id: "member",
           type: "member" ?? "memberMention",
           prompt: {
@@ -43,9 +53,14 @@ export default class Warn extends Command {
 
   public async exec(
     message: Message,
-    { member, reason }: { member: GuildMember; reason: string }
+    { member, type }: { member: GuildMember; type: string }
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
+    const validRes = ["1", "2"];
+    if (!validRes.includes(type)) {
+      embed.setDescription("Not a valid type... use `1` or `2` for DM level.");
+      return message.util.send(embed);
+    }
     if (member.id === message.author.id) {
       embed.setDescription("You cannot DM warn yourself!");
       return message.util.send(embed);
@@ -64,18 +79,67 @@ export default class Warn extends Command {
     }
 
     const sanctionsModel = getModelForClass(memberModel);
-    const alreadyDMwarnedCheck = await sanctionsModel.findOne({
-      guildID: message.guild.id,
-      userID: member.id,
-      caseInfo: { reason: "DM advertising (1st)".trim() },
-    });
-    if (
-      !alreadyDMwarnedCheck === null ||
-      (!alreadyDMwarnedCheck === undefined &&
-        alreadyDMwarnedCheck.sanctions.find(
-          (r) => r.reason === "DM advertising (1st)".trim()
-        ))
-    ) {
+
+    if (type === "1") {
+      let caseNum = uniqid();
+      let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
+      let userId = member.id;
+      let guildID = message.guild.id;
+
+      const caseInfo = {
+        caseID: caseNum,
+        moderator: message.author.tag,
+        moderatorId: message.author.id,
+        user: `${member.user.tag} (${member.user.id})`,
+        date: dateString,
+        type: "Warn",
+        reason: "DM advertising (1st)",
+      };
+
+      try {
+        await sanctionsModel
+          .findOneAndUpdate(
+            {
+              guildId: guildID,
+              userId: userId,
+            },
+            {
+              guildId: guildID,
+              userId: userId,
+              $push: {
+                sanctions: caseInfo,
+              },
+            },
+            {
+              upsert: true,
+            }
+          )
+          .catch((e) => message.channel.send(`Error Logging Warn to DB: ${e}`));
+      } catch (e) {
+        Logger.error("DB", e);
+      }
+
+      embed.setDescription(
+        `Warned **${member.user.tag}** (DM Ad 1) | \`${caseNum}\``
+      );
+
+      await sendLogToChannel(this.client, member, message.guild.id);
+
+      const logEmbed = new MessageEmbed()
+        .setTitle(`Member Warned | Case \`${caseNum}\` | ${member.user.tag}`)
+        .addField(`User:`, `<@${member.id}>`, true)
+        .addField(`Moderator:`, `<@${message.author.id}>`, true)
+        .addField(`Reason:`, "DM advertising (1st)", true)
+        .setFooter(`ID: ${member.id} | ${dateString}`)
+        .setColor("ORANGE");
+
+      let modlogChannel = findChannel(
+        this.client,
+        config.channels.modLogChannel
+      );
+      await modLog(modlogChannel, logEmbed, message.guild.iconURL());
+      return message.util.send(embed);
+    } else if (type === "2") {
       if (!member.bannable) {
         embed.setDescription(
           "User has reached DM 2:\n\nYou cannot ban this user as they are considered not bannable."
@@ -97,7 +161,7 @@ export default class Warn extends Command {
         );
         return message.util.send(embed);
       }
-      let caseNum = Math.random().toString(16).substr(2, 8);
+      let caseNum = uniqid();
       let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
       let userId = member.id;
       let guildID = message.guild.id;
@@ -166,61 +230,5 @@ export default class Warn extends Command {
       );
       return message.channel.send(embed);
     }
-
-    let caseNum = uniqid();
-    let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
-    let userId = member.id;
-    let guildID = message.guild.id;
-
-    const caseInfo = {
-      caseID: caseNum,
-      moderator: message.author.tag,
-      moderatorId: message.author.id,
-      user: `${member.user.tag} (${member.user.id})`,
-      date: dateString,
-      type: "Warn",
-      reason: "DM advertising (1st)",
-    };
-
-    try {
-      await sanctionsModel
-        .findOneAndUpdate(
-          {
-            guildId: guildID,
-            userId: userId,
-          },
-          {
-            guildId: guildID,
-            userId: userId,
-            $push: {
-              sanctions: caseInfo,
-            },
-          },
-          {
-            upsert: true,
-          }
-        )
-        .catch((e) => message.channel.send(`Error Logging Warn to DB: ${e}`));
-    } catch (e) {
-      Logger.error("DB", e);
-    }
-
-    embed.setDescription(
-      `Warned **${member.user.tag}** (DM Ad 1) | \`${caseNum}\``
-    );
-
-    await sendLogToChannel(this.client, member, message.guild.id);
-
-    const logEmbed = new MessageEmbed()
-      .setTitle(`Member Warned | Case \`${caseNum}\` | ${member.user.tag}`)
-      .addField(`User:`, `<@${member.id}>`, true)
-      .addField(`Moderator:`, `<@${message.author.id}>`, true)
-      .addField(`Reason:`, "DM advertising (1st)", true)
-      .setFooter(`ID: ${member.id} | ${dateString}`)
-      .setColor("ORANGE");
-
-    let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
-    await modLog(modlogChannel, logEmbed, message.guild.iconURL());
-    return message.util.send(embed);
   }
 }
