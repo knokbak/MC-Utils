@@ -43,7 +43,7 @@ export default class Ready extends Listener {
     await muteModel.find({ "mute.muted": true }).then((members) => {
       members.forEach((member) => {
         this.client.databaseCache_mutedUsers.set(
-          `${member.id}-${member.guildId}`,
+          `${member.userId}-${member.guildId}`,
           member
         );
       });
@@ -64,10 +64,10 @@ export default class Ready extends Listener {
           const muted = guild.roles.cache.get(Config.roles.muteRole);
           if (!muted) return;
           const roleImmutable = muted.members.filter(
-            (r) => r.id === memberData.id
+            (r) => r.id === memberData.userId
           );
           if (roleImmutable) {
-            roleImmutable.get(memberData.id).roles.remove(muted);
+            roleImmutable.get(memberData.userId).roles.remove(muted);
           }
           this.client.databaseCache_mutedUsers.delete(
             `${memberData.id}-${memberData.guildId}`

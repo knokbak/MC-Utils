@@ -15,6 +15,8 @@ export default class MemberModel {
   @prop()
   id!: string;
   @prop()
+  userId!: string;
+  @prop()
   guildId!: string;
   @prop({ default: [] })
   sanctions!: Array<CaseInfo>;

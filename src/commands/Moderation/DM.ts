@@ -124,11 +124,11 @@ export default class Warn extends Command {
           .findOneAndUpdate(
             {
               guildId: guildID,
-              id: userId,
+              userId: userId,
             },
             {
               guildId: guildID,
-              id: userId,
+              userId: userId,
               $push: {
                 sanctions: caseInfo,
               },
@@ -148,7 +148,7 @@ export default class Warn extends Command {
           "User has reached DM 2:\n\nCouldn't send them a ban message! Continuing..."
         );
       }
-      // await member.ban({ reason: "DM advertising (2nd)" });
+      await member.ban({ reason: "DM advertising (2nd)" });
       const logEmbed = new MessageEmbed()
         .setTitle(`Member Banned | Case \`${caseNum}\` | ${member.user.tag}`)
         .addField(`User:`, `<@${member.id}>`, true)
@@ -187,11 +187,11 @@ export default class Warn extends Command {
         .findOneAndUpdate(
           {
             guildId: guildID,
-            id: userId,
+            userId: userId,
           },
           {
             guildId: guildID,
-            id: userId,
+            userId: userId,
             $push: {
               sanctions: caseInfo,
             },
@@ -205,7 +205,9 @@ export default class Warn extends Command {
       Logger.error("DB", e);
     }
 
-    embed.setDescription(`Warned **${member.user.tag}** | \`${caseNum}\``);
+    embed.setDescription(
+      `Warned **${member.user.tag}** (DM Ad 1) | \`${caseNum}\``
+    );
 
     await sendLogToChannel(this.client, member, message.guild.id);
 
@@ -220,10 +222,5 @@ export default class Warn extends Command {
     let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
     await modLog(modlogChannel, logEmbed, message.guild.iconURL());
     return message.util.send(embed);
-
-    embed.setDescription(
-      `Warned **${member.user.tag}** (DM Ad 1) | \`${caseNum}\``
-    );
-    return message.channel.send(embed);
   }
 }

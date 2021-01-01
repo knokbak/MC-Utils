@@ -72,11 +72,11 @@ export default class Unban extends Command {
         .findOneAndUpdate(
           {
             guildId: guildID,
-            id: userId,
+            userId: userId,
           },
           {
             guildId: guildID,
-            id: userId,
+            userId: userId,
             $push: {
               sanctions: caseInfo,
             },

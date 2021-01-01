@@ -24,7 +24,7 @@ export default class Search extends Command {
     const sanctionsModel = getModelForClass(MemberModel);
     try {
       var memberData = await sanctionsModel.findOne({
-        id: userId,
+        userId: userId,
         guildId: message.guild.id,
       });
       if (!memberData) {

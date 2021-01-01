@@ -84,11 +84,11 @@ export default class Warn extends Command {
         .findOneAndUpdate(
           {
             guildId: guildID,
-            id: userId,
+            userId: userId,
           },
           {
             guildId: guildID,
-            id: userId,
+            userId: userId,
             $push: {
               sanctions: caseInfo,
             },

@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { modLog, findChannel } from "../../structures/Utils";
+import { modLog, findChannel, dmUserOnInfraction } from "../../structures/Utils";
 import ms from "ms";
 import { utc } from "moment";
 import config from "../../config";
@@ -55,6 +55,7 @@ export default class Unmute extends Command {
     }
 
     const user = await message.guild.members.fetch(member.id).catch(() => {});
+    const actualUser = this.client.users.cache.get(member.id);
 
     if (!user) {
       embed.setDescription("This user does not exist. Please try again.");
@@ -71,13 +72,21 @@ export default class Unmute extends Command {
       return message.util.send(embed);
     }
 
-    await user.roles.add(muteRole);
+    await user.roles.remove(muteRole);
 
     let caseNum = uniqid();
 
-    member.send(
+    const dmEmbed = new MessageEmbed().setColor(0x1abc9c).setDescription(
       `Hello ${user.user.tag},\nYou have just been unmuted in **${message.guild.name}** immediately for **${reason}**!`
     );
+
+    try {
+      await dmUserOnInfraction(
+        actualUser,
+        dmEmbed
+      )
+    } catch (e) {}
+
     embed.setDescription(`Unmuted **${user.user.tag}** | \`${caseNum}\``);
     message.channel.send(embed);
 
@@ -106,11 +115,11 @@ export default class Unmute extends Command {
         .findOneAndUpdate(
           {
             guildId: guildID,
-            id: userId,
+            userId: userId,
           },
           {
             guildId: guildID,
-            id: userId,
+            userId: userId,
             $push: {
               sanctions: caseInfo,
             },

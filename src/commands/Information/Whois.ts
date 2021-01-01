@@ -1,7 +1,6 @@
 import { Command } from "discord-akairo";
 import { Message, GuildMember, MessageEmbed } from "discord.js";
 import { utc } from "moment";
-import { checkBanFromGuild } from "../../structures/Utils";
 
 export default class Whois extends Command {
   public constructor() {
