@@ -66,17 +66,18 @@ export default class BotClient extends AkairoClient {
   });
   public constructor(config: BotOptions) {
     super(
-      { 
-        ownerID: config.owners 
-      }, 
-      { 
-        ws: { 
-          intents: 14023 
+      {
+        ownerID: config.owners,
+      },
+      {
+        ws: {
+          intents: 14023,
         },
         http: {
-          version: 8
-        }
-    });
+          version: 8,
+        },
+      }
+    );
     this.config = config;
   }
   private async _init(): Promise<void> {

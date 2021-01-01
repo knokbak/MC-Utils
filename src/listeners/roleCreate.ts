@@ -20,10 +20,7 @@ export default class roleCreate extends Listener {
     let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
 
     const embed: MessageEmbed = new MessageEmbed()
-      .setAuthor(
-        "Role Created",
-        role.guild.iconURL({ dynamic: true })
-      )
+      .setAuthor("Role Created", role.guild.iconURL({ dynamic: true }))
       .setColor("RED")
       .addField("Role Name:", role.name.toString(), true)
       .addField("Role Mention:", `<@&${role.id}>`, true)

@@ -106,23 +106,27 @@ export default class Ban extends Command {
 
         const sanctionsModel = getModelForClass(memberModel);
         try {
-          await sanctionsModel.findOneAndUpdate(
-            {
-              guildId: guildID,
-              id: userId
-            },
-            {
-              guildId: guildID,
-              id: userId,
-              $push: {
-                sanctions: caseInfo
+          await sanctionsModel
+            .findOneAndUpdate(
+              {
+                guildId: guildID,
+                id: userId,
+              },
+              {
+                guildId: guildID,
+                id: userId,
+                $push: {
+                  sanctions: caseInfo,
+                },
+              },
+              {
+                upsert: true,
               }
-            },
-            {
-              upsert: true
-            }
-          ).catch((e) => message.channel.send(`Error Logging Kick to DB: ${e}`));
-        } catch(e) {
+            )
+            .catch((e) =>
+              message.channel.send(`Error Logging Kick to DB: ${e}`)
+            );
+        } catch (e) {
           Logger.error("DB", e);
         }
 

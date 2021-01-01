@@ -10,14 +10,14 @@ interface CaseInfo {
   reason: string;
 }
 
-@ModelOptions({ options: { allowMixed: Severity.ALLOW }})
+@ModelOptions({ options: { allowMixed: Severity.ALLOW } })
 export default class MemberModel {
   @prop()
   id!: string;
-  @prop() 
-  guildId!: string; 
+  @prop()
+  guildId!: string;
   @prop({ default: [] })
   sanctions!: Array<CaseInfo>;
-  @prop({ default: { muted: false, endDate: null, case: null }})
-  mute!: any
+  @prop({ default: { muted: false, endDate: null, case: null } })
+  mute!: any;
 }

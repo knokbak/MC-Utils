@@ -40,7 +40,6 @@ export default class Purge extends Command {
         `:tools: Deleted \`${number}\` messages from this channel.`
       );
       await msg.delete({ timeout: 5000 });
-
     });
   }
 }

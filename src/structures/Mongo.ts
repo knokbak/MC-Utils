@@ -5,7 +5,7 @@ export = async () => {
   await mongoose.connect(config.db.mongoURI, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-    useFindAndModify: false
+    useFindAndModify: false,
   });
   return mongoose;
 };

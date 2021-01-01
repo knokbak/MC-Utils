@@ -37,8 +37,10 @@ export default class Say extends Command {
     await message.delete();
     const embed = new MessageEmbed().setColor(0x1abc9c);
     if (string.length >= 1024) {
-        embed.setDescription("Phrase is over **1024** characters. Please try again.");
-        return message.util.send(embed);
+      embed.setDescription(
+        "Phrase is over **1024** characters. Please try again."
+      );
+      return message.util.send(embed);
     }
     await message.channel.send(string);
   }

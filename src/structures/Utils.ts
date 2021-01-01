@@ -7,7 +7,7 @@ import {
   Client,
   GuildMember,
   Role,
-  User
+  User,
 } from "discord.js";
 import memberModel from "../models/MemberModel";
 import config from "../config";
@@ -112,9 +112,10 @@ export async function sendLogToChannel(
   const embed = new MessageEmbed().setColor(0x00ff0c);
   let userId = member.id;
   const sanctionsModel = getModelForClass(memberModel);
-  const memberData = await sanctionsModel.findOne(
-    { id: userId, guildId: guildId }
-  );
+  const memberData = await sanctionsModel.findOne({
+    id: userId,
+    guildId: guildId,
+  });
   if (memberData.sanctions.length < 1) {
     return;
   } else {
@@ -137,7 +138,9 @@ export async function sendLogToChannel(
   }
 }
 
-export async function dmUserOnInfraction(user: User, dmMessage: MessageEmbed): Promise<void> {
-  await user.send(dmMessage)
-    .catch((e) => e);
+export async function dmUserOnInfraction(
+  user: User,
+  dmMessage: MessageEmbed
+): Promise<void> {
+  await user.send(dmMessage).catch((e) => e);
 }

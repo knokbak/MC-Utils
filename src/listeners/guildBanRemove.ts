@@ -20,10 +20,7 @@ export default class guildBanRemove extends Listener {
     let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
 
     const embed: MessageEmbed = new MessageEmbed()
-      .setAuthor(
-        "User Un-Banned",
-        user.displayAvatarURL({ dynamic: true })
-      )
+      .setAuthor("User Un-Banned", user.displayAvatarURL({ dynamic: true }))
       .setColor("RED")
       .addField("User Mention:", `<@!${user.id}>`, true)
       .addField("Time Un-Banned:", dateString, true)

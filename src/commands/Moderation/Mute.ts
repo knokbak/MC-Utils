@@ -1,8 +1,5 @@
 import { Command } from "discord-akairo";
-import {
-  modLog,
-  findChannel,
-} from "../../structures/Utils";
+import { modLog, findChannel } from "../../structures/Utils";
 import ms from "ms";
 import { utc } from "moment";
 import config from "../../config";
@@ -68,12 +65,8 @@ export default class Mute extends Command {
     const memberPosition = member.roles.highest.position;
     const moderationPosition = message.member.roles.highest.position;
 
-    if (
-      message.author.id === member.id
-    ) {
-      embed.setDescription(
-        "You cannot mute yourself!"
-      )
+    if (message.author.id === member.id) {
+      embed.setDescription("You cannot mute yourself!");
       return message.util.send(embed);
     }
 
@@ -148,45 +141,51 @@ export default class Mute extends Command {
     const muteInformation = {
       muted: true,
       endDate: ms(time),
-      case: caseNum
-    }
+      case: caseNum,
+    };
 
     const sanctionsModel = getModelForClass(memberModel);
     try {
       var isMuted = await sanctionsModel.findOne({
         guildId: guildID,
-        id: userId
+        id: userId,
       });
       if (!isMuted) {
         embed.setDescription(`No modlogs found for that user`);
         return message.util.send(embed);
-      } else if (isMuted.sanctions === null ?? isMuted.sanctions.length < 1 ?? isMuted.sanctions === undefined) {
+      } else if (
+        isMuted.sanctions === null ??
+        isMuted.sanctions.length < 1 ??
+        isMuted.sanctions === undefined
+      ) {
         embed.setDescription(`No modlogs found for that user`);
         return message.util.send(embed);
       }
     } catch (e) {}
 
     try {
-      await sanctionsModel.findOneAndUpdate(
-        {
-          guildId: guildID,
-          id: userId
-        },
-        {
-          guildId: guildID,
-          id: userId,
-          $push: {
-            sanctions: caseInfo
+      await sanctionsModel
+        .findOneAndUpdate(
+          {
+            guildId: guildID,
+            id: userId,
           },
-          $set: {
-            mute: muteInformation
+          {
+            guildId: guildID,
+            id: userId,
+            $push: {
+              sanctions: caseInfo,
+            },
+            $set: {
+              mute: muteInformation,
+            },
+          },
+          {
+            upsert: true,
           }
-        },
-        {
-          upsert: true
-        }
-      ).catch((e) => message.channel.send(`Error Logging Mute to DB: ${e}`));
-    } catch(e) {
+        )
+        .catch((e) => message.channel.send(`Error Logging Mute to DB: ${e}`));
+    } catch (e) {
       Logger.error("DB", e);
     }
 

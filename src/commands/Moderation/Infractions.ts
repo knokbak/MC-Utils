@@ -41,16 +41,20 @@ export default class Infractions extends Command {
       if (!memberData) {
         embed.setDescription(`No modlogs found for that user`);
         return message.util.send(embed);
-      } else if (memberData.sanctions === null ?? memberData.sanctions.length < 1 ?? memberData.sanctions === undefined) {
+      } else if (
+        memberData.sanctions === null ??
+        memberData.sanctions.length < 1 ??
+        memberData.sanctions === undefined
+      ) {
         embed.setDescription(`No modlogs found for that user`);
         return message.util.send(embed);
       }
     } catch (e) {}
     embed.setAuthor(
       `${member.user.tag}'s Modlogs`,
-      member.user.displayAvatarURL({ dynamic: true }) 
-    ); 
-    embed.setDescription("All times are in UTC"); 
+      member.user.displayAvatarURL({ dynamic: true })
+    );
+    embed.setDescription("All times are in UTC");
     for (const s of memberData.sanctions) {
       embed.addField(
         s.type + " | #" + s.caseID,

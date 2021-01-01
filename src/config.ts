@@ -5,7 +5,8 @@ export default {
     owners: ["100690330336129024", "633776442366361601"],
   },
   db: {
-    mongoURI: "mongodb+srv://bot:irnvgXurqFy6ea65@cluster0.lnpbw.mongodb.net/mcUtils",
+    mongoURI:
+      "mongodb+srv://bot:irnvgXurqFy6ea65@cluster0.lnpbw.mongodb.net/mcUtils",
   },
   channels: {
     devModLogChannel: "768919818295574534",

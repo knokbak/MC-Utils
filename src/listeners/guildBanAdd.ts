@@ -20,10 +20,7 @@ export default class guildBanAdd extends Listener {
     let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
 
     const embed: MessageEmbed = new MessageEmbed()
-      .setAuthor(
-        "User Banned",
-        user.displayAvatarURL({ dynamic: true })
-      )
+      .setAuthor("User Banned", user.displayAvatarURL({ dynamic: true }))
       .setColor("RED")
       .addField("User Mention:", `<@!${user.id}>`, true)
       .addField("Time Banned:", dateString, true)

@@ -20,10 +20,7 @@ export default class roleDelete extends Listener {
     let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
 
     const embed: MessageEmbed = new MessageEmbed()
-      .setAuthor(
-        "Role Deleted",
-        role.guild.iconURL({ dynamic: true })
-      )
+      .setAuthor("Role Deleted", role.guild.iconURL({ dynamic: true }))
       .setColor("RED")
       .addField("Role Name:", role.name.toString(), true)
       .setFooter(`Guild ID: ${role.guild.id} | ${dateString}`);

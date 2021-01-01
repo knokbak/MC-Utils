@@ -1,6 +1,6 @@
 import { ModelOptions, prop, Severity } from "@typegoose/typegoose";
 
-@ModelOptions({ options: { allowMixed: Severity.ALLOW }})
+@ModelOptions({ options: { allowMixed: Severity.ALLOW } })
 export default class GuildModel {
   @prop()
   id!: string;
@@ -9,5 +9,5 @@ export default class GuildModel {
   @prop({ default: {} })
   membersData!: object;
   @prop()
-  members!: string[]
+  members!: string[];
 }

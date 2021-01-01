@@ -1,8 +1,5 @@
 import { Command } from "discord-akairo";
-import {
-  modLog,
-  findChannel,
-} from "../../structures/Utils";
+import { modLog, findChannel } from "../../structures/Utils";
 import ms from "ms";
 import { utc } from "moment";
 import config from "../../config";
@@ -48,20 +45,13 @@ export default class Unmute extends Command {
 
   public async exec(
     message: Message,
-    {
-      member,
-      reason,
-    }: { member: GuildMember; reason: string }
+    { member, reason }: { member: GuildMember; reason: string }
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x1abc9c);
 
-    if (
-        message.author.id === member.id
-    ) {
-        embed.setDescription(
-          "You cannot unmute yourself!"
-        )
-        return message.util.send(embed);
+    if (message.author.id === member.id) {
+      embed.setDescription("You cannot unmute yourself!");
+      return message.util.send(embed);
     }
 
     const user = await message.guild.members.fetch(member.id).catch(() => {});
@@ -107,31 +97,33 @@ export default class Unmute extends Command {
     const muteInformation = {
       muted: false,
       endDate: null,
-      case: caseNum
-    }
+      case: caseNum,
+    };
 
     const sanctionsModel = getModelForClass(memberModel);
     try {
-      await sanctionsModel.findOneAndUpdate(
-        {
-          guildId: guildID,
-          id: userId
-        },
-        {
-          guildId: guildID,
-          id: userId,
-          $push: {
-            sanctions: caseInfo
+      await sanctionsModel
+        .findOneAndUpdate(
+          {
+            guildId: guildID,
+            id: userId,
           },
-          $set: {
-            mute: muteInformation
+          {
+            guildId: guildID,
+            id: userId,
+            $push: {
+              sanctions: caseInfo,
+            },
+            $set: {
+              mute: muteInformation,
+            },
+          },
+          {
+            upsert: true,
           }
-        },
-        {
-          upsert: true
-        }
-      ).catch((e) => message.channel.send(`Error Logging Mute to DB: ${e}`));
-    } catch(e) {
+        )
+        .catch((e) => message.channel.send(`Error Logging Mute to DB: ${e}`));
+    } catch (e) {
       Logger.error("DB", e);
     }
 

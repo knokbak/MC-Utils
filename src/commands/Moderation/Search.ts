@@ -18,9 +18,7 @@ export default class Search extends Command {
     });
   }
 
-  public async exec(
-    message: Message
-  ): Promise<Message> {
+  public async exec(message: Message): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
     let userId = message.author.id;
     const sanctionsModel = getModelForClass(MemberModel);
@@ -32,16 +30,20 @@ export default class Search extends Command {
       if (!memberData) {
         embed.setDescription(`No modlogs found for you.`);
         return message.util.send(embed);
-      } else if (memberData.sanctions === null ?? memberData.sanctions.length < 1 ?? memberData.sanctions === undefined) {
+      } else if (
+        memberData.sanctions === null ??
+        memberData.sanctions.length < 1 ??
+        memberData.sanctions === undefined
+      ) {
         embed.setDescription(`No modlogs found for you.`);
         return message.util.send(embed);
       }
     } catch (e) {}
     embed.setAuthor(
       `${message.author.tag}'s Modlogs`,
-      message.author.displayAvatarURL({ dynamic: true }) 
-    ); 
-    embed.setDescription("All times are in UTC"); 
+      message.author.displayAvatarURL({ dynamic: true })
+    );
+    embed.setDescription("All times are in UTC");
     for (const s of memberData.sanctions) {
       embed.addField(
         s.type + " | #" + s.caseID,
