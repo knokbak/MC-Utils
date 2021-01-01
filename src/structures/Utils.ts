@@ -73,6 +73,10 @@ export async function resolveMember(search: string, guild: Guild) {
   return member;
 }
 
+/**
+ * @deprecated
+ * @description Mutes the user by taking all their roles. Meant for setTimeout
+ */
 export async function muteUser(
   client: Client,
   guildId: string,
@@ -90,24 +94,14 @@ export async function muteUser(
     .catch(() => {});
 }
 
+/**
+ * @deprecated
+ * @description Meant to restore users roles after invoking muteUser()
+ */
 export async function restoreRoles(client, guildId: string, userId: string) {
   let guild = client.guilds.cache.get(guildId);
   let guildMember = guild.members.cache.get(userId);
   guildMember.roles.set(cachedUserRoles[userId]).catch(() => {});
-}
-
-export async function checkBanFromGuild(
-  client: Client,
-  guildId: string,
-  userId: string
-): Promise<boolean> {
-  let guild = client.guilds.cache.get(guildId);
-  let isBanned = await guild.fetchBans();
-  if (isBanned.has(userId)) {
-    return true;
-  } else {
-    return false;
-  }
 }
 
 export async function sendLogToChannel(
