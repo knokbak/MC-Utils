@@ -7,7 +7,7 @@ export default class Say extends Command {
       aliases: ["say", "echo"],
       channel: "guild",
       category: "Utilities",
-      userPermissions: ["MANAGE_MESSAGES"],
+      userPermissions: ["MANAGE_CHANNELS"],
       ratelimit: 3,
       description: {
         content: "Echos a certain phrase or word!",
