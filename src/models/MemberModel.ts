@@ -8,6 +8,13 @@ interface CaseInfo {
   date: string;
   type: string;
   reason: string;
+  time?: string;
+}
+
+interface Mutes {
+  muted: boolean;
+  endDate: number;
+  case: any;
 }
 
 @ModelOptions({ options: { allowMixed: Severity.ALLOW } })
@@ -21,5 +28,5 @@ export default class MemberModel {
   @prop({ default: [] })
   sanctions!: Array<CaseInfo>;
   @prop({ default: { muted: false, endDate: null, case: null } })
-  mute!: any;
+  mute!: Mutes;
 }

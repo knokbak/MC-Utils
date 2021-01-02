@@ -133,8 +133,12 @@ export async function sendLogToChannel(
     const CASE_SUMMARY_REASON_MAX_LENGTH = 15;
     for (const s of memberData.sanctions) {
       if (s.reason.length > CASE_SUMMARY_REASON_MAX_LENGTH) {
-        const match = s.reason.slice(CASE_SUMMARY_REASON_MAX_LENGTH, 100).match(/(?:[.,!?\s]|$)/);
-        const nextWhitespaceIndex = match ? CASE_SUMMARY_REASON_MAX_LENGTH + match.index! : CASE_SUMMARY_REASON_MAX_LENGTH;
+        const match = s.reason
+          .slice(CASE_SUMMARY_REASON_MAX_LENGTH, 100)
+          .match(/(?:[.,!?\s]|$)/);
+        const nextWhitespaceIndex = match
+          ? CASE_SUMMARY_REASON_MAX_LENGTH + match.index!
+          : CASE_SUMMARY_REASON_MAX_LENGTH;
         if (nextWhitespaceIndex < s.reason.length) {
           s.reason = s.reason.slice(0, nextWhitespaceIndex - 1) + "...";
         }
@@ -160,6 +164,9 @@ export async function dmUserOnInfraction(
 }
 
 // Thank you Zeppelin :D
-export function asyncMap<T, R>(arr: T[], fn: (item: T) => Promise<R>): Promise<R[]> {
+export function asyncMap<T, R>(
+  arr: T[],
+  fn: (item: T) => Promise<R>
+): Promise<R[]> {
   return Promise.all(arr.map((item, index) => fn(item)));
 }
