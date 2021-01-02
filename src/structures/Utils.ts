@@ -116,7 +116,13 @@ export async function sendLogToChannel(
     id: userId,
     guildId: guildId,
   });
-  if (memberData.sanctions.length < 1) {
+  if (!memberData) {
+    return;
+  } else if (
+    memberData.sanctions === null ??
+    memberData.sanctions.length < 1 ??
+    memberData.sanctions === undefined
+  ) {
     return;
   } else {
     embed.setAuthor(
@@ -124,11 +130,19 @@ export async function sendLogToChannel(
       member.user.displayAvatarURL({ dynamic: true })
     );
     embed.setDescription("All times are in UTC");
+    const CASE_SUMMARY_REASON_MAX_LENGTH = 15;
     for (const s of memberData.sanctions) {
+      if (s.reason.length > CASE_SUMMARY_REASON_MAX_LENGTH) {
+        const match = s.reason.slice(CASE_SUMMARY_REASON_MAX_LENGTH, 100).match(/(?:[.,!?\s]|$)/);
+        const nextWhitespaceIndex = match ? CASE_SUMMARY_REASON_MAX_LENGTH + match.index! : CASE_SUMMARY_REASON_MAX_LENGTH;
+        if (nextWhitespaceIndex < s.reason.length) {
+          s.reason = s.reason.slice(0, nextWhitespaceIndex - 1) + "...";
+        }
+      }
       embed.addField(
-        s.type + " | #" + s.caseID,
+        `${s.type}: ${s.caseID}`,
         `Moderator: **${s.moderator}**\nReason: **${s.reason}**\nDate: **${s.date}**`,
-        false
+        true
       );
     }
     let c = member.guild.channels.cache.get(
@@ -143,4 +157,9 @@ export async function dmUserOnInfraction(
   dmMessage: MessageEmbed
 ): Promise<void> {
   await user.send(dmMessage).catch((e) => e);
+}
+
+// Thank you Zeppelin :D
+export function asyncMap<T, R>(arr: T[], fn: (item: T) => Promise<R>): Promise<R[]> {
+  return Promise.all(arr.map((item, index) => fn(item)));
 }
