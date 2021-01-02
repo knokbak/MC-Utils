@@ -4,9 +4,9 @@ import MemberModel from "../models/MemberModel";
 import { getModelForClass } from "@typegoose/typegoose";
 import { MessageEmbed } from "discord.js";
 import { utc } from "moment";
-import ms from "ms";
 import Config from "../config";
 import uniqid from "uniqid";
+import { findChannel, modLog } from "../structures/Utils";
 
 export default class Ready extends Listener {
   constructor() {
@@ -63,15 +63,6 @@ export default class Ready extends Listener {
             endDate: null,
             case: caseNum,
           };
-          const caseInfo = {
-            caseID: caseNum,
-            moderator: this.client.user.tag,
-            moderatorId: this.client.user.id,
-            user: memberData.userId,
-            date: utc().format("MMMM Do YYYY, h:mm:ss a"),
-            type: "Unmute",
-            reason: "[Auto] Unmuted",
-          };
           const muteRole = guild.roles.cache.get(Config.roles.muteRole);
           if (!muteRole) return;
           const inRole = muteRole.members.find(
@@ -87,6 +78,15 @@ export default class Ready extends Listener {
           } else {
             return;
           }
+          const caseInfo = {
+            caseID: caseNum,
+            moderator: this.client.user.tag,
+            moderatorId: this.client.user.id,
+            user: `${inRole.user.tag} (${memberData.userId})`,
+            date: utc().format("MMMM Do YYYY, h:mm:ss a"),
+            type: "Unmute",
+            reason: "[Auto] Unmuted",
+          };
           this.client.databaseCache_mutedUsers.delete(
             `${memberData.userId}-${memberData.guildId}`
           );
@@ -115,10 +115,21 @@ export default class Ready extends Listener {
             Logger.error("Auto Unmute", e);
             return;
           }
-          Logger.event(`Auto Unmuted ${memberData.userId}!`)
+          const logEmbed = new MessageEmbed()
+            .setTitle(`Member Unmuted | Case \`${caseNum}\` | ${inRole.user.tag}`)
+            .addField(`User:`, `<@${inRole.id}>`, true)
+            .addField(`Moderator:`, `<@${this.client.user.id}>`, true)
+            .addField(`Reason:`, caseInfo.reason, true)
+            .setFooter(
+              `ID: ${memberData.userId} | ${utc().format("MMMM Do YYYY, h:mm:ss a")}`
+            )
+            .setColor("RED");
+
+          let modlogChannel = findChannel(this.client, Config.channels.modLogChannel);
+          modLog(modlogChannel, logEmbed, guild.iconURL());
+          Logger.event(`Auto Unmuted ${memberData.userId}!`);
         });
     }, 60000);
-
     Logger.success("READY", `${this.client.user.tag} is now online!`);
   }
 }

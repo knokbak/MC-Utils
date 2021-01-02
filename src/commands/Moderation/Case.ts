@@ -63,7 +63,7 @@ export default class Case extends Command {
     embed.setDescription("All times are in UTC");
     embed.addField(
       s.type,
-      `Moderator: **${s.moderator} (${s.moderatorId})**\nUser: **${s.user}**\nReason: **${s.reason}**\nDate: **${s.date}**`
+      `Moderator: <@!${s.moderatorId}>\nUser: **${s.user}**\nReason: **${s.reason}**\nDate: **${s.date}**`
     );
     return message.util.send(embed);
   }
