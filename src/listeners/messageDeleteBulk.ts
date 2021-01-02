@@ -31,6 +31,7 @@ export default class messageDeleteBulk extends Listener {
       .setAuthor("Message Bulk Deleted", img)
       .setColor("RED")
       .addField("Message Amount:", messages.size, true)
+      .addField("Channel(s)", messages.map((r) => r.channel).join(", "), true)
       .setFooter(`${dateString}`);
 
     return log(logChannel, embed, imgStill);

@@ -34,6 +34,7 @@ export default class messageDelete extends Listener {
         false
       )
       .addField("Author:", message.author, false)
+      .addField("Channel", message.channel, false)
       .setFooter(`ID: ${message.author.id} | ${dateString}`);
 
     return log(logChannel, embed, message.guild.iconURL());

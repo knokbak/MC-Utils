@@ -32,6 +32,7 @@ export default class messageEdit extends Listener {
         `**Old**\n\`\`\`${oldMessage.content}\`\`\`**New**\n\`\`\`${newMessage.content}\`\`\``
       )
       .addField("Author:", newMessage.author, true)
+      .addField("Channel", oldMessage.channel ?? newMessage.channel, true)
       .setFooter(`ID: ${newMessage.author.id} | ${dateString}`);
 
     return log(logChannel, embed, newMessage.guild.iconURL());
