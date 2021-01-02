@@ -5,14 +5,13 @@
   "main": "dist/bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fullbuild": "npm i --production && npm i typescript --save-dev && npm run compile",
+    "fullbuild": "npm i --production && npm run compile",
     "compile": "tsc",
-    "start": "node dist/src/bot.js",
+    "start": "node dist/bot.js",
     "start:dev": "nodemon src/bot.ts"
   },
   "dependencies": {
     "@picklerickdev/discord-webhooks": "^1.1.1",
-    "@typegoose/auto-increment": "^0.6.0",
     "@typegoose/typegoose": "^7.4.5",
     "axios": "^0.21.0",
     "chalk": "^4.1.0",
@@ -32,6 +31,7 @@
     "@types/ms": "^0.7.31",
     "@types/node": "^14.14.2",
     "nodemon": "^2.0.6",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "typescript": "3.4.3"
   }
 }

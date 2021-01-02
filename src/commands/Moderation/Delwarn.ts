@@ -78,7 +78,7 @@ export default class DelWarn extends Command {
       ) {
         //Hmod Role OR Admin OR Manage Guild
         try {
-          await sanctionsModel.findOneAndDelete({
+          await sanctionsModel.deleteOne({
             guildId: message.guild.id,
             "sanctions.caseID": id,
           });
@@ -97,7 +97,7 @@ export default class DelWarn extends Command {
       }
     }
     try {
-      await sanctionsModel.findOneAndDelete({
+      await sanctionsModel.deleteOne({
         guildId: message.guild.id,
         "sanctions.caseID": id,
       });

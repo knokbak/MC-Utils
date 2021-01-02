@@ -75,6 +75,11 @@ export default class Mute extends Command {
       embed.setDescription("You cannot mute yourself!");
       return message.util.send(embed);
     }
+    if (member.user.bot) {
+      embed.setColor(0xff0000);
+      embed.setDescription("You cannot mute a bot!");
+      return message.util.send(embed);
+    }
 
     if (time !== null && time !== undefined && isNaN(ms(time))) {
       embed.setColor(0xff0000);

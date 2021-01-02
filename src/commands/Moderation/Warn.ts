@@ -57,6 +57,11 @@ export default class Warn extends Command {
       embed.setDescription("You cannot warn yourself!");
       return message.util.send(embed);
     }
+    if (member.user.bot) {
+      embed.setColor(0xff0000);
+      embed.setDescription("You cannot warn a bot!");
+      return message.util.send(embed);
+    }
     const memberPosition = member.roles.highest.position;
     const moderationPosition = message.member.roles.highest.position;
     if (

@@ -6,7 +6,7 @@ import MemberModel from "../../models/MemberModel";
 export default class Infractions extends Command {
   public constructor() {
     super("infractions", {
-      aliases: ["infractions", "modlogs"],
+      aliases: ["infractions", "modlogs", "warnings"],
       category: "Moderation",
       channel: "guild",
       userPermissions: ["MANAGE_MESSAGES"],

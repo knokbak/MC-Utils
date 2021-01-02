@@ -56,6 +56,11 @@ export default class Unmute extends Command {
       embed.setDescription("You cannot unmute yourself!");
       return message.util.send(embed);
     }
+    if (member.user.bot) {
+      embed.setColor(0xff0000);
+      embed.setDescription("You cannot unmute a bot!");
+      return message.util.send(embed);
+    }
 
     const user = await message.guild.members.fetch(member.id).catch(() => {});
     const actualUser = this.client.users.cache.get(member.id);
