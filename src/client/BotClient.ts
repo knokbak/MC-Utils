@@ -15,9 +15,6 @@ declare module "discord-akairo" {
     commandHandler: CommandHandler;
     listenerHandler: ListenerHandler;
     botConfig: typeof config;
-    databaseCache_users: Collection<any, any>;
-    databaseCache_members: Collection<any, any>;
-    databaseCache_guilds: Collection<any, any>;
     databaseCache_mutedUsers: Collection<string, DocumentType<MemberModel>>;
     databaseCache: any;
   }
@@ -32,10 +29,7 @@ export default class BotClient extends AkairoClient {
   public config: BotOptions;
   public botConfig: any;
   public static databaseCache: any = {};
-  public databaseCache_users = new Collection<any, any>();
-  public databaseCache_guilds = new Collection<any, any>();
-  public databaseCache_members = new Collection<any, any>();
-  public databaseCache_mutedUsers = new Collection<any, any>();
+  public databaseCache_mutedUsers = new Collection<string, DocumentType<MemberModel>>();
   public listenerHandler: ListenerHandler = new ListenerHandler(this, {
     directory: join(__dirname, "..", "listeners"),
   });
