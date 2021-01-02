@@ -30,12 +30,6 @@ export default class Warn extends Command {
         {
           id: "type",
           type: "string",
-          prompt: {
-            start: (msg: Message) =>
-              `${msg.author}, please provide a number \`ex. <dm 1 or 2\`...`,
-            retry: (msg: Message) =>
-              `${msg.author}, please provide a valid number...`,
-          },
         },
         {
           id: "member",
