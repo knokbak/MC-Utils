@@ -28,8 +28,8 @@ export default class messageDelete extends Listener {
         message.author.displayAvatarURL({ dynamic: true })
       )
       .setColor("RED")
-      .addField("Message Content:", message.content.toString(), true)
-      .addField("Author:", message.author, true)
+      .addField("Message Content:", `\`\`\`${message.content.toString()}\`\`\``, false)
+      .addField("Author:", message.author, false)
       .setFooter(`ID: ${message.author.id} | ${dateString}`);
 
     return log(logChannel, embed, message.guild.iconURL());
