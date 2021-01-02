@@ -28,9 +28,10 @@ export default class Ready extends Listener {
       "Eating cake",
       "Help me luca is keeping me in his basement",
       "jazzy is cool?",
-      "piyeris is epic",
+      "Piyeris is epic",
       "deleting dirt blocks",
       "pvp",
+      "Axis is epic"
     ];
 
     setInterval(() => {

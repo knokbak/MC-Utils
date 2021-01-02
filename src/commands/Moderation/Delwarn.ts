@@ -40,7 +40,7 @@ export default class DelWarn extends Command {
   public async exec(
     message: Message,
     { id, reason }: { id: string; reason: string }
-  ): Promise<void | Message> {
+  ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x1abc9c);
     const sanctionsModel = getModelForClass(memberModel);
     try {
@@ -55,7 +55,7 @@ export default class DelWarn extends Command {
       } else if (
         pendingDeletion.sanctions === null ??
         pendingDeletion.sanctions === undefined ??
-        !pendingDeletion.sanctions.filter((n) => n.caseID === id)
+        !pendingDeletion.sanctions.find((n) => n.caseID === id)
       ) {
         embed.setColor(0xff0000);
         embed.setDescription(`Couldn't find warn ID \`${id}\``);
@@ -67,7 +67,7 @@ export default class DelWarn extends Command {
       return message.util.send(embed);
     }
     if (
-      pendingDeletion.sanctions.filter(
+      pendingDeletion.sanctions.find(
         (r) => r.caseID === id && r.moderatorId !== message.author.id
       )
     ) {
@@ -78,10 +78,15 @@ export default class DelWarn extends Command {
       ) {
         //Hmod Role OR Admin OR Manage Guild
         try {
-          await sanctionsModel.deleteOne({
-            guildId: message.guild.id,
-            "sanctions.caseID": id,
-          });
+          await sanctionsModel.updateOne({
+            guildId: message.guild.id
+          }, {
+            $pull: {
+              sanctions: {
+                caseID: id
+              }
+            }
+          }, { multi: true });
           await message.util.send(`Case ID ${id} has been deleted.`);
         } catch (e) {
           embed.setColor(0xff0000);
@@ -97,10 +102,15 @@ export default class DelWarn extends Command {
       }
     }
     try {
-      await sanctionsModel.deleteOne({
-        guildId: message.guild.id,
-        "sanctions.caseID": id,
-      });
+      await sanctionsModel.updateOne({
+        guildId: message.guild.id
+      }, {
+        $pull: {
+          sanctions: {
+            caseID: id
+          }
+        }
+      }, { multi: true });
       await message.util.send(`Case ID ${id} has been deleted.`);
     } catch (e) {
       embed.setColor(0xff0000);

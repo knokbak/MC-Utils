@@ -197,8 +197,6 @@ export default class Mute extends Command {
       embed.setDescription("Couldn't send them a mute message! Continuing...");
       message.util.send(embed);
     }
-    embed.setDescription(`Muted **${user.user.tag}** | \`${caseNum}\``);
-    message.channel.send(embed);
 
     try {
       await sanctionsModel
@@ -229,6 +227,9 @@ export default class Mute extends Command {
     } catch (e) {
       Logger.error("DB", e);
     }
+
+    embed.setDescription(`Muted **${user.user.tag}** | \`${caseNum}\``);
+    await message.channel.send(embed);
 
     const logEmbed = new MessageEmbed()
       .setTitle(`Member Muted | Case \`${caseNum}\` | ${member.user.tag}`)

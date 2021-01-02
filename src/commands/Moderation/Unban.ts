@@ -5,6 +5,8 @@ import { utc } from "moment";
 import memberModel, { CaseInfo } from "../../models/MemberModel";
 import Logger from "../../structures/Logger";
 import uniqid from "uniqid";
+import { findChannel, modLog } from "../../structures/Utils";
+import config from "../../config";
 
 export default class Unban extends Command {
   public constructor() {
@@ -28,9 +30,9 @@ export default class Unban extends Command {
           type: "user" ?? "userMention",
           prompt: {
             start: (msg: Message) =>
-              `${msg.author}, please provide a member to unban...`,
+              `${msg.author}, please provide a user to unban...`,
             retry: (msg: Message) =>
-              `${msg.author}, please provide a valid member to unban...`,
+              `${msg.author}, please provide a valid user to unban...`,
           },
         },
         {
@@ -55,7 +57,7 @@ export default class Unban extends Command {
     let caseNum = uniqid();
     const caseInfo: CaseInfo = {
       caseID: caseNum,
-      moderator: message.author.id,
+      moderator: message.author.tag,
       moderatorId: message.author.id,
       user: `${user.tag} (${user.id})`,
       date: dateString,
@@ -64,13 +66,6 @@ export default class Unban extends Command {
     };
 
     const sanctionsModel = getModelForClass(memberModel);
-    try {
-      await message.guild.members.unban(user.id, reason);
-    } catch (e) {
-      embed.setColor(0xff0000);
-      embed.setDescription(`Couldn't unban user because of: **${e}**`);
-      return message.util.send(embed);
-    }
     try {
       await sanctionsModel
         .findOneAndUpdate(
@@ -97,5 +92,28 @@ export default class Unban extends Command {
     } catch (e) {
       Logger.error("DB", e);
     }
+    try {
+      await message.guild.members.unban(user.id, reason);
+    } catch (e) {
+      embed.setColor(0xff0000);
+      embed.setDescription(`Couldn't unban user because of: **${e}**`);
+      return message.util.send(embed);
+    }
+    embed.setDescription(`Unbanned **${user.tag}** | \`${caseNum}\``);
+    await message.channel.send(embed);
+
+    const logEmbed = new MessageEmbed()
+          .setTitle(`Member Unbanned | Case \`${caseNum}\` | ${user.tag}`)
+          .addField(`User:`, `<@${user.id}>`, true)
+          .addField(`Moderator:`, `<@${message.author.id}>`, true)
+          .addField(`Reason:`, reason, true)
+          .setFooter(`ID: ${user.id} | ${dateString}`)
+          .setColor("RED");
+
+    let modlogChannel = findChannel(
+      this.client,
+      config.channels.modLogChannel
+    );
+    modLog(modlogChannel, logEmbed, message.guild.iconURL());
   }
 }

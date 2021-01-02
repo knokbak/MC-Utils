@@ -98,9 +98,6 @@ export default class Unmute extends Command {
       message.util.send(embed);
     }
 
-    embed.setDescription(`Unmuted **${user.user.tag}** | \`${caseNum}\``);
-    message.channel.send(embed);
-
     let userId = member.id;
     let guildID = message.guild.id;
 
@@ -147,6 +144,9 @@ export default class Unmute extends Command {
     } catch (e) {
       Logger.error("DB", e);
     }
+
+    embed.setDescription(`Unmuted **${user.user.tag}** | \`${caseNum}\``);
+    await message.channel.send(embed);
 
     const logEmbed = new MessageEmbed()
       .setTitle(`Member Unmuted | Case \`${caseNum}\` | ${member.user.tag}`)

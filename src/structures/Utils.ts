@@ -113,7 +113,7 @@ export async function sendLogToChannel(
   let userId = member.id;
   const sanctionsModel = getModelForClass(memberModel);
   const memberData = await sanctionsModel.findOne({
-    id: userId,
+    userId: userId,
     guildId: guildId,
   });
   if (!memberData) {

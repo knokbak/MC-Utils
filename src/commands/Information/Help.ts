@@ -72,7 +72,7 @@ export default class Help extends Command {
       if (["default"].includes(category.id)) continue;
 
       em1.addField(
-        `${category.id} [${category.size}]`,
+        `${category.id}`,
         category
           .filter(
             (cmd) =>

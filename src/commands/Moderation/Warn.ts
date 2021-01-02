@@ -132,6 +132,7 @@ export default class Warn extends Command {
     }
 
     embed.setDescription(`Warned **${member.user.tag}** | \`${caseNum}\``);
+    await message.channel.send(embed);
 
     await sendLogToChannel(this.client, member, message.guild.id);
 
@@ -144,7 +145,6 @@ export default class Warn extends Command {
       .setColor("ORANGE");
 
     let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
-    await modLog(modlogChannel, logEmbed, message.guild.iconURL());
-    return message.util.send(embed);
+    modLog(modlogChannel, logEmbed, message.guild.iconURL());
   }
 }
