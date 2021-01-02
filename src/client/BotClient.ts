@@ -29,7 +29,10 @@ export default class BotClient extends AkairoClient {
   public config: BotOptions;
   public botConfig: any;
   public static databaseCache: any = {};
-  public databaseCache_mutedUsers = new Collection<string, DocumentType<MemberModel>>();
+  public databaseCache_mutedUsers = new Collection<
+    string,
+    DocumentType<MemberModel>
+  >();
   public listenerHandler: ListenerHandler = new ListenerHandler(this, {
     directory: join(__dirname, "..", "listeners"),
   });

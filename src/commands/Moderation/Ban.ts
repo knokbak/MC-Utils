@@ -1,7 +1,11 @@
 import { Command } from "discord-akairo";
 import { Message, GuildMember, MessageEmbed } from "discord.js";
 import config from "../../config";
-import { modLog, findChannel, dmUserOnInfraction } from "../../structures/Utils";
+import {
+  modLog,
+  findChannel,
+  dmUserOnInfraction,
+} from "../../structures/Utils";
 import utc from "moment";
 import Logger from "../../structures/Logger";
 import memberModel, { CaseInfo } from "../../models/MemberModel";
@@ -87,17 +91,15 @@ export default class Ban extends Command {
     }
 
     const embedToSend = new MessageEmbed()
-        .setColor(0x1abc9c)
-        .setDescription(
-          `Hello ${member.user.username},\nYou have been banned from **${message.guild.name}** for **${reason}**. If you believe this ban is unjustified, you can appeal [here](https://support.sounddrout.com/)`
-        );
+      .setColor(0x1abc9c)
+      .setDescription(
+        `Hello ${member.user.username},\nYou have been banned from **${message.guild.name}** for **${reason}**. If you believe this ban is unjustified, you can appeal [here](https://support.sounddrout.com/)`
+      );
 
     try {
       await dmUserOnInfraction(member.user, embedToSend);
     } catch (e) {
-      embed.setDescription(
-        "Couldn't send them a ban message! Continuing..."
-      );
+      embed.setDescription("Couldn't send them a ban message! Continuing...");
     }
 
     member

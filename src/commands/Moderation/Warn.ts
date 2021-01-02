@@ -1,6 +1,11 @@
 import { Command } from "discord-akairo";
 import { Message, GuildMember, MessageEmbed } from "discord.js";
-import { dmUserOnInfraction, findChannel, modLog, sendLogToChannel } from "../../structures/Utils";
+import {
+  dmUserOnInfraction,
+  findChannel,
+  modLog,
+  sendLogToChannel,
+} from "../../structures/Utils";
 import config from "../../config";
 import { utc } from "moment";
 import Logger from "../../structures/Logger";
@@ -81,18 +86,16 @@ export default class Warn extends Command {
     };
 
     const embedToSend = new MessageEmbed()
-        .setColor(0x1abc9c)
-        .setDescription(
-          `Hello ${member.user.username},\nYou have been warned in **${message.guild.name}** for **${reason}**.`
-        );
-        
+      .setColor(0x1abc9c)
+      .setDescription(
+        `Hello ${member.user.username},\nYou have been warned in **${message.guild.name}** for **${reason}**.`
+      );
+
     try {
       await dmUserOnInfraction(member.user, embedToSend);
     } catch (e) {
       embed.setColor(0xff0000);
-      embed.setDescription(
-        "Couldn't send them a warn message! Continuing..."
-      );
+      embed.setDescription("Couldn't send them a warn message! Continuing...");
       message.util.send(embed);
     }
 

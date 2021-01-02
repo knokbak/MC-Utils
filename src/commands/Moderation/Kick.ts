@@ -1,7 +1,11 @@
 import { Command } from "discord-akairo";
 import { Message, GuildMember, MessageEmbed } from "discord.js";
 import config from "../../config";
-import { modLog, findChannel, dmUserOnInfraction } from "../../structures/Utils";
+import {
+  modLog,
+  findChannel,
+  dmUserOnInfraction,
+} from "../../structures/Utils";
 import utc from "moment";
 import Logger from "../../structures/Logger";
 import memberModel, { CaseInfo } from "../../models/MemberModel";
@@ -87,17 +91,15 @@ export default class Kick extends Command {
     }
 
     const embedToSend = new MessageEmbed()
-        .setColor(0x1abc9c)
-        .setDescription(
-          `Hello ${member.user.username},\nYou have been kicked from **${message.guild.name}** for **${reason}**.`
-        );
-        
+      .setColor(0x1abc9c)
+      .setDescription(
+        `Hello ${member.user.username},\nYou have been kicked from **${message.guild.name}** for **${reason}**.`
+      );
+
     try {
       await dmUserOnInfraction(member.user, embedToSend);
     } catch (e) {
-      embed.setDescription(
-        "Couldn't send them a kick message! Continuing..."
-      );
+      embed.setDescription("Couldn't send them a kick message! Continuing...");
     }
 
     member

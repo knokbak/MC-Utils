@@ -43,14 +43,16 @@ export default class Ready extends Listener {
     const muteModel = getModelForClass(MemberModel);
 
     setInterval(async () => {
-      await muteModel.find({ "mute.muted": true, "mute.isPerm": false }).then((members) => {
-        members.forEach((member) => {
-          this.client.databaseCache_mutedUsers.set(
-            `${member.userId}-${member.guildId}`,
-            member
-          );
+      await muteModel
+        .find({ "mute.muted": true, "mute.isPerm": false })
+        .then((members) => {
+          members.forEach((member) => {
+            this.client.databaseCache_mutedUsers.set(
+              `${member.userId}-${member.guildId}`,
+              member
+            );
+          });
         });
-      });
       this.client.databaseCache_mutedUsers
         .array()
         .filter((m) => m.mute.endDate <= Date.now())
@@ -92,41 +94,47 @@ export default class Ready extends Listener {
             `${memberData.userId}-${memberData.guildId}`
           );
           try {
-            await muteModel
-              .findOneAndUpdate(
-                {
-                  guildId: guild.id,
-                  userId: memberData.userId,
+            await muteModel.findOneAndUpdate(
+              {
+                guildId: guild.id,
+                userId: memberData.userId,
+              },
+              {
+                guildId: guild.id,
+                userId: memberData.userId,
+                $set: {
+                  mute: memberData.mute,
                 },
-                {
-                  guildId: guild.id,
-                  userId: memberData.userId,
-                  $set: {
-                    mute: memberData.mute,
-                  },
-                  $push: {
-                    sanctions: caseInfo,
-                  },
+                $push: {
+                  sanctions: caseInfo,
                 },
-                {
-                  upsert: true,
-                }
-              )
+              },
+              {
+                upsert: true,
+              }
+            );
           } catch (e) {
             Logger.error("Auto Unmute", e);
             return;
           }
           const logEmbed = new MessageEmbed()
-            .setTitle(`Member Unmuted | Case \`${caseNum}\` | ${inRole.user.tag}`)
+            .setTitle(
+              `Member Unmuted | Case \`${caseNum}\` | ${inRole.user.tag}`
+            )
             .addField(`User:`, `<@${inRole.id}>`, true)
             .addField(`Moderator:`, `<@${this.client.user.id}>`, true)
             .addField(`Reason:`, caseInfo.reason, true)
             .setFooter(
-              `ID: ${memberData.userId} | ${utc().format("MMMM Do YYYY, h:mm:ss a")}`
+              `ID: ${memberData.userId} | ${utc().format(
+                "MMMM Do YYYY, h:mm:ss a"
+              )}`
             )
             .setColor("RED");
 
-          let modlogChannel = findChannel(this.client, Config.channels.modLogChannel);
+          let modlogChannel = findChannel(
+            this.client,
+            Config.channels.modLogChannel
+          );
           modLog(modlogChannel, logEmbed, guild.iconURL());
           Logger.event(`Auto Unmuted ${memberData.userId}!`);
         });

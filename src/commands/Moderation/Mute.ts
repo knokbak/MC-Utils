@@ -1,5 +1,9 @@
 import { Command } from "discord-akairo";
-import { modLog, findChannel, dmUserOnInfraction } from "../../structures/Utils";
+import {
+  modLog,
+  findChannel,
+  dmUserOnInfraction,
+} from "../../structures/Utils";
 import ms from "ms";
 import { utc } from "moment";
 import config from "../../config";
@@ -20,7 +24,10 @@ export default class Mute extends Command {
       description: {
         content: "Mute a member in the server.",
         usage: "mute -t [time h/m/d] [ID or Mention] <reason>",
-        examples: ["mute @Axis#0001 rule breaking!", "mute -t 10m 100690330336129024 dummy!"],
+        examples: [
+          "mute @Axis#0001 rule breaking!",
+          "mute -t 10m 100690330336129024 dummy!",
+        ],
       },
       args: [
         {
@@ -28,7 +35,7 @@ export default class Mute extends Command {
           type: "string",
           flag: "-t ",
           default: null,
-          match: "option"
+          match: "option",
         },
         {
           id: "member",
@@ -69,9 +76,7 @@ export default class Mute extends Command {
       return message.util.send(embed);
     }
 
-    if (
-      time !== null && time !== undefined && isNaN(ms(time))
-    ) {
+    if (time !== null && time !== undefined && isNaN(ms(time))) {
       embed.setColor(0xff0000);
       embed.setDescription("Please format time in `h`, `m`, or `d`.");
       return message.util.send(embed);
@@ -141,22 +146,22 @@ export default class Mute extends Command {
       isPerm: null,
       endDate: null,
       case: caseNum,
-    }
+    };
 
     if (time === null) {
       muteInformation = {
         muted: true,
         isPerm: true,
         endDate: null,
-        case: caseNum
-      }
+        case: caseNum,
+      };
     } else {
       muteInformation = {
         muted: true,
         isPerm: false,
         endDate: ms(time),
-        case: caseNum
-      }
+        case: caseNum,
+      };
     }
 
     const sanctionsModel = getModelForClass(memberModel);
@@ -164,28 +169,27 @@ export default class Mute extends Command {
       const isMuted = await sanctionsModel.findOne({
         guildId: guildID,
         userId: userId,
-        "mute.muted": true
+        "mute.muted": true,
       });
       if (isMuted.mute.muted) {
         embed.setColor(0xff0000);
         embed.setDescription("User is currently muted!");
         return message.util.send(embed);
-      } else {}
+      } else {
+      }
     } catch (e) {}
 
     const embedToSend = new MessageEmbed()
-        .setColor(0x1abc9c)
-        .setDescription(
-          `Hello ${member.user.username},\nYou have been banned from **${message.guild.name}** for **${time}** for **${reason}**.`
-        );
-        
+      .setColor(0x1abc9c)
+      .setDescription(
+        `Hello ${member.user.username},\nYou have been banned from **${message.guild.name}** for **${time}** for **${reason}**.`
+      );
+
     try {
       await dmUserOnInfraction(member.user, embedToSend);
     } catch (e) {
       embed.setColor(0xff0000);
-      embed.setDescription(
-        "Couldn't send them a mute message! Continuing..."
-      );
+      embed.setDescription("Couldn't send them a mute message! Continuing...");
       message.util.send(embed);
     }
     embed.setDescription(`Muted **${user.user.tag}** | \`${caseNum}\``);
