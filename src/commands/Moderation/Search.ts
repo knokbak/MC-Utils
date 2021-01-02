@@ -44,7 +44,7 @@ export default class Search extends Command {
       message.author.displayAvatarURL({ dynamic: true })
     );
     embed.setDescription("All times are in UTC");
-    const CASE_SUMMARY_REASON_MAX_LENGTH = 15;
+    const CASE_SUMMARY_REASON_MAX_LENGTH = 16;
     for (const s of memberData.sanctions) {
       if (s.reason.length > CASE_SUMMARY_REASON_MAX_LENGTH) {
         const match = s.reason
@@ -58,7 +58,7 @@ export default class Search extends Command {
         }
       }
       embed.addField(
-        `${s.type}: ${s.caseID}`,
+        `${s.type}: \`${s.caseID}\``,
         `Reason: **${s.reason}**\nDate: **${s.date}**`,
         true
       );

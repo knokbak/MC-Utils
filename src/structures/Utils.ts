@@ -130,7 +130,7 @@ export async function sendLogToChannel(
       member.user.displayAvatarURL({ dynamic: true })
     );
     embed.setDescription("All times are in UTC");
-    const CASE_SUMMARY_REASON_MAX_LENGTH = 15;
+    const CASE_SUMMARY_REASON_MAX_LENGTH = 16;
     for (const s of memberData.sanctions) {
       if (s.reason.length > CASE_SUMMARY_REASON_MAX_LENGTH) {
         const match = s.reason
@@ -144,7 +144,7 @@ export async function sendLogToChannel(
         }
       }
       embed.addField(
-        `${s.type}: ${s.caseID}`,
+        `${s.type}: \`${s.caseID}\``,
         `Moderator: **${s.moderator}**\nReason: **${s.reason}**\nDate: **${s.date}**`,
         true
       );
