@@ -3,7 +3,7 @@ import { modLog, findChannel } from "../../structures/Utils";
 import ms from "ms";
 import { utc } from "moment";
 import config from "../../config";
-import memberModel from "../../models/MemberModel";
+import memberModel, { CaseInfo } from "../../models/MemberModel";
 import { Message, GuildMember, MessageEmbed } from "discord.js";
 import Logger from "../../structures/Logger";
 import { getModelForClass } from "@typegoose/typegoose";
@@ -127,7 +127,7 @@ export default class Mute extends Command {
     let userId = member.id;
     let guildID = message.guild.id;
 
-    const caseInfo = {
+    const caseInfo: CaseInfo = {
       caseID: caseNum,
       moderator: message.author.tag,
       moderatorId: message.author.id,

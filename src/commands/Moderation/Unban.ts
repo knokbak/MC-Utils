@@ -2,7 +2,7 @@ import { getModelForClass } from "@typegoose/typegoose";
 import { Command } from "discord-akairo";
 import { User, Message, MessageEmbed } from "discord.js";
 import { utc } from "moment";
-import memberModel from "../../models/MemberModel";
+import memberModel, { CaseInfo } from "../../models/MemberModel";
 import Logger from "../../structures/Logger";
 import uniqid from "uniqid";
 
@@ -50,7 +50,7 @@ export default class Unban extends Command {
     let guildID = message.guild.id;
 
     let caseNum = uniqid();
-    const caseInfo = {
+    const caseInfo: CaseInfo = {
       caseID: caseNum,
       moderator: message.author.id,
       moderatorId: message.author.id,

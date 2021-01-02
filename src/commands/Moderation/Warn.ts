@@ -4,7 +4,7 @@ import { findChannel, modLog, sendLogToChannel } from "../../structures/Utils";
 import config from "../../config";
 import { utc } from "moment";
 import Logger from "../../structures/Logger";
-import memberModel from "../../models/MemberModel";
+import memberModel, { CaseInfo } from "../../models/MemberModel";
 import { getModelForClass } from "@typegoose/typegoose";
 import uniqid from "uniqid";
 
@@ -68,7 +68,7 @@ export default class Warn extends Command {
     let userId = member.id;
     let guildID = message.guild.id;
 
-    const caseInfo = {
+    const caseInfo: CaseInfo = {
       caseID: caseNum,
       moderator: message.author.tag,
       moderatorId: message.author.id,

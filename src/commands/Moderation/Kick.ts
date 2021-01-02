@@ -4,7 +4,7 @@ import config from "../../config";
 import { modLog, findChannel } from "../../structures/Utils";
 import utc from "moment";
 import Logger from "../../structures/Logger";
-import memberModel from "../../models/MemberModel";
+import memberModel, { CaseInfo } from "../../models/MemberModel";
 import { getModelForClass } from "@typegoose/typegoose";
 import uniqid from "uniqid";
 
@@ -94,7 +94,7 @@ export default class Kick extends Command {
         let guildID = message.guild.id;
 
         let caseNum = uniqid();
-        const caseInfo = {
+        const caseInfo: CaseInfo = {
           caseID: caseNum,
           moderator: message.author.id,
           moderatorId: message.author.id,
