@@ -28,6 +28,7 @@ export default class Search extends Command {
         guildId: message.guild.id,
       });
       if (!memberData) {
+        embed.setColor(0xff0000);
         embed.setDescription(`No modlogs found for you.`);
         return message.util.send(embed);
       } else if (
@@ -35,6 +36,7 @@ export default class Search extends Command {
         memberData.sanctions.length < 1 ??
         memberData.sanctions === undefined
       ) {
+        embed.setColor(0xff0000);
         embed.setDescription(`No modlogs found for you.`);
         return message.util.send(embed);
       }

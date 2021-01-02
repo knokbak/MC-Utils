@@ -36,7 +36,7 @@ export default class Slowmode extends Command {
   ): Promise<Message> {
     let ch = message.channel as TextChannel;
 
-    message.delete();
+    await message.delete();
     if (number > 21600) {
       let msg = await message.util.send(
         ":x: Ratelimit too high (above 21600). Please try again."

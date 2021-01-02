@@ -13,6 +13,7 @@ export interface CaseInfo {
 
 interface Mutes {
   muted: boolean;
+  isPerm: boolean;
   endDate: number;
   case: any;
 }

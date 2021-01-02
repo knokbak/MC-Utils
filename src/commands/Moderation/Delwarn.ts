@@ -49,6 +49,7 @@ export default class DelWarn extends Command {
         "sanctions.caseID": id,
       });
       if (!pendingDeletion.sanctions) {
+        embed.setColor(0xff0000);
         embed.setDescription("No modlogs found for the user.");
         return message.util.send(embed);
       } else if (
@@ -56,10 +57,12 @@ export default class DelWarn extends Command {
         pendingDeletion.sanctions === undefined ??
         !pendingDeletion.sanctions.filter((n) => n.caseID === id)
       ) {
+        embed.setColor(0xff0000);
         embed.setDescription(`Couldn't find warn ID \`${id}\``);
         return message.util.send(embed);
       }
     } catch (e) {
+      embed.setColor(0xff0000);
       embed.setDescription(`Couldn't find warn ID \`${id}\``);
       return message.util.send(embed);
     }
@@ -81,10 +84,12 @@ export default class DelWarn extends Command {
           });
           await message.util.send(`Case ID ${id} has been deleted.`);
         } catch (e) {
+          embed.setColor(0xff0000);
           embed.setDescription(`Error occurred while deleting case: **${e}**`);
           return message.util.send(embed);
         }
       } else {
+        embed.setColor(0xff0000);
         embed.setDescription(
           "You cannot delete this case because it is not yours."
         );
@@ -98,6 +103,7 @@ export default class DelWarn extends Command {
       });
       await message.util.send(`Case ID ${id} has been deleted.`);
     } catch (e) {
+      embed.setColor(0xff0000);
       embed.setDescription(`Error occurred while deleting case: **${e}**`);
       return message.util.send(embed);
     }

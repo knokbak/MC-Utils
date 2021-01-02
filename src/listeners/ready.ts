@@ -43,7 +43,7 @@ export default class Ready extends Listener {
     const muteModel = getModelForClass(MemberModel);
 
     setInterval(async () => {
-      await muteModel.find({ "mute.muted": true }).then((members) => {
+      await muteModel.find({ "mute.muted": true, "mute.isPerm": false }).then((members) => {
         members.forEach((member) => {
           this.client.databaseCache_mutedUsers.set(
             `${member.userId}-${member.guildId}`,
@@ -60,6 +60,7 @@ export default class Ready extends Listener {
           const caseNum = uniqid();
           memberData.mute = {
             muted: false,
+            isPerm: false,
             endDate: null,
             case: caseNum,
           };

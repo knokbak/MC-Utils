@@ -1,7 +1,7 @@
 import { Command } from "discord-akairo";
 import { Message, GuildMember, MessageEmbed } from "discord.js";
 import config from "../../config";
-import { modLog, findChannel } from "../../structures/Utils";
+import { modLog, findChannel, dmUserOnInfraction } from "../../structures/Utils";
 import utc from "moment";
 import Logger from "../../structures/Logger";
 import memberModel, { CaseInfo } from "../../models/MemberModel";
@@ -52,6 +52,7 @@ export default class Ban extends Command {
       member.roles.highest.position >= message.member.roles.highest.position &&
       message.author.id !== message.guild.ownerID
     ) {
+      embed.setColor(0xff0000);
       embed.setDescription(
         `You cannot ban a member with a role superior (or equal) to yours!`
       );
@@ -59,6 +60,7 @@ export default class Ban extends Command {
     }
 
     if (!member.bannable) {
+      embed.setColor(0xff0000);
       embed.setDescription(
         "You cannot ban this user as they are considered not bannable."
       );
@@ -69,6 +71,7 @@ export default class Ban extends Command {
       member.hasPermission("ADMINISTRATOR") ||
       member.hasPermission("MANAGE_GUILD")
     ) {
+      embed.setColor(0xff0000);
       embed.setDescription(
         `You cannot ban this user as they have the \`ADMINISTRATOR\` or \`MANAGE_GUILD\` permission.`
       );
@@ -76,15 +79,31 @@ export default class Ban extends Command {
     }
 
     if (member.id === message.guild.ownerID) {
+      embed.setColor(0xff0000);
       embed.setDescription(
         `You cannot ban this person as the person is the guild owner.`
       );
       return message.util.send(embed);
     }
 
+    const embedToSend = new MessageEmbed()
+        .setColor(0x1abc9c)
+        .setDescription(
+          `Hello ${member.user.username},\nYou have been banned from **${message.guild.name}** for **${reason}**. If you believe this ban is unjustified, you can appeal [here](https://support.sounddrout.com/)`
+        );
+
+    try {
+      await dmUserOnInfraction(member.user, embedToSend);
+    } catch (e) {
+      embed.setDescription(
+        "Couldn't send them a ban message! Continuing..."
+      );
+    }
+
     member
       .ban({ reason: reason })
       .catch((e) => {
+        embed.setColor(0xff0000);
         embed.setDescription(`An error occurred whilst banning: \`${e}\``);
         return message.util.send(embed);
       })
@@ -123,9 +142,11 @@ export default class Ban extends Command {
                 upsert: true,
               }
             )
-            .catch((e) =>
-              message.channel.send(`Error Logging Kick to DB: ${e}`)
-            );
+            .catch((e) => {
+              embed.setColor(0xff0000);
+              embed.setDescription(`Error Logging Kick to DB: ${e}`);
+              return message.util.send(embed);
+            });
         } catch (e) {
           Logger.error("DB", e);
         }

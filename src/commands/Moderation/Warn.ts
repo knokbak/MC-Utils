@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { Message, GuildMember, MessageEmbed } from "discord.js";
-import { findChannel, modLog, sendLogToChannel } from "../../structures/Utils";
+import { dmUserOnInfraction, findChannel, modLog, sendLogToChannel } from "../../structures/Utils";
 import config from "../../config";
 import { utc } from "moment";
 import Logger from "../../structures/Logger";
@@ -48,6 +48,7 @@ export default class Warn extends Command {
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
     if (member.id === message.author.id) {
+      embed.setColor(0xff0000);
       embed.setDescription("You cannot warn yourself!");
       return message.util.send(embed);
     }
@@ -57,6 +58,7 @@ export default class Warn extends Command {
       message.member.guild.ownerID !== message.author.id &&
       !(moderationPosition >= memberPosition)
     ) {
+      embed.setColor(0xff0000);
       embed.setDescription(
         `You cannot warn a member with a role superior (or equal) to yours!`
       );
@@ -78,6 +80,22 @@ export default class Warn extends Command {
       reason,
     };
 
+    const embedToSend = new MessageEmbed()
+        .setColor(0x1abc9c)
+        .setDescription(
+          `Hello ${member.user.username},\nYou have been warned in **${message.guild.name}** for **${reason}**.`
+        );
+        
+    try {
+      await dmUserOnInfraction(member.user, embedToSend);
+    } catch (e) {
+      embed.setColor(0xff0000);
+      embed.setDescription(
+        "Couldn't send them a warn message! Continuing..."
+      );
+      message.util.send(embed);
+    }
+
     const sanctionsModel = getModelForClass(memberModel);
     try {
       await sanctionsModel
@@ -97,7 +115,10 @@ export default class Warn extends Command {
             upsert: true,
           }
         )
-        .catch((e) => message.channel.send(`Error Logging Warn to DB: ${e}`));
+        .catch((e) => {
+          embed.setColor(0xff0000);
+          embed.setDescription(`Error Logging Warn to DB: ${e}`);
+        });
     } catch (e) {
       Logger.error("DB", e);
     }

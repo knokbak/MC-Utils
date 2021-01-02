@@ -87,7 +87,11 @@ export default class Unmute extends Command {
 
     try {
       await dmUserOnInfraction(actualUser, dmEmbed);
-    } catch (e) {}
+    } catch (e) {
+      embed.setColor(0xff0000);
+      embed.setDescription("Couldn't send user unmute message... continuing!");
+      message.util.send(embed);
+    }
 
     embed.setDescription(`Unmuted **${user.user.tag}** | \`${caseNum}\``);
     message.channel.send(embed);
@@ -107,6 +111,7 @@ export default class Unmute extends Command {
 
     const muteInformation = {
       muted: false,
+      isPerm: false,
       endDate: null,
       case: caseNum,
     };

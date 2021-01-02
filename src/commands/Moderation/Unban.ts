@@ -64,6 +64,7 @@ export default class Unban extends Command {
     try {
       await message.guild.members.unban(user.id, reason);
     } catch (e) {
+      embed.setColor(0xff0000);
       embed.setDescription(`Couldn't unban user because of: **${e}**`);
       return message.util.send(embed);
     }
@@ -85,7 +86,11 @@ export default class Unban extends Command {
             upsert: true,
           }
         )
-        .catch((e) => message.channel.send(`Error Logging Kick to DB: ${e}`));
+        .catch((e) => {
+          embed.setColor(0xff0000);
+          embed.setDescription(`Error Logging Kick to DB: ${e}`);
+          return message.util.send(embed);
+      });
     } catch (e) {
       Logger.error("DB", e);
     }

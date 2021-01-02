@@ -48,9 +48,11 @@ export default class Case extends Command {
         sanctionsData.sanctions.length < 1 ??
         sanctionsData.sanctions === undefined
       ) {
+        embed.setColor(0xff0000);
         embed.setDescription(`No modlogs found for that user.`);
         return message.util.send(embed);
       } else if (!sanctionsData.sanctions.filter((r) => r.caseID === id)) {
+        embed.setColor(0xff0000);
         embed.setDescription(`No case matching provided ID found.`);
         return message.util.send(embed);
       }

@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { modLog, findChannel } from "../../structures/Utils";
+import { modLog, findChannel, dmUserOnInfraction } from "../../structures/Utils";
 import ms from "ms";
 import { utc } from "moment";
 import config from "../../config";
@@ -19,10 +19,17 @@ export default class Mute extends Command {
       ratelimit: 3,
       description: {
         content: "Mute a member in the server.",
-        usage: "mute [ID or Mention] [time h/m/d] <reason>",
-        examples: ["mute @Axis#0001 10m rule breaking!"],
+        usage: "mute -t [time h/m/d] [ID or Mention] <reason>",
+        examples: ["mute @Axis#0001 rule breaking!", "mute -t 1m @Axis#0001 dummy!"],
       },
       args: [
+        {
+          id: "time",
+          type: "string",
+          flag: "-t ",
+          default: null,
+          match: "option"
+        },
         {
           id: "member",
           type: "member" ?? "memberMention",
@@ -31,15 +38,6 @@ export default class Mute extends Command {
               `${msg.author}, please provide a member to mute...`,
             retry: (msg: Message) =>
               `${msg.author}, please provide a valid member to mute...`,
-          },
-        },
-        {
-          id: "time",
-          type: "string",
-          prompt: {
-            start: (msg: Message) => `${msg.author}, please provide a time...`,
-            retry: (msg: Message) =>
-              `${msg.author}, please provide a valid time...`,
           },
         },
         {
@@ -66,7 +64,16 @@ export default class Mute extends Command {
     const moderationPosition = message.member.roles.highest.position;
 
     if (message.author.id === member.id) {
+      embed.setColor(0xff0000);
       embed.setDescription("You cannot mute yourself!");
+      return message.util.send(embed);
+    }
+
+    if (
+      time !== null && time !== undefined && isNaN(ms(time))
+    ) {
+      embed.setColor(0xff0000);
+      embed.setDescription("Please format time in `h`, `m`, or `d`.");
       return message.util.send(embed);
     }
 
@@ -74,6 +81,7 @@ export default class Mute extends Command {
       message.member.guild.ownerID !== message.author.id &&
       !(moderationPosition >= memberPosition)
     ) {
+      embed.setColor(0xff0000);
       embed.setDescription(
         `You cannot mute a member with a role superior (or equal) to yours!`
       );
@@ -83,22 +91,17 @@ export default class Mute extends Command {
     const user = await message.guild.members.fetch(member.id).catch(() => {});
 
     if (!user) {
+      embed.setColor(0xff0000);
       embed.setDescription("This user does not exist. Please try again.");
       message.util.send(embed);
       return;
-    }
-
-    if (!time || isNaN(ms(time))) {
-      embed.setDescription(
-        "You must enter a valid time! Valid units: `s`, `m`, `h` or `d`"
-      );
-      return message.util.send(embed);
     }
 
     if (
       user.hasPermission("ADMINISTRATOR") ||
       user.hasPermission("MANAGE_GUILD")
     ) {
+      embed.setColor(0xff0000);
       embed.setDescription(
         "I cannot mute this user as they have the permission `ADMINISTRATOR` or `MANAGE_GUILD`"
       );
@@ -108,6 +111,7 @@ export default class Mute extends Command {
     let muteRole = message.guild.roles.cache.get("726601422438924309");
 
     if (!muteRole) {
+      embed.setColor(0xff0000);
       embed.setDescription(
         "There is no `Muted` role setup. Contact one of the devs to fix!"
       );
@@ -117,12 +121,6 @@ export default class Mute extends Command {
     await user.roles.add(muteRole);
 
     let caseNum = uniqid();
-
-    member.send(
-      `Hello ${user.user.tag},\nYou have just been muted in **${message.guild.name}** for **${time}** for **${reason}**!`
-    );
-    embed.setDescription(`Muted **${user.user.tag}** | \`${caseNum}\``);
-    message.channel.send(embed);
 
     let userId = member.id;
     let guildID = message.guild.id;
@@ -138,30 +136,60 @@ export default class Mute extends Command {
       time,
     };
 
-    const muteInformation = {
-      muted: true,
-      endDate: ms(time),
+    let muteInformation = {
+      muted: null,
+      isPerm: null,
+      endDate: null,
       case: caseNum,
-    };
+    }
+
+    if (time === null) {
+      muteInformation = {
+        muted: true,
+        isPerm: true,
+        endDate: null,
+        case: caseNum
+      }
+    } else {
+      muteInformation = {
+        muted: true,
+        isPerm: false,
+        endDate: ms(time),
+        case: caseNum
+      }
+    }
 
     const sanctionsModel = getModelForClass(memberModel);
     try {
-      var isMuted = await sanctionsModel.findOne({
+      const isMuted = await sanctionsModel.findOne({
         guildId: guildID,
-        id: userId,
+        userId: userId,
+        "mute.muted": true
       });
-      if (!isMuted) {
-        embed.setDescription(`No modlogs found for that user`);
+      if (isMuted.mute.muted) {
+        embed.setColor(0xff0000);
+        embed.setDescription("User is currently muted!");
         return message.util.send(embed);
-      } else if (
-        isMuted.sanctions === null ??
-        isMuted.sanctions.length < 1 ??
-        isMuted.sanctions === undefined
-      ) {
-        embed.setDescription(`No modlogs found for that user`);
-        return message.util.send(embed);
-      }
+      } else {}
     } catch (e) {}
+
+    const embedToSend = new MessageEmbed()
+        .setColor(0x1abc9c)
+        .setDescription(
+          `Hello ${member.user.username},\nYou have been banned from **${message.guild.name}** for **${time}** for **${reason}**.`
+        );
+        
+    try {
+      await dmUserOnInfraction(member.user, embedToSend);
+    } catch (e) {
+      embed.setColor(0xff0000);
+      embed.setDescription(
+        "Couldn't send them a mute message! Continuing..."
+      );
+      message.util.send(embed);
+    }
+    embed.setDescription(`Muted **${user.user.tag}** | \`${caseNum}\``);
+    message.channel.send(embed);
 
     try {
       await sanctionsModel
@@ -184,7 +212,11 @@ export default class Mute extends Command {
             upsert: true,
           }
         )
-        .catch((e) => message.channel.send(`Error Logging Mute to DB: ${e}`));
+        .catch((e) => {
+          embed.setColor(0xff0000);
+          embed.setDescription(`Error Logging Mute to DB: ${e}`);
+          return message.util.send(embed);
+        });
     } catch (e) {
       Logger.error("DB", e);
     }
@@ -202,20 +234,5 @@ export default class Mute extends Command {
 
     let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
     modLog(modlogChannel, logEmbed, message.guild.iconURL());
-
-    // setTimeout(async () => {
-    //   await user.roles.remove(muteRole);
-    //   const logEmbedUnmute = new MessageEmbed()
-    //   .setTitle(`Member Unmuted | ${member.user.tag}`)
-    //   .addField(`User:`, `<@${member.id}>`, true)
-    //   .addField(`Moderator:`, `<@${message.author.id}>`, true)
-    //   .setFooter(
-    //     `ID: ${member.id} | ${utc().format("MMMM Do YYYY, h:mm:ss a")}`
-    //   )
-    //   .setColor("RED");
-
-    // let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
-    // modLog(modlogChannel, logEmbedUnmute, message.guild.iconURL());
-    // }, ms(time));
   }
 }

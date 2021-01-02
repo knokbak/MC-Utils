@@ -58,10 +58,12 @@ export default class Warn extends Command {
     const embed = new MessageEmbed().setColor(0x00ff0c);
     const validRes = ["1", "2"];
     if (!validRes.includes(type)) {
+      embed.setColor(0xff0000);
       embed.setDescription("Not a valid type... use `1` or `2` for DM level.");
       return message.util.send(embed);
     }
     if (member.id === message.author.id) {
+      embed.setColor(0xff0000);
       embed.setDescription("You cannot DM warn yourself!");
       return message.util.send(embed);
     }
@@ -71,6 +73,7 @@ export default class Warn extends Command {
       message.member.guild.ownerID !== message.author.id &&
       !(moderationPosition >= memberPosition)
     ) {
+      embed.setColor(0xff0000);
       embed.setDescription(
         `You cannot DM warn a member with a role superior (or equal) to yours!`
       );
@@ -114,9 +117,14 @@ export default class Warn extends Command {
               upsert: true,
             }
           )
-          .catch((e) => message.channel.send(`Error Logging Warn to DB: ${e}`));
+          .catch((e) => {
+            embed.setColor(0xff0000);
+            embed.setDescription(`Error Logging Warn to DB: ${e}`);
+            return message.util.send(embed);
+          });
       } catch (e) {
         Logger.error("DB", e);
+        return;
       }
 
       embed.setDescription(
@@ -141,6 +149,7 @@ export default class Warn extends Command {
       return message.util.send(embed);
     } else if (type === "2") {
       if (!member.bannable) {
+        embed.setColor(0xff0000);
         embed.setDescription(
           "User has reached DM 2:\n\nYou cannot ban this user as they are considered not bannable."
         );
@@ -150,12 +159,14 @@ export default class Warn extends Command {
         member.hasPermission("ADMINISTRATOR") ||
         member.hasPermission("MANAGE_GUILD")
       ) {
+        embed.setColor(0xff0000);
         embed.setDescription(
           `User has reached DM 2:\n\nYou cannot ban this user as they have the \`ADMINISTRATOR\` or \`MANAGE_GUILD\` permission.`
         );
         return message.util.send(embed);
       }
       if (member.id === message.guild.ownerID) {
+        embed.setColor(0xff0000);
         embed.setDescription(
           `User has reached DM 2:\n\nYou cannot ban this person as the person is the guild owner.`
         );
@@ -175,14 +186,20 @@ export default class Warn extends Command {
         reason: "DM advertising (2nd)",
       };
       const embedToSend = new MessageEmbed()
-        .setColor("#FF000")
+        .setColor(0x1abc9c)
         .setDescription(
-          `You have been banned from **${message.guild.name}** for continuation of DM advertising. If you believe this ban is unjustified, you can appeal [here](https://support.sounddrout.com/)`
-        )
-        .setAuthor(
-          `You have been banned from ${message.guild.name}!`,
-          this.client.user.displayAvatarURL()
+          `Hello ${member.user.username},\nYou have been banned from **${message.guild.name}** for continuation of DM advertising. If you believe this ban is unjustified, you can appeal [here](https://support.sounddrout.com/)`
         );
+      try {
+        await dmUserOnInfraction(member.user, embedToSend);
+      } catch (e) {
+        embed.setColor(0xff0000);
+        embed.setDescription(
+          "User has reached DM 2:\n\nCouldn't send them a ban message! Continuing..."
+        );
+        message.util.send(embed);
+      }
+      await member.ban({ reason: "DM advertising (2nd)" });
       try {
         await sanctionsModel
           .findOneAndUpdate(
@@ -201,18 +218,14 @@ export default class Warn extends Command {
               upsert: true,
             }
           )
-          .catch((e) => message.channel.send(`Error Logging Warn to DB: ${e}`));
+          .catch((e) => {
+            embed.setColor(0xff0000);
+            embed.setDescription(`Error Logging Ban to DB: ${e}`);
+            return message.util.send(embed);
+          });
       } catch (e) {
         Logger.error("DB", e);
       }
-      try {
-        await dmUserOnInfraction(member.user, embedToSend);
-      } catch (e) {
-        embed.setDescription(
-          "User has reached DM 2:\n\nCouldn't send them a ban message! Continuing..."
-        );
-      }
-      await member.ban({ reason: "DM advertising (2nd)" });
       const logEmbed = new MessageEmbed()
         .setTitle(`Member Banned | Case \`${caseNum}\` | ${member.user.tag}`)
         .addField(`User:`, `<@${member.id}>`, true)
