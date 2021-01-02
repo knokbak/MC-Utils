@@ -21,8 +21,8 @@ export default class Warn extends Command {
       channel: "guild",
       description: {
         content: "Updates a user DM advertising infractions",
-        usage: "dm [ID or Mention]",
-        examples: ["dm @Axis#0001", "dm 20304092002934"],
+        usage: "dm [1 or 2] [ID or Mention]",
+        examples: ["dm 1 @Axis#0001", "dm 2 100690330336129024"],
       },
       ratelimit: 3,
       userPermissions: ["MANAGE_MESSAGES"],

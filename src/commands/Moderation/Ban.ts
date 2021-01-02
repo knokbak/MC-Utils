@@ -17,7 +17,7 @@ export default class Ban extends Command {
       description: {
         content: "Bans a member in the server.",
         usage: "ban [ID or Mention] <reason>",
-        examples: ["ban @Axis#0001", "ban 203940220939"],
+        examples: ["ban @Axis#0001", "ban 100690330336129024 Bad boy!"],
       },
       ratelimit: 3,
       userPermissions: ["BAN_MEMBERS"],

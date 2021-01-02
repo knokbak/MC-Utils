@@ -15,9 +15,9 @@ export default class Warn extends Command {
       category: "Moderation",
       channel: "guild",
       description: {
-        content: "Warn a member in the server.",
+        content: "Warns a member in the server.",
         usage: "warn [ID or Mention] <reason>",
-        examples: ["warn @Axis#0001", "warn 20304092002934 swearing"],
+        examples: ["warn @Axis#0001", "warn 534479985855954965 swearing"],
       },
       ratelimit: 3,
       userPermissions: ["MANAGE_MESSAGES"],

@@ -12,8 +12,8 @@ export default class Infractions extends Command {
       userPermissions: ["MANAGE_MESSAGES"],
       description: {
         content: "Check infractions (modlogs) of a member.",
-        usage: "infractions [member]",
-        examples: ["infractions @Axis#0001"],
+        usage: "infractions [ID or Mention]",
+        examples: ["infractions @Axis#0001", "infractions 379420154955825153"],
       },
       ratelimit: 3,
       args: [

@@ -12,7 +12,7 @@ export default class Purge extends Command {
       description: {
         content: "Purges a certain number of messages.",
         usage: "purge [number]",
-        examples: ["purge 5"],
+        examples: ["purge 5", "clean 20"],
       },
       args: [
         {

@@ -10,9 +10,9 @@ export default class DelWarn extends Command {
       category: "Moderation",
       channel: "guild",
       description: {
-        content: "Remove a warning from a user.",
-        usage: "delwarn [ID]",
-        examples: ["delwarn 293003", "ban 203940220939"],
+        content: "Remove a warning or other infraction from a user.",
+        usage: "delwarn [caseId]",
+        examples: ["delwarn e0libeskjf7cyp3"],
       },
       ratelimit: 3,
       userPermissions: ["MANAGE_MESSAGES"],

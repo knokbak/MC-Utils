@@ -11,8 +11,8 @@ export default class Case extends Command {
       channel: "guild",
       description: {
         content: "Shows details from a case.",
-        usage: "case [ID]",
-        examples: ["case 71ad8933"],
+        usage: "case [caseId]",
+        examples: ["case e0libeskjf7cuys"],
       },
       ratelimit: 3,
       userPermissions: ["MANAGE_MESSAGES"],

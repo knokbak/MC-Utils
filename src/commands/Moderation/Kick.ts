@@ -15,9 +15,9 @@ export default class Kick extends Command {
       category: "Moderation",
       channel: "guild",
       description: {
-        content: "Kick a member in the server.",
+        content: "Kicks a member from the server.",
         usage: "kick [ID or Mention] <reason>",
-        examples: ["kick @Axis#0001", "kick 203940220939"],
+        examples: ["kick @Axis#0001", "kick 379420154955825153 annoying"],
       },
       ratelimit: 3,
       userPermissions: ["KICK_MEMBERS"],

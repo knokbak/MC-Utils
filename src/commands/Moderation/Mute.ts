@@ -20,7 +20,7 @@ export default class Mute extends Command {
       description: {
         content: "Mute a member in the server.",
         usage: "mute -t [time h/m/d] [ID or Mention] <reason>",
-        examples: ["mute @Axis#0001 rule breaking!", "mute -t 1m @Axis#0001 dummy!"],
+        examples: ["mute @Axis#0001 rule breaking!", "mute -t 10m 100690330336129024 dummy!"],
       },
       args: [
         {

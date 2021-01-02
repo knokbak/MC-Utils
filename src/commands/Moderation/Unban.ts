@@ -13,16 +13,16 @@ export default class Unban extends Command {
       category: "Moderation",
       channel: "guild",
       description: {
-        content: "Bans a member in the server.",
+        content: "Unbans a member from the server.",
         usage: "unban [ID or Mention] <reason>",
-        examples: ["unban @Axis#0001 Reversal"],
+        examples: ["unban @Axis#0001 Reversal", "pardon 224981331078021124 Didn't do it"],
       },
       ratelimit: 3,
       userPermissions: ["BAN_MEMBERS"],
       args: [
         {
           id: "user",
-          type: "user",
+          type: "user" ?? "userMention",
           prompt: {
             start: (msg: Message) =>
               `${msg.author}, please provide a member to unban...`,

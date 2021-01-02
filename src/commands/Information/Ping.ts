@@ -8,7 +8,7 @@ export default class Ping extends Command {
       category: "Information",
       channel: "guild",
       description: {
-        content: "Check the latency of the bot.",
+        content: "Checks the latency of the bot.",
         usage: "ping",
         examples: ["ping"],
       },

@@ -21,7 +21,7 @@ export default class Unmute extends Command {
       userPermissions: ["MANAGE_MESSAGES"],
       ratelimit: 3,
       description: {
-        content: "Unmute a member in the server.",
+        content: "Unmutes a member in the server.",
         usage: "unmute [ID or Mention] <reason>",
         examples: ["unmute @Axis#0001 mistake!"],
       },
