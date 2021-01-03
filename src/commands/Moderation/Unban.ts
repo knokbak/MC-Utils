@@ -103,17 +103,14 @@ export default class Unban extends Command {
     await message.channel.send(embed);
 
     const logEmbed = new MessageEmbed()
-          .setTitle(`Member Unbanned | Case \`${caseNum}\` | ${user.tag}`)
-          .addField(`User:`, `<@${user.id}>`, true)
-          .addField(`Moderator:`, `<@${message.author.id}>`, true)
-          .addField(`Reason:`, reason, true)
-          .setFooter(`ID: ${user.id} | ${dateString}`)
-          .setColor("RED");
+      .setTitle(`Member Unbanned | Case \`${caseNum}\` | ${user.tag}`)
+      .addField(`User:`, `<@${user.id}>`, true)
+      .addField(`Moderator:`, `<@${message.author.id}>`, true)
+      .addField(`Reason:`, reason, true)
+      .setFooter(`ID: ${user.id} | ${dateString}`)
+      .setColor("RED");
 
-    let modlogChannel = findChannel(
-      this.client,
-      config.channels.modLogChannel
-    );
+    let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
     modLog(modlogChannel, logEmbed, message.guild.iconURL());
   }
 }

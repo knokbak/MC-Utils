@@ -31,7 +31,7 @@ export default class Ready extends Listener {
       "Piyeris is epic",
       "deleting dirt blocks",
       "pvp",
-      "Axis is epic"
+      "Axis is epic",
     ];
 
     setInterval(() => {
