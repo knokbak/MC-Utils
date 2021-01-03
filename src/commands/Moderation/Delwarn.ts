@@ -79,14 +79,15 @@ export default class DelWarn extends Command {
         //Hmod Role OR Admin OR Manage Guild
         try {
           await sanctionsModel.updateOne({
-            guildId: message.guild.id
+            guildId: message.guild.id,
+            "sanctions.caseID": id
           }, {
             $pull: {
               sanctions: {
                 caseID: id
               }
             }
-          }, { multi: true });
+          });
           await message.util.send(`Case ID ${id} has been deleted.`);
         } catch (e) {
           embed.setColor(0xff0000);
@@ -103,14 +104,15 @@ export default class DelWarn extends Command {
     }
     try {
       await sanctionsModel.updateOne({
-        guildId: message.guild.id
+        guildId: message.guild.id,
+        "sanctions.caseID": id
       }, {
         $pull: {
           sanctions: {
             caseID: id
           }
         }
-      }, { multi: true });
+      });
       await message.util.send(`Case ID ${id} has been deleted.`);
     } catch (e) {
       embed.setColor(0xff0000);
