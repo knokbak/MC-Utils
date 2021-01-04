@@ -147,6 +147,7 @@ export async function sendLogToChannel(
       member.user.displayAvatarURL({ dynamic: true })
     );
     embed.setDescription("All times are in UTC");
+    embed.setFooter(`ID: ${userId}`);
     const CASE_SUMMARY_REASON_MAX_LENGTH = 16;
     for (const s of memberData.sanctions) {
       if (s.reason.length > CASE_SUMMARY_REASON_MAX_LENGTH) {
