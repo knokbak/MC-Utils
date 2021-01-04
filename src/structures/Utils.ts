@@ -73,6 +73,23 @@ export async function resolveMember(search: string, guild: Guild) {
   return member;
 }
 
+export async function resolveUser(search: string, client: AkairoClient) {
+  let user = null;
+  if (!search || typeof search !== "string") return;
+  if (search.match(/^<@!?(\d+)>$/)) {
+    const id = search.match(/^<@!?(\d+)>$/)[1];
+    user = client.users.cache.get(id);
+    if (user) return user;
+  }
+  // Try username search
+  if (search.match(/^!?(\w+)#(\d+)$/)) {
+    user = client.users.cache.find((m) => m.tag === search);
+    if (user) return user;
+  }
+  user = client.users.cache.get(search);
+  return user;
+}
+
 /**
  * @deprecated
  * @description Mutes the user by taking all their roles. Meant for setTimeout

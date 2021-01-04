@@ -5,6 +5,7 @@ import {
   modLog,
   findChannel,
   dmUserOnInfraction,
+  resolveUser,
 } from "../../structures/Utils";
 import utc from "moment";
 import Logger from "../../structures/Logger";
@@ -48,10 +49,18 @@ export default class ForceBan extends Command {
 
   public async exec(
     message: Message,
-    { user, reason }: { user: any; reason: string }
+    { string, reason }: { string: string; reason: string }
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
-    user = message.mentions.users.first();
+    const user = await resolveUser(string, this.client);
+    if (!user) {
+      embed.setColor(0xff0000);
+      embed.setDescription(
+        `User does not exist.`
+      );
+      return message.util.send(embed);
+    }
+    
     if (user.id === message.guild.ownerID) {
       embed.setColor(0xff0000);
       embed.setDescription(
