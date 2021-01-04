@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "fullbuild": "npm i --production && npm run compile",
-    "compile": "tsc",
-    "start": "node dist/bot.js",
+    "compile": "npx tsc",
+    "start": "node dist/src/bot.js",
     "start:dev": "nodemon src/bot.ts"
   },
   "dependencies": {
