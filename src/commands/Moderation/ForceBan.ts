@@ -29,7 +29,7 @@ export default class ForceBan extends Command {
       args: [
         {
           id: "user",
-          type: "string",
+          type: "user",
           prompt: {
             start: (msg: Message) =>
               `${msg.author}, please provide a user to ban...`,
@@ -49,17 +49,9 @@ export default class ForceBan extends Command {
 
   public async exec(
     message: Message,
-    { string, reason }: { string: string; reason: string }
+    { user, reason }: { user: User; reason: string }
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
-    const user = await resolveUser(string, this.client);
-    if (!user || typeof user === null) {
-      embed.setColor(0xff0000);
-      embed.setDescription(
-        `User does not exist.`
-      );
-      return message.util.send(embed);
-    }
 
     if (user.id === message.guild.ownerID) {
       embed.setColor(0xff0000);

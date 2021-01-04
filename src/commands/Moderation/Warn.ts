@@ -29,7 +29,7 @@ export default class Warn extends Command {
       args: [
         {
           id: "member",
-          type: "member" ?? "memberMention",
+          type: "member",
           prompt: {
             start: (msg: Message) =>
               `${msg.author}, please provide a member to warn...`,

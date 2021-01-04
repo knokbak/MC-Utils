@@ -28,7 +28,7 @@ export default class Kick extends Command {
       args: [
         {
           id: "member",
-          type: "member" ?? "memberMention",
+          type: "member",
           prompt: {
             start: (msg: Message) =>
               `${msg.author}, please provide a member to kick...`,

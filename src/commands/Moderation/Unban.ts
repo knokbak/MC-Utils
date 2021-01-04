@@ -27,7 +27,7 @@ export default class Unban extends Command {
       args: [
         {
           id: "user",
-          type: "user" ?? "userMention",
+          type: "user",
           prompt: {
             start: (msg: Message) =>
               `${msg.author}, please provide a user to unban...`,

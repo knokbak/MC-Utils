@@ -19,7 +19,7 @@ export default class Infractions extends Command {
       args: [
         {
           id: "member",
-          type: "member" ?? "memberMention",
+          type: "member",
           default: (msg: Message) => msg.member,
         },
       ],

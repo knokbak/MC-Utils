@@ -28,7 +28,7 @@ export default class Ban extends Command {
       args: [
         {
           id: "member",
-          type: "member" ?? "memberMention",
+          type: "member",
           prompt: {
             start: (msg: Message) =>
               `${msg.author}, please provide a member to ban...`,
@@ -39,7 +39,7 @@ export default class Ban extends Command {
         {
           id: "reason",
           type: "string",
-          match: "rest",
+          match: "restContent",
           default: "No reason provided.",
         },
       ],

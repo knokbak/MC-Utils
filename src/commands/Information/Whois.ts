@@ -11,7 +11,7 @@ export default class Whois extends Command {
       args: [
         {
           id: "member",
-          type: "member" ?? "memberMention",
+          type: "member",
           match: "rest",
           default: (msg: Message) => msg.member,
         },
