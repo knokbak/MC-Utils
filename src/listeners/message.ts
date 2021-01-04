@@ -12,6 +12,8 @@ export default class message extends Listener {
 
   public async exec(message: Message) {
     await message.guild.members.fetch();
-    console.log("member fetched!");
+    if (message.content.startsWith(`<@!${this.client.user.id}>`)) {
+        message.reply(`Hey! My prefix is \`${this.client.commandHandler.prefix}\`!`);
+    }
   }
 }
