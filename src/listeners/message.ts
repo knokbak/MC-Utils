@@ -1,8 +1,5 @@
 import { Listener } from "discord-akairo";
-import { MessageEmbed, Message, TextChannel } from "discord.js";
-import { utc } from "moment";
-import config from "../config";
-import { log } from "../structures/Utils";
+import { Message } from "discord.js";
 
 export default class message extends Listener {
   public constructor() {
@@ -13,7 +10,7 @@ export default class message extends Listener {
     });
   }
 
-  public async exec(message: Message): Promise<void> {
+  public async exec(message: Message) {
     await message.guild.members.fetch();
     console.log("member fetched!");
   }
