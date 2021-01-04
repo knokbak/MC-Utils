@@ -117,7 +117,7 @@ export default class Ban extends Command {
         let caseNum = uniqid();
         const caseInfo: CaseInfo = {
           caseID: caseNum,
-          moderator: message.author.id,
+          moderator: message.author.tag,
           moderatorId: message.author.id,
           user: `${member.user.tag} (${member.user.id})`,
           date: dateString,
