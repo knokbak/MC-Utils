@@ -28,7 +28,7 @@ export default class ForceBan extends Command {
       args: [
         {
           id: "user",
-          type: "user" ?? "userMention",
+          type: "string",
           prompt: {
             start: (msg: Message) =>
               `${msg.author}, please provide a user to ban...`,
@@ -48,10 +48,10 @@ export default class ForceBan extends Command {
 
   public async exec(
     message: Message,
-    { user, reason }: { user: User; reason: string }
+    { user, reason }: { user: any; reason: string }
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
-
+    user = message.mentions.users.first();
     if (user.id === message.guild.ownerID) {
       embed.setColor(0xff0000);
       embed.setDescription(
