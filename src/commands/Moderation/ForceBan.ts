@@ -53,14 +53,14 @@ export default class ForceBan extends Command {
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
     const user = await resolveUser(string, this.client);
-    if (!user) {
+    if (!user || typeof user === null) {
       embed.setColor(0xff0000);
       embed.setDescription(
         `User does not exist.`
       );
       return message.util.send(embed);
     }
-    
+
     if (user.id === message.guild.ownerID) {
       embed.setColor(0xff0000);
       embed.setDescription(
@@ -135,7 +135,7 @@ export default class ForceBan extends Command {
         message.channel.send(embed);
 
         const logEmbed = new MessageEmbed()
-          .setTitle(`Member Banned | Case \`${caseNum}\` | ${user.tag}`)
+          .setTitle(`Member Force Banned | Case \`${caseNum}\` | ${user.tag}`)
           .addField(`User:`, `<@${user.id}>`, true)
           .addField(`Moderator:`, `<@${message.author.id}>`, true)
           .addField(`Reason:`, reason, true)

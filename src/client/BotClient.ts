@@ -73,6 +73,7 @@ export default class BotClient extends AkairoClient {
         http: {
           version: 8,
         },
+        fetchAllMembers: true
       }
     );
     this.config = config;
