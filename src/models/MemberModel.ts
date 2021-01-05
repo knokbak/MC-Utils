@@ -11,7 +11,7 @@ export interface CaseInfo {
   time?: string;
 }
 
-interface Mutes {
+export interface Mutes {
   muted: boolean;
   isPerm: boolean;
   endDate: number;
@@ -27,7 +27,7 @@ export default class MemberModel {
   @prop()
   guildId!: string;
   @prop({ default: [] })
-  sanctions!: Array<CaseInfo>;
+  sanctions!: CaseInfo[];
   @prop({ default: { muted: false, endDate: null, case: null } })
   mute!: Mutes;
 }

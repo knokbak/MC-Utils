@@ -2,20 +2,24 @@ import { DocumentType } from "@typegoose/typegoose";
 import { AkairoClient, CommandHandler, ListenerHandler } from "discord-akairo";
 import { Message, Collection } from "discord.js";
 import { join } from "path";
-import config from "../config";
+import Config from "../config";
 import MemberModel from "../models/MemberModel";
+import AutoModModel from "../models/AutoModModel";
 import Logger from "../structures/Logger";
 import Mongo from "../structures/Mongo";
+import AfkModel from "../models/AfkModel";
 
-let owners = config.bot.owners;
-let prefix = config.bot.prefix;
+let owners = Config.bot.owners;
+let prefix = Config.bot.prefix;
 
 declare module "discord-akairo" {
   interface AkairoClient {
     commandHandler: CommandHandler;
     listenerHandler: ListenerHandler;
-    botConfig: typeof config;
+    botConfig: typeof Config;
     databaseCache_mutedUsers: Collection<string, DocumentType<MemberModel>>;
+    databaseCache_autoModMutedUsers: Collection<string, DocumentType<AutoModModel>>;
+    databaseCache_afkUsers: Collection<string, DocumentType<AfkModel>>;
     databaseCache: any;
   }
 }
@@ -27,11 +31,19 @@ interface BotOptions {
 
 export default class BotClient extends AkairoClient {
   public config: BotOptions;
-  public botConfig: any;
+  public botConfig: typeof Config;
   public static databaseCache: any = {};
   public databaseCache_mutedUsers = new Collection<
     string,
     DocumentType<MemberModel>
+  >();
+  public databaseCache_autoModMutedUsers = new Collection<
+    string,
+    DocumentType<AutoModModel>
+  >();
+  public databaseCache_afkUsers = new Collection<
+    string,
+    DocumentType<AfkModel>
   >();
   public listenerHandler: ListenerHandler = new ListenerHandler(this, {
     directory: join(__dirname, "..", "listeners"),

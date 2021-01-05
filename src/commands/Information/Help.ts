@@ -45,6 +45,9 @@ export default class Help extends Command {
                 **Usage:**
                 ${command.description.usage || "No Usage Provided."}
 
+                **Available Aliases:**
+                ${command.aliases.join(", ")}
+
                 **Examples:**
                 ${
                   command.description.examples
