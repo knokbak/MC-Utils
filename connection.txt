@@ -1,9 +1,0 @@
-piyeris: odFk9JYJi1RntrFT
-
-axis - jVG0206xJPZcQX08 
-
-Connection URI - mongodb+srv://<username>:<password>@cluster0.lnpbw.mongodb.net/<dbname>
-
-dbname ic mcUtils
-
-piyeris Connection Link: mongodb+srv://piyeris:odFk9JYJi1RntrFT@cluster0.lnpbw.mongodb.net/mcUtils

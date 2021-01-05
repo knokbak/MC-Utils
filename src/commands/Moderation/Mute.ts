@@ -16,7 +16,7 @@ import uniqid from "uniqid";
 export default class Mute extends Command {
   public constructor() {
     super("mute", {
-      aliases: ["mute"],
+      aliases: ["mute", "m"],
       channel: "guild",
       category: "Moderation",
       userPermissions: ["MANAGE_MESSAGES"],

@@ -15,7 +15,7 @@ import uniqid from "uniqid";
 export default class Ban extends Command {
   public constructor() {
     super("ban", {
-      aliases: ["ban"],
+      aliases: ["ban", "b"],
       category: "Moderation",
       channel: "guild",
       description: {

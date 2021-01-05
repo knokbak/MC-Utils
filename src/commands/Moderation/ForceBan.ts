@@ -16,7 +16,7 @@ import uniqid from "uniqid";
 export default class ForceBan extends Command {
   public constructor() {
     super("forceban", {
-      aliases: ["forceban", "force_ban"],
+      aliases: ["forceban", "force_ban", "fb"],
       category: "Moderation",
       channel: "guild",
       description: {

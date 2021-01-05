@@ -5,7 +5,7 @@ import { utc } from "moment";
 export default class Whois extends Command {
   public constructor() {
     super("whois", {
-      aliases: ["whois", "userinfo"],
+      aliases: ["whois", "userinfo", "info"],
       channel: "guild",
       category: "Information",
       args: [

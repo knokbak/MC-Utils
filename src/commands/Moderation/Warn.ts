@@ -16,7 +16,7 @@ import uniqid from "uniqid";
 export default class Warn extends Command {
   public constructor() {
     super("warn", {
-      aliases: ["warn"],
+      aliases: ["warn", "w"],
       category: "Moderation",
       channel: "guild",
       description: {

@@ -5,7 +5,7 @@ import { version } from "../../../package.json";
 export default class BotInfo extends Command {
   public constructor() {
     super("botinfo", {
-      aliases: ["botinfo", "info"],
+      aliases: ["botinfo"],
       channel: "guild",
       category: "Utilities",
       ratelimit: 3,

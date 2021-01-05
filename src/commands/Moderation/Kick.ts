@@ -15,7 +15,7 @@ import uniqid from "uniqid";
 export default class Kick extends Command {
   public constructor() {
     super("kick", {
-      aliases: ["kick"],
+      aliases: ["kick", "k"],
       category: "Moderation",
       channel: "guild",
       description: {
