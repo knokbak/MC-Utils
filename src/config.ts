@@ -2,7 +2,7 @@ export default {
   bot: {
     token: "Nzc1NzMzOTUzMDUwNDQzODE4.X6qoig.lDmIU-CtX9Qv59TDozVc9uqzrbg",
     prefix: ">",
-    owners: ["100690330336129024", "633776442366361601"],
+    owners: ["100690330336129024", "633776442366361601", "378025254125305867"],
     axis: "100690330336129024",
   },
   db: {
