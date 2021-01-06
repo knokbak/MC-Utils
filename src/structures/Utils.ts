@@ -92,7 +92,7 @@ export async function dispatchAutoModMsg(reason: string, message: Message, type:
 
 export async function autoModWarn(member: GuildMember, guild: Guild, reason: string, display: string, message: Message, client: AkairoClient) {
   if (!member) return;
-  let caseNum = uniqid();
+  let caseNum = uniqid(`A-`);
   let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
   let userId = member.id;
   let guildID = guild.id;
