@@ -7,7 +7,7 @@ export default class BotInfo extends Command {
     super("botinfo", {
       aliases: ["botinfo"],
       channel: "guild",
-      category: "Utilities",
+      category: "Information",
       ratelimit: 3,
       description: {
         content: "Shows information about the bot.",
