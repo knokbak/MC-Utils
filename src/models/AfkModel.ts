@@ -6,6 +6,7 @@ export interface AfkStatus {
     status: string;
 }
 
+@ModelOptions({ options: { allowMixed: Severity.ALLOW } })
 export default class AfkModel {
     @prop()
     id!: string;

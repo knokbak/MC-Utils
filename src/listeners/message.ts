@@ -41,6 +41,13 @@ export default class message extends Listener {
           message.delete();
         }
       }
+      if (guildSettings.autoModSettings.mentionLimit) {
+        if (message.mentions.users.size > guildSettings.autoModSettings.mentionLimit || message.mentions.members.size > guildSettings.autoModSettings.mentionLimit) {
+          autoModWarn(message.member, message.guild, "Mentioning Users", "Mentioning many users.", message, this.client);
+          message.delete();
+          await dispatchAutoModMsg("Mentioning Users", message, "Warned");
+        }
+      }
       if (guildSettings.autoModSettings.soundPingFilter) {
         if (message.content.includes("<@!323431364340744192>")) {
           autoModWarn(message.member, message.guild, "Mentioning Sound", "You are not allowed to mention Sound.", message, this.client);
