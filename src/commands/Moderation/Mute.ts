@@ -23,20 +23,13 @@ export default class Mute extends Command {
       ratelimit: 3,
       description: {
         content: "Mute a member in the server.",
-        usage: "mute -t [time h/m/d] [ID or Mention] <reason>",
+        usage: "mute [ID or Mention] <time h/m/d> <reason>",
         examples: [
           "mute @Axis#0001 rule breaking!",
-          "mute -t 10m 100690330336129024 dummy!",
+          "mute 100690330336129024 10m dummy!",
         ],
       },
       args: [
-        {
-          id: "time",
-          type: "string",
-          flag: "-t ",
-          default: null,
-          match: "option",
-        },
         {
           id: "member",
           type: "member",
@@ -46,6 +39,11 @@ export default class Mute extends Command {
             retry: (msg: Message) =>
               `${msg.author}, please provide a valid member to mute...`,
           },
+        },
+        {
+          id: "time",
+          default: "",
+          type: "string",
         },
         {
           id: "reason",
@@ -153,7 +151,7 @@ export default class Mute extends Command {
       case: caseNum,
     };
 
-    if (time === null) {
+    if (time === null || time === "") {
       muteInformation = {
         muted: true,
         isPerm: true,
