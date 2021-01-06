@@ -19,7 +19,7 @@ import Logger from "../structures/Logger";
 const nWordRegExp = new RegExp("n[i1]gg?[e3]r[s\\$]?");
 const nWordRegExp2 = new RegExp("nniigg");
 
-async function autoModWarn(user, member, channel, guild, reason, display, type, message) {
+async function autoModWarn(member, guild, reason, display, message) {
   if (!member) return;
   let caseNum = uniqid(`A-`);
   let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
@@ -40,7 +40,7 @@ async function autoModWarn(user, member, channel, guild, reason, display, type, 
   const embedToSend = new MessageEmbed()
     .setColor(0x1abc9c)
     .setDescription(
-      `Hello ${member.user.username},\nYou have been auto-warned in **${message.guild.name}** for **${reason}**.`
+      `Hello ${member.user.username},\nYou have been auto-warned in **${message.guild.name}** \nReason: **${display}**.`
     );
     
   try {
@@ -110,11 +110,13 @@ export default class message extends Listener {
     if (!guildSettings.autoModSettings.exemptRoles.find((t) => t === message.member.roles.cache.findKey((r) => r.id === t))) {
       if (guildSettings.autoModSettings.filterURLs) {
         if (message.content.match(urlRegexSafe({ strict: true }))) {
+          autoModWarn(message.member, message.guild, "Sending Links", "You are not allowed to send links.", message)
           message.delete();
         }
       }
       if (guildSettings.autoModSettings.messageLengthLimit > 1 ?? guildSettings.autoModSettings.messageLengthLimit !== null) {
         if (message.content.length >= guildSettings.autoModSettings.messageLengthLimit) {
+          autoModWarn(message.member, message.guild, "Sending Wall Text", "You are not allowed to send huge text blocks.", message)
           message.delete();
         }
       }
@@ -125,6 +127,7 @@ export default class message extends Listener {
       }
       if (guildSettings.autoModSettings.soundPingFilter) {
         if(message.content.includes("<@323431364340744192>") ?? message.content.includes("<@!323431364340744192>")){
+          autoModWarn(message.member, message.guild, "Mentioning Sound", "You are not allowed to mention Sound.", message)
           message.delete()
         }
       }
