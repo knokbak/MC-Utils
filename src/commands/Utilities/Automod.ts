@@ -77,7 +77,7 @@ export default class BotInfo extends Command {
           exemptRoles: [""]
         }
       } else if (key === "nWordFilter") {
-        if (value !== "true" ?? value !== "false") {
+        if (strToBool(value)) {
           embed.setDescription(`Invalid argument for \`value\`. Available values:\n\`true, false\``);
           embed.setColor(0xff0000);
           return message.util.send(embed);
@@ -91,7 +91,7 @@ export default class BotInfo extends Command {
           exemptRoles: [""]
         }
       } else if (key === "filterURLs") {
-        if (value !== "true" ?? value !== "false") {
+        if (strToBool(value)) {
           embed.setDescription(`Invalid argument for \`value\`. Available values:\n\`true, false\``);
           embed.setColor(0xff0000);
           return message.util.send(embed);
@@ -119,7 +119,7 @@ export default class BotInfo extends Command {
           exemptRoles: value.split(" ")
         }
       } else if (key === "soundPingFilter") {
-        if (value !== "true" ?? value !== "false") {
+        if (strToBool(value)) {
           embed.setDescription(`Invalid argument for \`value\`. Available arguments:\n\`true, false\``);
           embed.setColor(0xff0000);
           return message.util.send(embed);
