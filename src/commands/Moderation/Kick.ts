@@ -53,7 +53,8 @@ export default class Kick extends Command {
     const embed = new MessageEmbed().setColor(0x00ff0c);
 
     if (
-      member.roles.highest.position >= message.member.roles.highest.position &&
+      member.roles.highest.position > message.member.roles.highest.position ||
+      member.roles.highest.position === message.member.roles.highest.position &&
       message.author.id !== message.guild.ownerID
     ) {
       embed.setColor(0xff0000);

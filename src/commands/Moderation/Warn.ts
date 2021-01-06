@@ -62,11 +62,10 @@ export default class Warn extends Command {
       embed.setDescription("You cannot warn a bot!");
       return message.util.send(embed);
     }
-    const memberPosition = member.roles.highest.position;
-    const moderationPosition = message.member.roles.highest.position;
     if (
       message.member.guild.ownerID !== message.author.id &&
-      !(moderationPosition >= memberPosition)
+      member.roles.highest.position > message.member.roles.highest.position ||
+      member.roles.highest.position === message.member.roles.highest.position
     ) {
       embed.setColor(0xff0000);
       embed.setDescription(

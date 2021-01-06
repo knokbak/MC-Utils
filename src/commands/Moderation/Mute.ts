@@ -65,9 +65,6 @@ export default class Mute extends Command {
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x1abc9c);
 
-    const memberPosition = member.roles.highest.position;
-    const moderationPosition = message.member.roles.highest.position;
-
     if (message.author.id === member.id) {
       embed.setColor(0xff0000);
       embed.setDescription("You cannot mute yourself!");
@@ -87,7 +84,8 @@ export default class Mute extends Command {
 
     if (
       message.member.guild.ownerID !== message.author.id &&
-      !(moderationPosition >= memberPosition)
+      member.roles.highest.position > message.member.roles.highest.position ||
+      member.roles.highest.position === message.member.roles.highest.position
     ) {
       embed.setColor(0xff0000);
       embed.setDescription(
