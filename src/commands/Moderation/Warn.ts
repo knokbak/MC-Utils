@@ -146,5 +146,6 @@ export default class Warn extends Command {
 
     let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
     modLog(modlogChannel, logEmbed, message.guild.iconURL());
+    await message.delete();
   }
 }
