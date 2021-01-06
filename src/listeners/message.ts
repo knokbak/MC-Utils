@@ -3,9 +3,40 @@ import { Listener } from "discord-akairo";
 import { Message } from "discord.js";
 import urlRegexSafe from "url-regex-safe";
 import AutoModModel from "../models/AutoModModel";
+import config from "../config"
+import uniqid from "uniqid";
+import {
+  dmUserOnInfraction,
+  findChannel,
+  modLog,
+  sendLogToChannel,
+} from "../structures/Utils";
+import { MessageEmbed } from "discord.js";
 
 const nWordRegExp = new RegExp("n[i1]gg?[e3]r[s\\$]?");
 const nWordRegExp2 = new RegExp("nniigg");
+
+async function autoModWarn(user, member, channel, guild, reason, display, type, message) {
+  if (!member) return;
+  let logs = guild.channels.cache.get(config.channels.logChannel)
+  let id = uniqid()
+  const embed = new MessageEmbed().setColor(0x00ff0c);
+
+  const embedToSend = new MessageEmbed()
+    .setColor(0x1abc9c)
+    .setDescription(
+      `Hello ${member.user.username},\nYou have been auto-warned in **${message.guild.name}** for **${reason}**.`
+    );
+    
+  try {
+    await dmUserOnInfraction(member.user, embedToSend);
+  } catch (e) {
+    embed.setColor(0xff0000);
+    embed.setDescription("Couldn't send them a warn message! Continuing...");
+    message.util.send(embed);
+  }
+
+}
 
 export default class message extends Listener {
   public constructor() {
@@ -34,6 +65,11 @@ export default class message extends Listener {
       if (guildSettings.autoModSettings.nWordFilter) {
         if (message.content.match(nWordRegExp) ?? message.content.match(nWordRegExp2)) {
           message.delete();
+        }
+      }
+      if (guildSettings.autoModSettings.soundPingFilter) {
+        if(message.content.includes("<@323431364340744192>") ?? message.content.includes("<@!323431364340744192>")){
+          message.delete()
         }
       }
     }

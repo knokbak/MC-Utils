@@ -6,6 +6,7 @@ export interface AutoModSettings {
     mentionLimit: number;
     nWordFilter: boolean;
     filterURLs: boolean;
+    soundPingFilter: boolean;
     exemptRoles: string[];
 }
 
