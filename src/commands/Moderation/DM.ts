@@ -232,6 +232,7 @@ export default class Warn extends Command {
         config.channels.modLogChannel
       );
       modLog(modlogChannel, logEmbed, message.guild.iconURL());
+      await message.delete();
       embed.setDescription(
         `Banned **${member.user.tag}** (DM Ad 2) | \`${caseNum}\``
       );

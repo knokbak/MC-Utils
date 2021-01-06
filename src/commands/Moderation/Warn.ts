@@ -131,6 +131,8 @@ export default class Warn extends Command {
       Logger.error("DB", e);
     }
 
+    await message.delete();
+
     embed.setDescription(`Warned **${member.user.tag}** | \`${caseNum}\``);
     await message.channel.send(embed);
 
@@ -146,6 +148,5 @@ export default class Warn extends Command {
 
     let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
     modLog(modlogChannel, logEmbed, message.guild.iconURL());
-    await message.delete();
   }
 }

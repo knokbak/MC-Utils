@@ -119,6 +119,7 @@ export default class DelWarn extends Command {
           },
         }
       );
+      await message.delete();
       await message.util.send(`Case ID ${id} has been deleted.`);
     } catch (e) {
       embed.setColor(0xff0000);

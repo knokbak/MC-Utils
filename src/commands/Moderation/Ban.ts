@@ -153,6 +153,8 @@ export default class Ban extends Command {
           Logger.error("DB", e);
         }
 
+        await message.delete();
+        
         embed.setDescription(`Banned **${member.user.tag}** | \`${caseNum}\``);
         message.channel.send(embed);
 

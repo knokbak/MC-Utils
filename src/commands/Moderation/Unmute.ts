@@ -145,6 +145,8 @@ export default class Unmute extends Command {
       Logger.error("DB", e);
     }
 
+    await message.delete();
+
     embed.setDescription(`Unmuted **${user.user.tag}** | \`${caseNum}\``);
     await message.channel.send(embed);
 

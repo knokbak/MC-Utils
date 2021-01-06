@@ -99,6 +99,9 @@ export default class Unban extends Command {
       embed.setDescription(`Couldn't unban user because of: **${e}**`);
       return message.util.send(embed);
     }
+
+    await message.delete();
+    
     embed.setDescription(`Unbanned **${user.tag}** | \`${caseNum}\``);
     await message.channel.send(embed);
 

@@ -143,16 +143,13 @@ export default class Kick extends Command {
               {
                 upsert: true,
               }
-            )
-            .catch((e) => {
-              embed.setColor(0xff0000);
-              embed.setDescription(`Error Logging Kick to DB: ${e}`);
-              return message.util.send(embed);
-            });
+            );
         } catch (e) {
           Logger.error("DB", e);
         }
 
+        await message.delete();
+        
         embed.setDescription(`Kicked **${member.user.tag}** | \`${caseNum}\``);
         message.channel.send(embed);
 

@@ -228,6 +228,8 @@ export default class Mute extends Command {
       Logger.error("DB", e);
     }
 
+    await message.delete();
+
     embed.setDescription(`Muted **${user.user.tag}** | \`${caseNum}\``);
     await message.channel.send(embed);
 

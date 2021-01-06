@@ -5,7 +5,6 @@ import {
   modLog,
   findChannel,
   dmUserOnInfraction,
-  resolveUser,
 } from "../../structures/Utils";
 import utc from "moment";
 import Logger from "../../structures/Logger";
@@ -122,6 +121,8 @@ export default class ForceBan extends Command {
         } catch (e) {
           Logger.error("DB", e);
         }
+
+        await message.delete();
 
         embed.setDescription(`Banned **${user.tag}** | \`${caseNum}\``);
         message.channel.send(embed);
