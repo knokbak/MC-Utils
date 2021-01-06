@@ -11,6 +11,7 @@ export default class message extends Listener {
   }
 
   public async exec(message: Message) {
-    await message.guild.members.fetch();
+    if (message.author.bot) return;
+    await message.guild.members.fetch({ time: 20000 });
   }
 }
