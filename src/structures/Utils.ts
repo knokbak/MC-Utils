@@ -19,6 +19,12 @@ import { CaseInfo } from "../models/MemberModel";
 import { utc } from "moment";
 import Logger from "../structures/Logger";
 
+export function strToBool(s: string) {
+  let regex = /^\s*(true|1|on)\s*$/i
+
+  return regex.test(s);
+}
+
 export async function modLog(
   channel: TextChannel,
   message: Message | MessageEmbed,
