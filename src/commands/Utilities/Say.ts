@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { Message, TextChannel, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 
 export default class Say extends Command {
   public constructor() {

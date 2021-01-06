@@ -22,6 +22,6 @@ export default class AutoModModel {
     sanctions!: CaseInfo[];
     @prop()
     mute!: Mutes;
-    @prop()
+    @prop({ default: { messageLengthLimit: 0, mentionLimit: 0, nWordFilter: true, filterURLs: true, exemptRoles: [""] }})
     autoModSettings: AutoModSettings;
 }

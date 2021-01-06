@@ -10,11 +10,14 @@ import {
   User,
 } from "discord.js";
 import memberModel from "../models/MemberModel";
+import autoModModel from "../models/AutoModModel";
 import config from "../config";
 import { AkairoClient } from "discord-akairo";
 import { getModelForClass } from "@typegoose/typegoose";
-
-let cachedUserRoles = {};
+import uniqid from "uniqid";
+import { CaseInfo } from "../models/MemberModel";
+import { utc } from "moment";
+import Logger from "../structures/Logger";
 
 export async function modLog(
   channel: TextChannel,
@@ -49,8 +52,8 @@ export async function request(
   });
 }
 
-export function findChannel(client: any, channel: string): TextChannel {
-  let c: TextChannel = client.channels.cache.get(channel);
+export function findChannel(client: AkairoClient, channel: string) {
+  let c = client.channels.cache.get(channel) as TextChannel;
   return c;
 }
 
@@ -73,52 +76,87 @@ export async function resolveMember(search: string, guild: Guild) {
   return member;
 }
 
-export async function resolveUser(search: string, client: AkairoClient) {
-  let user = null;
-  if (!search || typeof search !== "string") return;
-  if (search.match(/^<@!?(\d+)>$/)) {
-    const id = search.match(/^<@!?(\d+)>$/)[1];
-    user = client.users.cache.get(id);
-    if (user) return user;
-  }
-  // Try username search
-  if (search.match(/^!?(\w+)#(\d+)$/)) {
-    user = client.users.cache.find((m) => m.tag === search);
-    if (user) return user;
-  }
-  user = client.users.cache.get(search);
-  return user;
+export async function dispatchAutoModMsg(reason: string, message: Message, type: string) {
+  const embed = new MessageEmbed()
+    .setColor(0xfc5507)
+    .setDescription(`User **${message.author.tag}** has been **${type.toLowerCase()}** for **${reason}**.`);
+  const msg = await message.channel.send(embed);
+  await msg.delete({ timeout: 10000 });
 }
 
-/**
- * @deprecated
- * @description Mutes the user by taking all their roles. Meant for setTimeout
- */
-export async function muteUser(
-  client: Client,
-  guildId: string,
-  userId: string,
-  roleId: Role
-) {
-  let guild = client.guilds.cache.get(guildId);
-  let guildMember = guild.members.cache.get(userId);
-  cachedUserRoles[userId] = guildMember.roles.cache;
-  guildMember.roles
-    .set([])
-    .then((member) => {
-      member.roles.add([roleId]);
-    })
-    .catch(() => {});
-}
+export async function autoModWarn(member: GuildMember, guild: Guild, reason: string, display: string, message: Message, client: AkairoClient) {
+  if (!member) return;
+  let caseNum = uniqid();
+  let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
+  let userId = member.id;
+  let guildID = guild.id;
+  const embed = new MessageEmbed().setColor(0x00ff0c);
 
-/**
- * @deprecated
- * @description Meant to restore users roles after invoking muteUser()
- */
-export async function restoreRoles(client, guildId: string, userId: string) {
-  let guild = client.guilds.cache.get(guildId);
-  let guildMember = guild.members.cache.get(userId);
-  guildMember.roles.set(cachedUserRoles[userId]).catch(() => {});
+  const caseInfo: CaseInfo = {
+    caseID: caseNum,
+    moderator: client.user.tag,
+    moderatorId: client.user.id,
+    user: `${member.user.tag} (${member.user.id})`,
+    date: dateString,
+    type: "Auto-Warn",
+    reason,
+  };
+
+  const embedToSend = new MessageEmbed()
+    .setColor(0x1abc9c)
+    .setDescription(
+      `Hello ${member.user.username},\nYou have been auto-warned in **${message.guild.name}** \nReason: **${display}**.`
+    );
+    
+  try {
+    await dmUserOnInfraction(member.user, embedToSend);
+  } catch (e) {
+    embed.setColor(0xff0000);
+    embed.setDescription("Couldn't send them a warn message! Continuing...");
+    message.util.send(embed);
+  }
+
+  const AutoModModel = getModelForClass(autoModModel);
+  try {
+    await AutoModModel
+      .findOneAndUpdate(
+        {
+          guildId: guildID,
+          userId: userId,
+        },
+        {
+          guildId: guildID,
+          userId: userId,
+          $push: {
+            sanctions: caseInfo,
+          },
+        },
+        {
+          upsert: true,
+        }
+      )
+      .catch((e) => {
+        embed.setColor(0xff0000);
+        embed.setDescription(`Error Logging Warn to DB: ${e}`);
+      });
+  } catch (e) {
+    Logger.error("DB", e);
+  }
+  embed.setDescription(`Warned **${member.user.tag}** | \`${caseNum}\``);
+  await message.channel.send(embed);
+
+  await sendLogToChannel(this.client, member, message.guild.id);
+
+  const logEmbed = new MessageEmbed()
+    .setTitle(`Member Auto-Warned | Case \`${caseNum}\` | ${member.user.tag}`)
+    .addField(`User:`, `<@${member.id}>`, true)
+    .addField(`Moderator:`, `AutoMod`, true)
+    .addField(`Reason:`, reason, true)
+    .setFooter(`ID: ${member.id} | ${dateString}`)
+    .setColor("ORANGE");
+
+  let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
+  modLog(modlogChannel, logEmbed, message.guild.iconURL());
 }
 
 export async function sendLogToChannel(
