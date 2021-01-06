@@ -70,11 +70,19 @@ export default class Infractions extends Command {
           s.reason = s.reason.slice(0, nextWhitespaceIndex - 1) + "...";
         }
       }
-      embed.addField(
-        `${s.type}: \`${s.caseID}\``,
-        `Moderator: **<@!${s.moderatorId}>**\nReason: **${s.reason}**\nDate: **${s.date}**`,
-        true
-      );
+      if (s.type === "Mute") {
+        embed.addField(
+          `${s.type}: \`${s.caseID}\``,
+          `Moderator: **<@!${s.moderatorId}>**\nReason: **${s.reason}**\nTime: **${s.time}**\nDate: **${s.date}**`,
+          true
+        );
+      } else {
+        embed.addField(
+          `${s.type}: \`${s.caseID}\``,
+          `Moderator: **<@!${s.moderatorId}>**\nReason: **${s.reason}**\nDate: **${s.date}**`,
+          true
+        );
+      }
     }
     embed.setFooter(`ID: ${userId}`);
     return message.util.send(embed);

@@ -63,6 +63,13 @@ export default class Case extends Command {
       message.author.displayAvatarURL({ dynamic: true })
     );
     embed.setDescription("All times are in UTC");
+    if (s.type === "Mute") {
+      embed.addField(
+        s.type,
+        `Moderator: <@!${s.moderatorId}>\nUser: **${s.user}**\nReason: **${s.reason}**\nTime: **${s.time}**\nDate: **${s.date}**`
+      );
+      return message.util.send(embed);
+    }
     embed.addField(
       s.type,
       `Moderator: <@!${s.moderatorId}>\nUser: **${s.user}**\nReason: **${s.reason}**\nDate: **${s.date}**`
