@@ -20,7 +20,7 @@ export default class Infractions extends Command {
       args: [
         {
           id: "automod",
-          flag: "-a",
+          flag: "-a ",
           match: "flag",
           default: "false",
         },
