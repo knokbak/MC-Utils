@@ -53,7 +53,7 @@ export default class BotClient extends AkairoClient {
         timeout: "You took too long, the command has been canceled!",
         ended:
           "You've exceeded the maximum amount of tries, this command has now been canceled!",
-        cancel: "Command has been succesfully canceled!",
+        cancel: "Command has been successfully canceled!",
         retries: 3,
         time: 3e4,
       },
