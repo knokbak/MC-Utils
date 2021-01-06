@@ -61,6 +61,14 @@ export default class ForceBan extends Command {
       return message.util.send(embed);
     }
 
+    if (message.guild.members.cache.has(user.id)) {
+      embed.setColor(0xff0000);
+      embed.setDescription(
+        `This user exists in the guild. Run \`>ban\` instead.`
+      );
+      return message.util.send(embed);
+    }
+
     const embedToSend = new MessageEmbed()
       .setColor(0x1abc9c)
       .setDescription(
