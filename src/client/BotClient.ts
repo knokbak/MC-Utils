@@ -47,13 +47,13 @@ export default class BotClient extends AkairoClient {
     argumentDefaults: {
       prompt: {
         modifyStart: (_: Message, str: string): string =>
-          `${str}\n\nType \`cancel\` to cancel the command...`,
+          `${str}\nType \`cancel\` to cancel the command!`,
         modifyRetry: (_: Message, str: string): string =>
-          `${str}\n\nType \`cancel\` to cancel the command...`,
-        timeout: "You took too long, the command has been canceled...",
+          `${str}\nType \`cancel\` to cancel the command!`,
+        timeout: "You took too long, the command has been canceled!",
         ended:
-          "You've exceeded the maximum amount of tries, this command has now been canceled...",
-        cancel: "This command has been canceled...",
+          "You've exceeded the maximum amount of tries, this command has now been canceled!",
+        cancel: "Command has been succesfully canceled!",
         retries: 3,
         time: 3e4,
       },
