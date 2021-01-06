@@ -77,7 +77,7 @@ export default class BotInfo extends Command {
           exemptRoles: [""]
         }
       } else if (key === "nWordFilter") {
-        if (strToBool(value)) {
+        if (value !== "true" ?? value !== "false") {
           embed.setDescription(`Invalid argument for \`value\`. Available values:\n\`true, false\``);
           embed.setColor(0xff0000);
           return message.util.send(embed);
@@ -91,7 +91,7 @@ export default class BotInfo extends Command {
           exemptRoles: [""]
         }
       } else if (key === "filterURLs") {
-        if (strToBool(value)) {
+        if (value !== "true" ?? value !== "false") {
           embed.setDescription(`Invalid argument for \`value\`. Available values:\n\`true, false\``);
           embed.setColor(0xff0000);
           return message.util.send(embed);
@@ -119,7 +119,7 @@ export default class BotInfo extends Command {
           exemptRoles: value.split(" ")
         }
       } else if (key === "soundPingFilter") {
-        if (strToBool(value)) {
+        if (value !== "true" ?? value !== "false") {
           embed.setDescription(`Invalid argument for \`value\`. Available arguments:\n\`true, false\``);
           embed.setColor(0xff0000);
           return message.util.send(embed);
@@ -137,10 +137,10 @@ export default class BotInfo extends Command {
         await autoModModel.findOneAndUpdate({
           guildId: message.guild.id,
         }, {
-            guildId: message.guild.id,
-            $set: {
+          guildId: message.guild.id,
+          $set: {
               autoModSettings: defaultAutoModUpdate
-            }
+          }
         }, { upsert: true });
       } catch (e) {
         embed.setDescription(`Couldn't set automod settings:\n\`${e}\``);
