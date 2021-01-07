@@ -183,7 +183,7 @@ export default class Mute extends Command {
     const embedToSend = new MessageEmbed()
       .setColor(0x1abc9c)
       .setDescription(
-        `Hello ${member.user.username},\nYou have been banned from **${message.guild.name}** for **${time}** for **${reason}**.`
+        `Hello ${member.user.username},\nYou have been muted in **${message.guild.name}** for **${time}** for **${reason}**.`
       );
 
     try {
@@ -224,7 +224,9 @@ export default class Mute extends Command {
       Logger.error("DB", e);
     }
 
-    embed.setDescription(`Muted **${user.user.tag}** | \`${caseNum}\``);
+    await message.delete();
+
+    embed.setDescription(`Muted **${user.user.tag}** | \`${caseNum}\`\n\`\`\`js\n${JSON.stringify(muteInformation)}\`\`\``);
     await message.channel.send(embed);
 
     const logEmbed = new MessageEmbed()
