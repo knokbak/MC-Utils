@@ -12,6 +12,7 @@ import { Message, GuildMember, MessageEmbed } from "discord.js";
 import Logger from "../../structures/Logger";
 import { getModelForClass } from "@typegoose/typegoose";
 import uniqid from "uniqid";
+import date from "date.js";
 
 export default class Mute extends Command {
   public constructor() {
@@ -76,7 +77,7 @@ export default class Mute extends Command {
       return message.util.send(embed);
     }
 
-    if (time !== null && time !== undefined && isNaN(Date.parse(time))) {
+    if (time !== null && time !== undefined && isNaN(date(time))) {
       embed.setColor(0xff0000);
       embed.setDescription("Please format time in `h`, `m`, or `d`.");
       return message.util.send(embed);
@@ -160,7 +161,7 @@ export default class Mute extends Command {
       muteInformation = {
         muted: true,
         isPerm: false,
-        endDate: Date.parse(time),
+        endDate: date(time),
         case: caseNum,
       };
     }
