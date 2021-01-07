@@ -16,6 +16,16 @@ import { getModelForClass } from "@typegoose/typegoose";
 
 let cachedUserRoles = {};
 
+export function makeid(length: number) {
+  let result           = '';
+  let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let charactersLength = characters.length;
+  for ( let i = 0; i < length; i++ ) {
+  result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 export async function modLog(
   channel: TextChannel,
   message: Message | MessageEmbed,

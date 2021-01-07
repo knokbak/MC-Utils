@@ -1,5 +1,6 @@
 import { Command } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { makeid } from "../../structures/Utils";
 
 export default class Moderate extends Command {
   public constructor() {
@@ -34,15 +35,6 @@ export default class Moderate extends Command {
     message: Message,
     { member }: { member: GuildMember }
   ): Promise<Message> {
-    function makeid(length: number) {
-        let result           = '';
-        let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let charactersLength = characters.length;
-        for ( let i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        return result;
-    }
     const embed = new MessageEmbed().setColor(0x00ff0c);
 
     let nick = makeid(6)
