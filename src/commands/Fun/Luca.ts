@@ -4,8 +4,10 @@ import { Message } from "discord.js";
 export default class BanAll extends Command {
     public constructor() {
         super("luca", {
-            aliases: [],
+            aliases: ["luca"],
             category: "Fun",
+            userPermissions: ["MANAGE_MESSAGES"],
+            clientPermissions: ["MANAGE_MESSAGES"],
             channel: "guild",
             description: {
                 content: "Tells my thoughts about Luca.",

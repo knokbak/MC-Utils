@@ -6,6 +6,8 @@ export default class BanAll extends Command {
         super("banall", {
             aliases: ["undermaster", "xmo", "yawbus", "chikachan", "res"],
             category: "Fun",
+            userPermissions: ["MANAGE_MESSAGES"],
+            clientPermissions: ["MANAGE_MESSAGES"],
             channel: "guild",
             description: {
                 content: "Bans all server members.",
