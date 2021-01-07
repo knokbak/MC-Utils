@@ -1,7 +1,6 @@
 import { Command } from "discord-akairo";
-import { GuildMember } from "discord.js";
-import { Message } from "discord.js";
-// Replace everything prefixed with commandName or commandUsage with an actual value, duh :D
+import { MessageEmbed, GuildMember, Message } from "discord.js";
+
 export default class CommandName extends Command {
   public constructor() {
     super("nickname", {
@@ -10,13 +9,13 @@ export default class CommandName extends Command {
       category: "categoryName",
       userPermissions: ["MANAGE_NICKNAMES"], 
       clientPermissions: ["MANAGE_NICKNAMES"], 
-      ratelimit: 3, // Usually keep this
-      description: { // All of this below for the help command
+      ratelimit: 3,
+      description: {
         content: "Changes the nickname of a user",
         usage: "moderate [ID or Mention] (New Nickname)",
         examples: ["nickname 378025254125305867 menin", "nick @Menin#4642"],
       },
-      args: [ // If you don't want args, just delete everything from this line to
+      args: [
         {
           id: "member",
           type: "member",
@@ -30,33 +29,40 @@ export default class CommandName extends Command {
         {
             id: "nickname",
             type: "string",
-            match: "restContent",
+            match: "rest",
             default: ""
         }
-      ], // this line!
+      ],
     });
   }
 
   public async exec(
     message: Message,
-    { member, nickname }: { member: GuildMember; nickname: string} // since type: "string" above, type it as string
-  ): Promise<Message> { // U don't have to hard type the Promise being Message, it can also be Promise<void> if you just do a blank return;
-    if(!nickname){
-        try{
-            member.setNickname(nickname);
-        }catch(e){
-            return message.reply(`Couldn't reset **${member.user.tag}**'s nickname.`)
+    { member, nickname }: { member: GuildMember; nickname: string}
+  ): Promise<Message> {
+    const embed = new MessageEmbed().setColor(0x00ff0c);
+    if (!nickname) {
+        try {
+            await member.setNickname(member.user.username);
+        } catch(e) {
+            embed.setColor(0xff0000);
+            embed.setDescription(`Couldn't set nickname because: **${e}**`);
+            return message.util.send(embed);
         }
         
-        message.reply(`Nickname for **${member.user.tag}** reset`)
-    }else{
-        try{
+        embed.setDescription(`Reset nickname for **${message.author.tag}**`);
+        return message.util.send(embed);
+    } else {
+        try {
             member.setNickname(nickname)
-        }catch(e){
-            return message.reply(`Couldnt change **${member.user.tag}**'s nickname.`)
+        } catch(e) {
+            embed.setColor(0xff0000);
+            embed.setDescription(`Couldn't set nickname because: **${e}**`);
+            return message.util.send(embed);
         }
         
-        message.reply(`Nickname for **${member.user.tag}** changed to ${nickname}`)
+        embed.setDescription(`Set nickname for **${message.author.username}** -> **${nickname}**`);
+        return message.util.send(embed);
     }
   }
 }

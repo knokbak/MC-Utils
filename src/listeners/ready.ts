@@ -7,6 +7,7 @@ import { utc } from "moment";
 import Config from "../config";
 import uniqid from "uniqid";
 import { findChannel, modLog } from "../structures/Utils";
+import ms from "ms";
 
 export default class Ready extends Listener {
   constructor() {
@@ -56,7 +57,7 @@ export default class Ready extends Listener {
         });
       this.client.databaseCache_mutedUsers
         .array()
-        .filter((m) => m.mute.endDate <= Date.now())
+        .filter((m) => m.mute.endDate < parseFloat(ms(Date.now())) || m.mute.endDate === parseFloat(ms(Date.now())))
         .forEach(async (memberData) => {
           const guild = this.client.guilds.cache.get("719977718858514483");
           if (!guild) return;
