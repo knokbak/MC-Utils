@@ -40,7 +40,8 @@ export default class Audit extends Command {
     for (const user of message.guild.members.cache) {
         if (all === "true") {
             if (
-                user[1].user.username.match(nWordRegExp || nWordRegExp2) ||
+                user[1].user.username.match(nWordRegExp) ||
+                user[1].user.username.match(nWordRegExp2) ||
                 otherFilters.includes(user[1].user.username)
             ) {
                 if (
@@ -57,7 +58,8 @@ export default class Audit extends Command {
             }
         } else {
             if (
-                user[1].user.username.match(nWordRegExp || nWordRegExp2) ||
+                user[1].user.username.match(nWordRegExp) ||
+                user[1].user.username.match(nWordRegExp2) ||
                 otherFilters.includes(user[1].user.username)
             ) {
                 if (
