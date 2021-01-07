@@ -40,7 +40,7 @@ export default class Audit extends Command {
     for (const user of message.guild.members.cache) {
         if (all === "true") {
             if (
-                user[1].nickname !== user[1].user.username ||
+                user[1].nickname !== user[1].user.username &&
                 user[1].nickname.match(nWordRegExp || nWordRegExp2) ||
                 otherFilters.includes(user[1].nickname) &&
                 user[1].user.username.match(nWordRegExp || nWordRegExp2) ||
@@ -51,7 +51,7 @@ export default class Audit extends Command {
             }
         } else {
             if (
-                user[1].nickname !== user[1].user.username ||
+                user[1].nickname !== user[1].user.username &&
                 user[1].nickname.match(nWordRegExp || nWordRegExp2) ||
                 otherFilters.includes(user[1].nickname) &&
                 user[1].user.username.match(nWordRegExp || nWordRegExp2) ||
