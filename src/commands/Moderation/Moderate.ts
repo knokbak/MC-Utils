@@ -1,12 +1,12 @@
 import { Command } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 
-export default class CommandName extends Command {
+export default class Moderate extends Command {
   public constructor() {
     super("moderate", {
       aliases: ["moderate"],
       channel: "guild",
-      category: "categoryName",
+      category: "Moderation",
       userPermissions: ["MANAGE_NICKNAMES"], 
       clientPermissions: ["MANAGE_NICKNAMES"], 
       ratelimit: 3,

@@ -4,7 +4,6 @@ import {
   findChannel,
   dmUserOnInfraction,
 } from "../../structures/Utils";
-import ms from "ms";
 import { utc } from "moment";
 import config from "../../config";
 import memberModel, { CaseInfo } from "../../models/MemberModel";
