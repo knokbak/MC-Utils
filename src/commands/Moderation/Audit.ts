@@ -40,25 +40,37 @@ export default class Audit extends Command {
     for (const user of message.guild.members.cache) {
         if (all === "true") {
             if (
-                user[1].nickname !== user[1].user.username &&
-                user[1].nickname.match(nWordRegExp || nWordRegExp2) ||
-                otherFilters.includes(user[1].nickname) &&
                 user[1].user.username.match(nWordRegExp || nWordRegExp2) ||
                 otherFilters.includes(user[1].user.username)
             ) {
-                counter++
-                badArr.push(user[1].id);
+                if (
+                    user[1].nickname !== user[1].user.username &&
+                    user[1].nickname.match(nWordRegExp || nWordRegExp2) ||
+                    otherFilters.includes(user[1].nickname) 
+                ) {
+                    counter++
+                    badArr.push(user[1].id);
+                } else {
+                    counter++
+                    badArr.push(user[1].id);
+                }
             }
         } else {
             if (
-                user[1].nickname !== user[1].user.username &&
-                user[1].nickname.match(nWordRegExp || nWordRegExp2) ||
-                otherFilters.includes(user[1].nickname) &&
                 user[1].user.username.match(nWordRegExp || nWordRegExp2) ||
                 otherFilters.includes(user[1].user.username)
             ) {
-                counter++;
-                badArr.push(`${user[1].user.username} :: ${user[1].id} (${user[1].nickname ?? "No Nickname"})`);
+                if (
+                    user[1].nickname !== user[1].user.username &&
+                    user[1].nickname.match(nWordRegExp || nWordRegExp2) ||
+                    otherFilters.includes(user[1].nickname) 
+                ) {
+                    counter++;
+                    badArr.push(`${user[1].user.username} :: ${user[1].id} (${user[1].nickname}) <- Flagged Nickname`);
+                } else {
+                    counter++;
+                    badArr.push(`${user[1].user.username} :: ${user[1].id} (${user[1].nickname ?? "No Nickname"})`);
+                }
             }
         }
     }
