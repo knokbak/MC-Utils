@@ -90,7 +90,7 @@ export async function dispatchAutoModMsg(reason: string, message: Message, type:
   await msg.delete({ timeout: 10000 });
 }
 
-export async function autoModWarn(member: GuildMember, guild: Guild, reason: string, display: string, message: Message, client: AkairoClient) {
+export async function autoModWarn(member: GuildMember, guild: Guild, reason: string, message: Message, client: AkairoClient) {
   if (!member) return;
   let caseNum = uniqid(`A-`);
   let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
@@ -111,7 +111,7 @@ export async function autoModWarn(member: GuildMember, guild: Guild, reason: str
   const embedToSend = new MessageEmbed()
     .setColor(0x1abc9c)
     .setDescription(
-      `Hello ${member.user.username},\nYou have been auto-warned in **${message.guild.name}** \nReason: **${display}**.`
+      `Hello ${member.user.username},\nYou have been auto-warned in **${message.guild.name}** \nReason: **${reason}**.`
     );
     
   try {
