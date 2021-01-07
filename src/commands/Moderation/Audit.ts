@@ -46,7 +46,8 @@ export default class Audit extends Command {
             ) {
                 if (
                     user[1].nickname !== user[1].user.username &&
-                    user[1].nickname.match(nWordRegExp || nWordRegExp2) ||
+                    user[1].nickname.match(nWordRegExp2) ||
+                    user[1].nickname.match(nWordRegExp) ||
                     otherFilters.includes(user[1].nickname) 
                 ) {
                     counter++
@@ -64,7 +65,8 @@ export default class Audit extends Command {
             ) {
                 if (
                     user[1].nickname !== user[1].user.username &&
-                    user[1].nickname.match(nWordRegExp || nWordRegExp2) ||
+                    user[1].nickname.match(nWordRegExp2) ||
+                    user[1].nickname.match(nWordRegExp) ||
                     otherFilters.includes(user[1].nickname) 
                 ) {
                     counter++;
