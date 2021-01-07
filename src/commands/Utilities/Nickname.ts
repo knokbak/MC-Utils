@@ -50,7 +50,7 @@ export default class CommandName extends Command {
             return message.util.send(embed);
         }
         
-        embed.setDescription(`Reset nickname for **${message.author.tag}**`);
+        embed.setDescription(`Reset nickname for **${member.user.username}**`);
         return message.util.send(embed);
     } else {
         try {
@@ -61,7 +61,7 @@ export default class CommandName extends Command {
             return message.util.send(embed);
         }
         
-        embed.setDescription(`Set nickname for **${message.author.username}** -> **${nickname}**`);
+        embed.setDescription(`Set nickname for **${member.user.username}** -> **${nickname}**`);
         return message.util.send(embed);
     }
   }

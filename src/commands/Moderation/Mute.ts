@@ -76,7 +76,7 @@ export default class Mute extends Command {
       return message.util.send(embed);
     }
 
-    if (time !== null && time !== undefined && isNaN(ms(time))) {
+    if (time !== null && time !== undefined && isNaN(Date.parse(time))) {
       embed.setColor(0xff0000);
       embed.setDescription("Please format time in `h`, `m`, or `d`.");
       return message.util.send(embed);
@@ -160,7 +160,7 @@ export default class Mute extends Command {
       muteInformation = {
         muted: true,
         isPerm: false,
-        endDate: ms(time),
+        endDate: Date.parse(time),
         case: caseNum,
       };
     }
