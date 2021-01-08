@@ -42,27 +42,37 @@ export default class Nickname extends Command {
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
     if (!nickname) {
-        try {
-            await member.setNickname(member.user.username);
-        } catch(e) {
-            embed.setColor(0xff0000);
-            embed.setDescription(`Couldn't set nickname because: **${e}**`);
-            return message.util.send(embed);
-        }
-        
-        embed.setDescription(`Reset nickname for **${member.user.username}**`);
+      if (nickname.length > 32) {
+        embed.setColor(0xff0000);
+        embed.setDescription("Nickname is above 32 characters!");
         return message.util.send(embed);
+      }
+      try {
+          await member.setNickname(member.user.username);
+      } catch(e) {
+          embed.setColor(0xff0000);
+          embed.setDescription(`Couldn't set nickname because: **${e}**`);
+          return message.util.send(embed);
+      }
+        
+      embed.setDescription(`Reset nickname for **${member.user.username}**`);
+      return message.util.send(embed);
     } else {
-        try {
-            member.setNickname(nickname)
-        } catch(e) {
-            embed.setColor(0xff0000);
-            embed.setDescription(`Couldn't set nickname because: **${e}**`);
-            return message.util.send(embed);
-        }
-        
-        embed.setDescription(`Set nickname for **${member.user.username}** -> **${nickname}**`);
+      if (nickname.length > 32) {
+        embed.setColor(0xff0000);
+        embed.setDescription("Nickname is above 32 characters!");
         return message.util.send(embed);
+      }
+      try {
+          member.setNickname(nickname)
+      } catch(e) {
+          embed.setColor(0xff0000);
+          embed.setDescription(`Couldn't set nickname because: **${e}**`);
+          return message.util.send(embed);
+      }
+        
+      embed.setDescription(`Set nickname for **${member.user.username}** -> **${nickname}**`);
+      return message.util.send(embed);
     }
   }
 }
