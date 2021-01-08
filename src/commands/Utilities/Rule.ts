@@ -27,6 +27,7 @@ export default class Say extends Command {
     message: Message,
     { ruleNum }: { ruleNum: string }
   ): Promise<Message> {
+    const embed = new MessageEmbed().setColor(0x1abc9c);
     const rules = [
         "",
         "Do not use any racial slurs, or be racist in any way.",
@@ -39,14 +40,16 @@ export default class Say extends Command {
         "No advertising, in any chats or DMs.",
         "Please speak English only."
     ]
-    const ruleN = parseInt(ruleNum)
-    if(isNaN(ruleN) || ruleN > rules.length || ruleN < 1)return message.reply(`No such rule exists?`)
-    let rule = rules[ruleNum]
-    //if(rules.length < ruleNum-1)return message.reply(`e`)
-    const embed = new MessageEmbed()
-        .setAuthor(`Sound's MC World's Rules`)
-        .setDescription(rule)
-        .setFooter(`Rule #${ruleNum}`)
-    return message.channel.send(embed)
+    const ruleN = parseInt(ruleNum);
+    if(isNaN(ruleN) || ruleN > rules.length - 1 || ruleN < 1) {
+      embed.setColor(0xff0000);
+      embed.setDescription("Rule number is invalid.");
+      return message.util.send(embed);
+    }
+    const rule = rules[ruleNum];
+    embed.setAuthor(`Sound's MC World's Rules`);
+    embed.setDescription(rule);
+    embed.setFooter(`Rule #${ruleNum}`);
+    return message.channel.send(embed);
   }
 }

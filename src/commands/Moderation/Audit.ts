@@ -19,7 +19,7 @@ export default class Audit extends Command {
           {
               id: "all",
               type: "string",
-              flag: "-all ",
+              flag: "-a ",
               default: "false",
           }
       ]
@@ -45,14 +45,12 @@ export default class Audit extends Command {
                 otherFilters.includes(user[1].user.username)
             ) {
                 if (
+                    user[1].nickname !== null && 
                     user[1].nickname !== user[1].user.username &&
                     user[1].nickname.match(nWordRegExp2) ||
                     user[1].nickname.match(nWordRegExp) ||
                     otherFilters.includes(user[1].nickname) 
                 ) {
-                    counter++
-                    badArr.push(user[1].id);
-                } else {
                     counter++
                     badArr.push(user[1].id);
                 }
@@ -64,6 +62,7 @@ export default class Audit extends Command {
                 otherFilters.includes(user[1].user.username)
             ) {
                 if (
+                    user[1].nickname !== null && 
                     user[1].nickname !== user[1].user.username &&
                     user[1].nickname.match(nWordRegExp2) ||
                     user[1].nickname.match(nWordRegExp) ||
