@@ -226,7 +226,7 @@ export default class Mute extends Command {
 
     await message.delete();
 
-    embed.setDescription(`Muted **${user.user.tag}** | \`${caseNum}\`\n\`\`\`js\n${JSON.stringify(muteInformation)}\`\`\``);
+    embed.setDescription(`Muted **${user.user.tag}** | \`${caseNum}\``);
     await message.channel.send(embed);
 
     const logEmbed = new MessageEmbed()

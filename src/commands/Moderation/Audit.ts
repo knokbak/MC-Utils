@@ -40,40 +40,19 @@ export default class Audit extends Command {
     for (const user of message.guild.members.cache) {
         if (all === "true") {
             if (
-                user[1].user.username.match(nWordRegExp) ||
-                user[1].user.username.match(nWordRegExp2) ||
-                otherFilters.includes(user[1].user.username)
+                user[1].displayName.match(nWordRegExp || nWordRegExp2) ||
+                otherFilters.includes(user[1].displayName)
             ) {
-                if (
-                    user[1].nickname !== null && 
-                    user[1].nickname !== user[1].user.username &&
-                    user[1].nickname.match(nWordRegExp2) ||
-                    user[1].nickname.match(nWordRegExp) ||
-                    otherFilters.includes(user[1].nickname) 
-                ) {
-                    counter++
-                    badArr.push(user[1].id);
-                }
+                counter++;
+                badArr.push(user[1].id);
             }
         } else {
             if (
-                user[1].user.username.match(nWordRegExp) ||
-                user[1].user.username.match(nWordRegExp2) ||
-                otherFilters.includes(user[1].user.username)
+                user[1].displayName.match(nWordRegExp || nWordRegExp2) ||
+                otherFilters.includes(user[1].displayName)
             ) {
-                if (
-                    user[1].nickname !== null && 
-                    user[1].nickname !== user[1].user.username &&
-                    user[1].nickname.match(nWordRegExp2) ||
-                    user[1].nickname.match(nWordRegExp) ||
-                    otherFilters.includes(user[1].nickname) 
-                ) {
-                    counter++;
-                    badArr.push(`${user[1].user.username} :: ${user[1].id} (${user[1].nickname}) <- Flagged Nickname`);
-                } else {
-                    counter++;
-                    badArr.push(`${user[1].user.username} :: ${user[1].id} (${user[1].nickname ?? "No Nickname"})`);
-                }
+                counter++;
+                badArr.push(`${user[1].displayName} :: ${user[1].id}`);
             }
         }
     }
@@ -85,7 +64,7 @@ export default class Audit extends Command {
                 return;
             }
             try {
-                guildMember.setNickname(makeid(6));
+                guildMember.setNickname(`Moderated Nickname ${makeid(6)}`);
                 counter++;
             } catch (e) {
                 errCounter++;
