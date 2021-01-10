@@ -1,0 +1,180 @@
+import { Command } from "discord-akairo";
+import { Message, GuildMember, MessageEmbed } from "discord.js";
+import {
+  dmUserOnInfraction,
+  findChannel,
+  modLog,
+  sendLogToChannel,
+} from "../../structures/Utils";
+import config from "../../config";
+import { utc } from "moment";
+import Logger from "../../structures/Logger";
+import memberModel, { CaseInfo } from "../../models/MemberModel";
+import { getModelForClass } from "@typegoose/typegoose";
+import uniqid from "uniqid";
+// Replace everything prefixed with commandName or commandUsage with an actual value, duh :D
+export default class CommandName extends Command {
+  public constructor() {
+    super("Rulewarn", {
+      aliases: ["rulewarn", "r"],
+      channel: "guild",
+      category: "Moderation",
+      userPermissions: ["MANAGE_MESSAGES"], //ONLY USE IF CMD REQ PERM
+      // clientPermissions: [""], //SAME THING AS ABOVE
+      ratelimit: 3, // Usually keep this
+      description: { // All of this below for the help command
+        content: "Warns a user for breaking a rule",
+        usage: "r (user) (rule-number)",
+        examples: ["r Menin#4642 2", "r 379420154955825153 toxic"],
+      },
+      args: [ // If you don't want args, just delete everything from this line to
+        {
+          id: "member",
+          type: "member",
+          prompt: {
+            start: (msg: Message) =>
+              `${msg.author}, please provide a member to warn...`,
+            retry: (msg: Message) =>
+              `${msg.author}, please provide a valid member to warn...`,
+          },
+        },
+        {
+            id: "ruleNum",
+            type: "string",
+            match: "rest",
+            prompt: {
+                start: (msg: Message) =>
+                  `${msg.author}, please provide a rule number or keyword`,
+                retry: (msg: Message) =>
+                  `${msg.author}, please provide a vaild rule number or keyword`,
+              },
+          },
+      ], // this line!
+    });
+  }
+
+  public async exec(
+    message: Message,
+    { member, ruleNum }: { member: GuildMember; ruleNum: string } // since type: "string" above, type it as string
+  ): Promise<Message> { // U don't have to hard type the Promise being Message, it can also be Promise<void> if you just do a blank return;
+  const embed = new MessageEmbed().setColor(0x00ff0c);
+    if (member.id === message.author.id) {
+        embed.setColor(0xff0000);
+        embed.setDescription("You cannot warn yourself!");
+        return message.util.send(embed);
+    }
+    if (member.user.bot) {
+        embed.setColor(0xff0000);
+        embed.setDescription("You cannot warn a bot!");
+        return message.util.send(embed);
+    }
+    if (
+        message.member.guild.ownerID !== message.author.id &&
+        member.roles.highest.position > message.member.roles.highest.position ||
+        member.roles.highest.position === message.member.roles.highest.position
+    ) {
+        embed.setColor(0xff0000);
+        embed.setDescription(
+        `You cannot warn a member with a role superior (or equal) to yours!`
+        );
+        await message.util.send(embed);
+        return;
+    }
+  
+    const rules = [
+        "",
+        "Do not use any racial slurs, or be racist in any way.",
+        "No voice changers in VC, and do not earrape.",
+        "Do not impersonate anybody famous, or anybody on the server, unless they consent to it.",
+        "Do not spam, in any chat.",
+        "Toxicity is not permitted.",
+        "Keep it SFW, so no Gore or NSFW. (duh)",
+        "You are allowed to swear, but please keep in mind that you can't be toxic.",
+        "No advertising, in any chats or DMs.",
+        "Please speak English only."
+    ]
+    let reason = ""
+    const ruleN = parseInt(ruleNum);
+    if(isNaN(ruleN) || ruleN < 1 || ruleN > rules.length){
+        try{
+            reason = rules.find(e => e.includes(ruleNum))
+        }catch(e){
+            return message.reply(`Please mention a valid rule number or a keyword.`)
+        }
+    }else{
+        reason = rules[ruleN]
+    }
+  
+    let caseNum = uniqid();
+    let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
+    let userId = member.id;
+    let guildID = message.guild.id;
+
+    const caseInfo: CaseInfo = {
+      caseID: caseNum,
+      moderator: message.author.tag,
+      moderatorId: message.author.id,
+      user: `${member.user.tag} (${member.user.id})`,
+      date: dateString,
+      type: "Warn",
+      reason: `Breaking the following rule: ${reason}`,
+    };
+
+    const embedToSend = new MessageEmbed()
+      .setColor(0x1abc9c)
+      .setDescription(
+        `Hello ${member.user.username},\nYou have been warned in **${message.guild.name}** for breaking the following rule: **${reason}**.`
+    );
+
+    try {
+      await dmUserOnInfraction(member.user, embedToSend);
+    } catch (e) {
+      embed.setColor(0xff0000);
+      embed.setDescription("Couldn't send them a warn message! Continuing...");
+      message.util.send(embed);
+    }
+
+    const sanctionsModel = getModelForClass(memberModel);
+    try {
+      await sanctionsModel
+        .findOneAndUpdate(
+          {
+            guildId: guildID,
+            userId: userId,
+          },
+          {
+            guildId: guildID,
+            userId: userId,
+            $push: {
+              sanctions: caseInfo,
+            },
+          },
+          {
+            upsert: true,
+          }
+        )
+        .catch((e) => {
+          embed.setColor(0xff0000);
+          embed.setDescription(`Error Logging Warn to DB: ${e}`);
+        });
+    } catch (e) {
+      Logger.error("DB", e);
+    }
+
+    embed.setDescription(`Warned **${member.user.tag}** | \`${caseNum}\``);
+    await message.channel.send(embed);
+
+    await sendLogToChannel(this.client, member, message.guild.id);
+
+    const logEmbed = new MessageEmbed()
+      .setTitle(`Member Warned | Case \`${caseNum}\` | ${member.user.tag}`)
+      .addField(`User:`, `<@${member.id}>`, true)
+      .addField(`Moderator:`, `<@${message.author.id}>`, true)
+      .addField(`Reason:`, `Breaking the following rule: ${reason}`, true)
+      .setFooter(`ID: ${member.id} | ${dateString}`)
+      .setColor("ORANGE");
+
+    let modlogChannel = findChannel(this.client, config.channels.modLogChannel);
+    modLog(modlogChannel, logEmbed, message.guild.iconURL());
+  }
+}

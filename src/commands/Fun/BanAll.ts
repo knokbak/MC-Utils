@@ -11,7 +11,7 @@ export default class BanAll extends Command {
             channel: "guild",
             description: {
                 content: "Bans all server members.",
-                usage: "banall",
+                usage: "banall",    
                 examples: ["undermaster", "xmo"]
             },
             ratelimit: 1
@@ -22,15 +22,15 @@ export default class BanAll extends Command {
         const msg = await message.channel.send(`Banning ${message.guild.members.cache.size} members..`);
         setTimeout(() => {
            msg.edit(`Banning Sound...`)
-        }, 3000);
+        }, 5000);
         setTimeout(() => {
            msg.edit(`Banning olli, Jazzy and dankchicken...`)
-        }, 6000);
+        }, 8000);
         setTimeout(() => {
           msg.edit(`OBS left, so no need to ban that noob..`)
-        }, 9000);
+        }, 11000);
         setTimeout(() => {
-          msg.edit(`Error: Couldn't ban Axis, Piyeris and Menin.`)
-        }, 12000);
+          msg.edit(`Error: Couldn't ban Axis and Menin.`)
+        }, 14000);
     }
 }

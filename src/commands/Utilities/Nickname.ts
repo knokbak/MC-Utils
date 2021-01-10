@@ -55,7 +55,7 @@ export default class Nickname extends Command {
           return message.util.send(embed);
       }
         
-      embed.setDescription(`Reset nickname for **${member.user.username}**`);
+      embed.setDescription(`Reset nickname for **<@${member.user.id}>**`);
       return message.util.send(embed);
     } else {
       if (nickname.length > 32) {
@@ -71,7 +71,7 @@ export default class Nickname extends Command {
           return message.util.send(embed);
       }
         
-      embed.setDescription(`Set nickname for **${member.user.username}** -> **${nickname}**`);
+      embed.setDescription(`Set nickname for **<@${member.user.id}>** -> **${nickname}**`);
       return message.util.send(embed);
     }
   }
