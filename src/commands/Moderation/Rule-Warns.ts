@@ -97,7 +97,7 @@ export default class CommandName extends Command {
     const ruleN = parseInt(ruleNum);
     if(isNaN(ruleN) || ruleN < 1 || ruleN > rules.length){
         try{
-            reason = rules.find(e => e.includes(ruleNum))
+            reason = rules.find(e => e.toLowerCase().includes(ruleNum))
         }catch(e){
             return message.reply(`Please mention a valid rule number or a keyword.`)
         }
