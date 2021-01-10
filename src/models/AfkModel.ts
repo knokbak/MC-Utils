@@ -2,7 +2,6 @@ import { ModelOptions, prop, Severity } from "@typegoose/typegoose";
 
 export interface AfkStatus {
     isAfk: boolean;
-    afkTime: number;
     status: string;
 }
 
