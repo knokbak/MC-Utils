@@ -26,6 +26,16 @@ export function makeid(length: number) {
   return result;
 }
 
+export async function dispatchAfkEmbed(message: Message, afkReason: string) {
+  if (message.deletable) await message.delete();
+  const embed = new MessageEmbed()
+    .setColor(0xff0000)
+    .setTitle("User is AFK")
+    .setDescription(`<@!${message.author.id}> is AFK because:\n**${afkReason}**`)
+    .setThumbnail(message.author.displayAvatarURL({ dynamic: true }));
+  return embed;
+}
+
 export async function modLog(
   channel: TextChannel,
   message: Message | MessageEmbed,

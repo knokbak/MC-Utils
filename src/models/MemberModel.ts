@@ -11,7 +11,7 @@ export interface CaseInfo {
   time?: string;
 }
 
-interface Mutes {
+export interface Mutes {
   muted: boolean;
   isPerm: boolean;
   endDate: number;
