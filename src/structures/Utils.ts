@@ -18,7 +18,6 @@ import { utc } from "moment";
 import Logger from "./Logger";
 import uniqid from "uniqid";
 
-let cachedUserRoles = {};
 
 export function makeid(length: number) {
   let result           = '';
@@ -28,6 +27,12 @@ export function makeid(length: number) {
   result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+}
+
+export function strToBool(s: string) {
+  let regex = /^\s*(true|1|on)\s*$/i
+
+  return regex.test(s);
 }
 
 export async function dispatchAfkEmbed(message: Message, afkReason: string) {
@@ -193,37 +198,6 @@ export async function resolveUser(search: string, client: AkairoClient) {
   }
   user = client.users.cache.get(search);
   return user;
-}
-
-/**
- * @deprecated
- * @description Mutes the user by taking all their roles. Meant for setTimeout
- */
-export async function muteUser(
-  client: Client,
-  guildId: string,
-  userId: string,
-  roleId: Role
-) {
-  let guild = client.guilds.cache.get(guildId);
-  let guildMember = guild.members.cache.get(userId);
-  cachedUserRoles[userId] = guildMember.roles.cache;
-  guildMember.roles
-    .set([])
-    .then((member) => {
-      member.roles.add([roleId]);
-    })
-    .catch(() => {});
-}
-
-/**
- * @deprecated
- * @description Meant to restore users roles after invoking muteUser()
- */
-export async function restoreRoles(client, guildId: string, userId: string) {
-  let guild = client.guilds.cache.get(guildId);
-  let guildMember = guild.members.cache.get(userId);
-  guildMember.roles.set(cachedUserRoles[userId]).catch(() => {});
 }
 
 export async function sendLogToChannel(
