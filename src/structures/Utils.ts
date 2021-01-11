@@ -106,8 +106,6 @@ export async function autoModWarn(member: GuildMember, guild: Guild, reason: str
   } catch (e) {
     Logger.error("DB", e);
   }
-  embed.setDescription(`Warned **${member.user.tag}** | \`${caseNum}\``);
-  await message.channel.send(embed);
 
   await sendLogToChannel(this.client, member, message.guild.id);
 
