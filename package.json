@@ -5,10 +5,11 @@
   "main": "dist/bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fullbuild": "npm i --production && npm run compile",
+    "fullbuild": "npm i && npm run compile",
     "compile": "npx tsc",
     "start": "node dist/src/bot.js",
-    "start:dev": "nodemon src/bot.ts"
+    "start:dev": "nodemon src/bot.ts",
+    "pretty": "npx prettier --write ."
   },
   "dependencies": {
     "@picklerickdev/discord-webhooks": "^1.1.1",
