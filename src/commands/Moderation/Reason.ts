@@ -68,7 +68,6 @@ export default class Reason extends Command {
         return message.util.send(embed);
       }
     } catch (e) {}
-    const s = sanctionsData.sanctions.filter((r) => r.caseID === id)[0];
     try {
       await sanctionsModel.findOneAndUpdate(
         {
@@ -76,18 +75,10 @@ export default class Reason extends Command {
           "sanctions.caseID": id,
         },
         {
-          $pull: {
-            sanctions: {
-              reason: s.reason,
-            },
-          },
-          $push: {
-            sanctions: {
-              reason: reason,
-            },
-          },
+          $set: {
+            "sanctions.$.reason": reason
+          }
         },
-        { upsert: true }
       );
     } catch (e) {
       embed.setColor(0xff0000);

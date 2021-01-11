@@ -29,15 +29,15 @@ export default class message extends Listener {
     if (message.mentions.members.first()) {
       const current_user_afk = await afkModel.findOne({
         userId: message.mentions.members.first().id,
-      });
-      if (current_user_afk.afk.isAfk) {
+      })
+      if (current_user_afk !== null && current_user_afk.afk.isAfk) {
         return await dispatchAfkEmbed(message, current_user_afk.afk.status, message.mentions.members.first());
       }
     } else {
       const current_user_afk = await afkModel.findOne({
         userId: message.author.id
       })
-      if (!message.content.startsWith(`${this.client.commandHandler.prefix}afk`) && current_user_afk.afk.status) {
+      if (current_user_afk !== null && !message.content.startsWith(`${this.client.commandHandler.prefix}afk`) && current_user_afk.afk.status) {
         await afkModel.findOneAndDelete({ userId: message.author.id });
         return await dispatchAfkWelcomeEmbed(message, message.member);
       }
