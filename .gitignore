@@ -106,3 +106,6 @@ dist
 # Custom
 connections.txt
 .idea
+
+# Ignore Config
+src/config.ts

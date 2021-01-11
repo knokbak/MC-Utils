@@ -35,16 +35,26 @@ export function strToBool(s: string) {
   return regex.test(s);
 }
 
-export async function dispatchAfkEmbed(message: Message, afkReason: string) {
-  if (message.deletable) await message.delete();
+export async function dispatchAfkEmbed(message: Message, afkReason: string, userAfk: GuildMember) {
   const embed = new MessageEmbed()
     .setColor(0xff0000)
     .setTitle("User is AFK")
     .setDescription(
-      `<@!${message.author.id}> is AFK because:\n**${afkReason}**`
+      `<@!${userAfk.id}> is AFK because:\n**${afkReason}**`
     )
-    .setThumbnail(message.author.displayAvatarURL({ dynamic: true }));
-  return embed;
+    .setThumbnail(userAfk.user.displayAvatarURL({ dynamic: true }));
+  return (await message.channel.send(embed)).delete({ timeout: 10000 });
+}
+
+export async function dispatchAfkWelcomeEmbed(message: Message, userAfk: GuildMember) {
+  const embed = new MessageEmbed()
+    .setColor(0xff0000)
+    .setTitle("Welcome Back!")
+    .setDescription(
+      `Welcome back, <@!${userAfk.id}>!`
+    )
+    .setThumbnail(userAfk.user.displayAvatarURL({ dynamic: true }));
+  return (await message.channel.send(embed)).delete({ timeout: 10000 });
 }
 
 export async function dispatchAutoModMsg(
