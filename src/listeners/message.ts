@@ -108,7 +108,7 @@ export default class message extends Listener {
             message,
             this.client
           );
-          await autoModModel.findOneAndUpdate({ guildId: message.guild.id }, { $inc: { counter: 1 } }, { upsert: true });
+          await autoModModel.findOneAndUpdate({ guildId: message.guild.id, userId: message.author.id }, { $inc: { counter: 1 } }, { upsert: true });
           await dispatchAutoModMsg("Mass Mentioning Users", message, "Warned");
         }
       }
