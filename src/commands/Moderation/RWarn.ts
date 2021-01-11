@@ -12,22 +12,21 @@ import Logger from "../../structures/Logger";
 import memberModel, { CaseInfo } from "../../models/MemberModel";
 import { getModelForClass } from "@typegoose/typegoose";
 import uniqid from "uniqid";
-// Replace everything prefixed with commandName or commandUsage with an actual value, duh :D
-export default class CommandName extends Command {
+
+export default class RuleWarn extends Command {
   public constructor() {
     super("Rulewarn", {
       aliases: ["rulewarn", "r"],
       channel: "guild",
       category: "Moderation",
-      userPermissions: ["MANAGE_MESSAGES"], //ONLY USE IF CMD REQ PERM
-      // clientPermissions: [""], //SAME THING AS ABOVE
-      ratelimit: 3, // Usually keep this
-      description: { // All of this below for the help command
-        content: "Warns a user for breaking a rule",
-        usage: "r (user) (rule-number)",
-        examples: ["r Menin#4642 2", "r 379420154955825153 toxic"],
+      userPermissions: ["MANAGE_MESSAGES"],
+      ratelimit: 3,
+      description: {
+        content: "Warns a user for breaking a rule.",
+        usage: "r [ID/Mention] [rule number]",
+        examples: ["r Menin#4642 2", "r 379420154955825153 5"],
       },
-      args: [ // If you don't want args, just delete everything from this line to
+      args: [
         {
           id: "member",
           type: "member",
@@ -49,15 +48,15 @@ export default class CommandName extends Command {
                   `${msg.author}, please provide a vaild rule number or keyword`,
               },
           },
-      ], // this line!
+      ],
     });
   }
 
   public async exec(
     message: Message,
-    { member, ruleNum }: { member: GuildMember; ruleNum: string } // since type: "string" above, type it as string
-  ): Promise<Message> { // U don't have to hard type the Promise being Message, it can also be Promise<void> if you just do a blank return;
-  const embed = new MessageEmbed().setColor(0x00ff0c);
+    { member, ruleNum }: { member: GuildMember; ruleNum: string }
+  ): Promise<Message> {
+    const embed = new MessageEmbed().setColor(0x00ff0c);
     if (member.id === message.author.id) {
         embed.setColor(0xff0000);
         embed.setDescription("You cannot warn yourself!");
@@ -95,11 +94,13 @@ export default class CommandName extends Command {
     ]
     let reason = ""
     const ruleN = parseInt(ruleNum);
-    if(isNaN(ruleN) || ruleN < 1 || ruleN > rules.length){
+    if(isNaN(ruleN) || ruleN < 1 || ruleN > rules.length - 1) {
         try{
             reason = rules.find(e => e.toLowerCase().includes(ruleNum))
         }catch(e){
-            return message.reply(`Please mention a valid rule number or a keyword.`)
+          embed.setDescription(`An error occurred fetching the rule: **${e.message}**`);
+          embed.setColor(0xff0000);
+          return message.util.send(embed);
         }
     }else{
         reason = rules[ruleN]

@@ -1,13 +1,13 @@
 import { ModelOptions, prop, Severity } from "@typegoose/typegoose";
 
 export interface CaseInfo {
-  caseID: any;
-  moderator: string;
-  moderatorId: string;
-  user: string;
-  date: string;
-  type: string;
-  reason: string;
+  caseID?: any;
+  moderator?: string;
+  moderatorId?: string;
+  user?: string;
+  date?: string;
+  type?: string;
+  reason?: string;
   time?: string;
 }
 
