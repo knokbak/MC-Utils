@@ -22,7 +22,10 @@ export default class ForceBan extends Command {
       description: {
         content: "Force bans a user from the server.",
         usage: "forceban [ID or Mention] <reason>",
-        examples: ["forceban @Axis#0001", "force_ban 100690330336129024 Bad boy!"],
+        examples: [
+          "forceban @Axis#0001",
+          "force_ban 100690330336129024 Bad boy!",
+        ],
       },
       ratelimit: 3,
       userPermissions: ["BAN_MEMBERS"],
@@ -81,7 +84,8 @@ export default class ForceBan extends Command {
       embed.setDescription("Couldn't send them a ban message! Continuing...");
     }
 
-    message.guild.members.ban(user, { reason: reason })
+    message.guild.members
+      .ban(user, { reason: reason })
       .catch((e) => {
         embed.setColor(0xff0000);
         embed.setDescription(`An error occurred whilst banning: \`${e}\``);

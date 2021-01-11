@@ -18,19 +18,19 @@ import { utc } from "moment";
 import Logger from "./Logger";
 import uniqid from "uniqid";
 
-
 export function makeid(length: number) {
-  let result           = '';
-  let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = "";
+  let characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let charactersLength = characters.length;
-  for ( let i = 0; i < length; i++ ) {
-  result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 }
 
 export function strToBool(s: string) {
-  let regex = /^\s*(true|1|on)\s*$/i
+  let regex = /^\s*(true|1|on)\s*$/i;
 
   return regex.test(s);
 }
@@ -40,20 +40,36 @@ export async function dispatchAfkEmbed(message: Message, afkReason: string) {
   const embed = new MessageEmbed()
     .setColor(0xff0000)
     .setTitle("User is AFK")
-    .setDescription(`<@!${message.author.id}> is AFK because:\n**${afkReason}**`)
+    .setDescription(
+      `<@!${message.author.id}> is AFK because:\n**${afkReason}**`
+    )
     .setThumbnail(message.author.displayAvatarURL({ dynamic: true }));
   return embed;
 }
 
-export async function dispatchAutoModMsg(reason: string, message: Message, type: string) {
+export async function dispatchAutoModMsg(
+  reason: string,
+  message: Message,
+  type: string
+) {
   const embed = new MessageEmbed()
     .setColor(0xfc5507)
-    .setDescription(`User **${message.author.tag}** has been **${type.toLowerCase()}** for **${reason}**.`);
+    .setDescription(
+      `User **${
+        message.author.tag
+      }** has been **${type.toLowerCase()}** for **${reason}**.`
+    );
   const msg = await message.channel.send(embed);
   await msg.delete({ timeout: 10000 });
 }
 
-export async function autoModWarn(member: GuildMember, guild: Guild, reason: string, message: Message, client: AkairoClient) {
+export async function autoModWarn(
+  member: GuildMember,
+  guild: Guild,
+  reason: string,
+  message: Message,
+  client: AkairoClient
+) {
   if (!member) return;
   let caseNum = uniqid(`A-`);
   let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
@@ -76,7 +92,7 @@ export async function autoModWarn(member: GuildMember, guild: Guild, reason: str
     .setDescription(
       `Hello ${member.user.username},\nYou have been auto-warned in **${message.guild.name}** \nReason: **${reason}**.`
     );
-    
+
   try {
     await dmUserOnInfraction(member.user, embedToSend);
   } catch (e) {

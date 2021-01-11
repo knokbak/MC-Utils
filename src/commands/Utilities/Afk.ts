@@ -37,32 +37,32 @@ export default class Say extends Command {
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
     if (reason.length > 1024) {
-        embed.setColor(0xff0000);
-        embed.setDescription(`The reason is over 1024 in length.`);
-        return message.util.send(embed);
+      embed.setColor(0xff0000);
+      embed.setDescription(`The reason is over 1024 in length.`);
+      return message.util.send(embed);
     }
     const afkModel = getModelForClass(AfkModel);
     const afk_model: AfkStatus = {
-        isAfk: true,
-        status: reason 
-    }
+      isAfk: true,
+      status: reason,
+    };
     try {
-        await afkModel.findOneAndUpdate(
-            {
-                userId: message.author.id,
-            },
-            {
-                userId: message.author.id,
-                $set: {
-                    afk: afk_model
-                }
-            },
-            { upsert: true }
-        )
+      await afkModel.findOneAndUpdate(
+        {
+          userId: message.author.id,
+        },
+        {
+          userId: message.author.id,
+          $set: {
+            afk: afk_model,
+          },
+        },
+        { upsert: true }
+      );
     } catch (e) {
-        embed.setColor(0xff0000);
-        embed.setDescription(`An error occurred: ${e.message}`);
-        return message.util.send(embed);
+      embed.setColor(0xff0000);
+      embed.setDescription(`An error occurred: ${e.message}`);
+      return message.util.send(embed);
     }
     embed.setDescription(`AFK Status set to: **${reason}**`);
     return message.channel.send(embed);

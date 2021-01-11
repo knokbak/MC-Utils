@@ -54,8 +54,9 @@ export default class Ban extends Command {
 
     if (
       member.roles.highest.position > message.member.roles.highest.position ||
-      member.roles.highest.position === message.member.roles.highest.position &&
-      message.author.id !== message.guild.ownerID
+      (member.roles.highest.position ===
+        message.member.roles.highest.position &&
+        message.author.id !== message.guild.ownerID)
     ) {
       embed.setColor(0xff0000);
       embed.setDescription(

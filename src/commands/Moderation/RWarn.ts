@@ -38,16 +38,16 @@ export default class RuleWarn extends Command {
           },
         },
         {
-            id: "ruleNum",
-            type: "string",
-            match: "rest",
-            prompt: {
-                start: (msg: Message) =>
-                  `${msg.author}, please provide a rule number or keyword`,
-                retry: (msg: Message) =>
-                  `${msg.author}, please provide a vaild rule number or keyword`,
-              },
+          id: "ruleNum",
+          type: "string",
+          match: "rest",
+          prompt: {
+            start: (msg: Message) =>
+              `${msg.author}, please provide a rule number or keyword`,
+            retry: (msg: Message) =>
+              `${msg.author}, please provide a vaild rule number or keyword`,
           },
+        },
       ],
     });
   }
@@ -58,54 +58,57 @@ export default class RuleWarn extends Command {
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
     if (member.id === message.author.id) {
-        embed.setColor(0xff0000);
-        embed.setDescription("You cannot warn yourself!");
-        return message.util.send(embed);
+      embed.setColor(0xff0000);
+      embed.setDescription("You cannot warn yourself!");
+      return message.util.send(embed);
     }
     if (member.user.bot) {
-        embed.setColor(0xff0000);
-        embed.setDescription("You cannot warn a bot!");
-        return message.util.send(embed);
+      embed.setColor(0xff0000);
+      embed.setDescription("You cannot warn a bot!");
+      return message.util.send(embed);
     }
     if (
-        message.member.guild.ownerID !== message.author.id &&
-        member.roles.highest.position > message.member.roles.highest.position ||
-        member.roles.highest.position === message.member.roles.highest.position
+      (message.member.guild.ownerID !== message.author.id &&
+        member.roles.highest.position >
+          message.member.roles.highest.position) ||
+      member.roles.highest.position === message.member.roles.highest.position
     ) {
-        embed.setColor(0xff0000);
-        embed.setDescription(
+      embed.setColor(0xff0000);
+      embed.setDescription(
         `You cannot warn a member with a role superior (or equal) to yours!`
-        );
-        await message.util.send(embed);
-        return;
+      );
+      await message.util.send(embed);
+      return;
     }
-  
+
     const rules = [
-        "",
-        "Do not use any racial slurs, or be racist in any way.",
-        "No voice changers in VC, and do not earrape.",
-        "Do not impersonate anybody famous, or anybody on the server, unless they consent to it.",
-        "Do not spam, in any chat.",
-        "Toxicity is not permitted.",
-        "Keep it SFW, so no Gore or NSFW. (duh)",
-        "You are allowed to swear, but please keep in mind that you can't be toxic.",
-        "No advertising, in any chats or DMs.",
-        "Please speak English only."
-    ]
-    let reason = ""
+      "",
+      "Do not use any racial slurs, or be racist in any way.",
+      "No voice changers in VC, and do not earrape.",
+      "Do not impersonate anybody famous, or anybody on the server, unless they consent to it.",
+      "Do not spam, in any chat.",
+      "Toxicity is not permitted.",
+      "Keep it SFW, so no Gore or NSFW. (duh)",
+      "You are allowed to swear, but please keep in mind that you can't be toxic.",
+      "No advertising, in any chats or DMs.",
+      "Please speak English only.",
+    ];
+    let reason = "";
     const ruleN = parseInt(ruleNum);
-    if(isNaN(ruleN) || ruleN < 1 || ruleN > rules.length - 1) {
-        try{
-            reason = rules.find(e => e.toLowerCase().includes(ruleNum))
-        }catch(e){
-          embed.setDescription(`An error occurred fetching the rule: **${e.message}**`);
-          embed.setColor(0xff0000);
-          return message.util.send(embed);
-        }
-    }else{
-        reason = rules[ruleN]
+    if (isNaN(ruleN) || ruleN < 1 || ruleN > rules.length - 1) {
+      try {
+        reason = rules.find((e) => e.toLowerCase().includes(ruleNum));
+      } catch (e) {
+        embed.setDescription(
+          `An error occurred fetching the rule: **${e.message}**`
+        );
+        embed.setColor(0xff0000);
+        return message.util.send(embed);
+      }
+    } else {
+      reason = rules[ruleN];
     }
-  
+
     let caseNum = uniqid();
     let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
     let userId = member.id;
@@ -125,7 +128,7 @@ export default class RuleWarn extends Command {
       .setColor(0x1abc9c)
       .setDescription(
         `Hello ${member.user.username},\nYou have been warned in **${message.guild.name}** for breaking the following rule: **${reason}**.`
-    );
+      );
 
     try {
       await dmUserOnInfraction(member.user, embedToSend);

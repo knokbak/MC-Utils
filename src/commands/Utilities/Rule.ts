@@ -29,19 +29,19 @@ export default class Say extends Command {
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x1abc9c);
     const rules = [
-        "",
-        "Do not use any racial slurs, or be racist in any way.",
-        "No voice changers in VC, and do not earrape.",
-        "Do not impersonate anybody famous, or anybody on the server, unless they consent to it.",
-        "Do not spam, in any chat.",
-        "Toxicity is not permitted.",
-        "Keep it SFW, so no Gore or NSFW. (duh)",
-        "You are allowed to swear, but please keep in mind that you can't be toxic.",
-        "No advertising, in any chats or DMs.",
-        "Please speak English only."
-    ]
+      "",
+      "Do not use any racial slurs, or be racist in any way.",
+      "No voice changers in VC, and do not earrape.",
+      "Do not impersonate anybody famous, or anybody on the server, unless they consent to it.",
+      "Do not spam, in any chat.",
+      "Toxicity is not permitted.",
+      "Keep it SFW, so no Gore or NSFW. (duh)",
+      "You are allowed to swear, but please keep in mind that you can't be toxic.",
+      "No advertising, in any chats or DMs.",
+      "Please speak English only.",
+    ];
     const ruleN = parseInt(ruleNum);
-    if(isNaN(ruleN) || ruleN > rules.length - 1 || ruleN < 1) {
+    if (isNaN(ruleN) || ruleN > rules.length - 1 || ruleN < 1) {
       embed.setColor(0xff0000);
       embed.setDescription("Rule number is invalid.");
       return message.util.send(embed);

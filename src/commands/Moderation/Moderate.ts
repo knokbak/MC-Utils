@@ -8,8 +8,8 @@ export default class Moderate extends Command {
       aliases: ["moderate"],
       channel: "guild",
       category: "Moderation",
-      userPermissions: ["MANAGE_NICKNAMES"], 
-      clientPermissions: ["MANAGE_NICKNAMES"], 
+      userPermissions: ["MANAGE_NICKNAMES"],
+      clientPermissions: ["MANAGE_NICKNAMES"],
       ratelimit: 3,
       description: {
         content: "Makes the nickname of a user mentionable",
@@ -37,17 +37,24 @@ export default class Moderate extends Command {
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
 
-    let nick = makeid(6)
+    let nick = makeid(6);
     let nickname = `Moderated Nickname ${nick}`;
 
     try {
-      await member.setNickname(nickname, `Nickname Moderated by ${message.author.tag}`);
+      await member.setNickname(
+        nickname,
+        `Nickname Moderated by ${message.author.tag}`
+      );
     } catch (e) {
       embed.setColor(0xff0000);
-      embed.setDescription("Couldn't moderate nickname because of + **" + e + "**");
+      embed.setDescription(
+        "Couldn't moderate nickname because of + **" + e + "**"
+      );
       return message.util.send(embed);
     }
-    embed.setDescription(`Set **${member.user.username}**'s nickname to **${nickname}**`);
+    embed.setDescription(
+      `Set **${member.user.username}**'s nickname to **${nickname}**`
+    );
     return message.util.send(embed);
   }
 }

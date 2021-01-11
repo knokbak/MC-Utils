@@ -28,23 +28,23 @@ export default class Reason extends Command {
           },
         },
         {
-            id: "reason",
-            match: "rest",
-            type: "string",
-            prompt: {
-                start: (msg: Message) =>
-                  `${msg.author}, please provide a reason...`,
-                retry: (msg: Message) =>
-                  `${msg.author}, please provide a valid reason...`,
-            },
-        }
+          id: "reason",
+          match: "rest",
+          type: "string",
+          prompt: {
+            start: (msg: Message) =>
+              `${msg.author}, please provide a reason...`,
+            retry: (msg: Message) =>
+              `${msg.author}, please provide a valid reason...`,
+          },
+        },
       ],
     });
   }
 
   public async exec(
     message: Message,
-    { id, reason }: { id: string; reason: string; }
+    { id, reason }: { id: string; reason: string }
   ): Promise<void | Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
     const sanctionsModel = getModelForClass(MemberModel);
@@ -70,29 +70,29 @@ export default class Reason extends Command {
     } catch (e) {}
     const s = sanctionsData.sanctions.filter((r) => r.caseID === id)[0];
     try {
-        await sanctionsModel.findOneAndUpdate(
-            {
-                guildId: message.guild.id,
-                "sanctions.caseID": id,
+      await sanctionsModel.findOneAndUpdate(
+        {
+          guildId: message.guild.id,
+          "sanctions.caseID": id,
+        },
+        {
+          $pull: {
+            sanctions: {
+              reason: s.reason,
             },
-            {
-                $pull: {
-                    sanctions: {
-                        reason: s.reason,
-                    }
-                },
-                $push: {
-                    sanctions: {
-                        reason: reason
-                    }
-                }
+          },
+          $push: {
+            sanctions: {
+              reason: reason,
             },
-            { upsert: true }
-        )
+          },
+        },
+        { upsert: true }
+      );
     } catch (e) {
-        embed.setColor(0xff0000);
-        embed.setDescription(`Couldn't update reason due to: **${e.message}**`);
-        return message.util.send(embed);
+      embed.setColor(0xff0000);
+      embed.setDescription(`Couldn't update reason due to: **${e.message}**`);
+      return message.util.send(embed);
     }
     embed.setDescription(`Update reason for **${id}** to **${reason}**`);
     return message.channel.send(embed);

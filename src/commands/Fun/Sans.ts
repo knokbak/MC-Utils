@@ -10,7 +10,8 @@ export default class CommandName extends Command {
       // userPermissions: ["MANAGE_CHANNELS"], ONLY USE IF CMD REQ PERM
       // clientPermissions: [""], SAME THING AS ABOVE
       ratelimit: 2, // Usually keep this
-      description: { // All of this below for the help command
+      description: {
+        // All of this below for the help command
         content: "SANS.",
         usage: "sans",
         examples: ["sans"],
@@ -20,5 +21,5 @@ export default class CommandName extends Command {
 
   public async exec(message: Message) {
     await message.reply(`Sans. \n~spainel#3030`);
-    }
+  }
 }

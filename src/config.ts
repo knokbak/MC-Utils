@@ -6,8 +6,7 @@ export default {
     axis: "100690330336129024",
   },
   db: {
-    mongoURI:
-      "mongodb://127.0.0.1:27017/mcutils",
+    mongoURI: "mongodb://127.0.0.1:27017/mcutils",
   },
   channels: {
     modLogChannel: "726602456389124106",
