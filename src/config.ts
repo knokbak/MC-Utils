@@ -14,6 +14,7 @@ export default {
     logChannel: "775479060264386560",
     botCmdChannel: "774286112881115217",
   },
+  mainGuildId: "719977718858514483",
   roles: {
     muteRole: "726601422438924309",
   },
