@@ -8,6 +8,7 @@ export interface AutoModSettings {
   filterURLs: boolean;
   soundPingFilter: boolean;
   exemptRoles: string[];
+  messageSpamCount: number;
 }
 
 @ModelOptions({ options: { allowMixed: Severity.ALLOW } })
@@ -38,4 +39,10 @@ export default class AutoModModel {
     },
   })
   autoModSettings: AutoModSettings;
+  @prop()
+  counter: number;
+  @prop()
+  lastMsgDate: number;
+  @prop()
+  msgCounter: number;
 }

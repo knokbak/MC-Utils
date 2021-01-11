@@ -1,6 +1,6 @@
 import { getModelForClass } from "@typegoose/typegoose";
 import { Listener } from "discord-akairo";
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import AfkModel from "../models/AfkModel";
 import AutoModModel from "../models/AutoModModel";
 import {
@@ -10,6 +10,8 @@ import {
   dispatchAfkWelcomeEmbed,
 } from "../structures/Utils";
 import urlRegexSafe from "url-regex-safe";
+import Logger from "../structures/Logger";
+import date from "date.js";
 
 const nWordPattern2 = new RegExp("nniigg");
 const nWordPattern = new RegExp("n[i1]gg?[e3]r[s\\$]?");
@@ -25,7 +27,10 @@ export default class message extends Listener {
 
   public async exec(message: Message) {
     await message.guild.members.fetch({ time: 20000 });
-    const afkModel = getModelForClass(AfkModel);
+    if (message.author.bot || !message.guild) return;
+    const autoModModel = getModelForClass(AutoModModel);
+    await autoModModel.findOneAndUpdate({ guildId: message.guild.id, userId: message.author.id }, { $inc: { msgCounter: 1 }, lastMsgDate: date("now") }, { upsert: true });
+    const afkModel = getModelForClass(AfkModel); 
     if (message.mentions.members.first()) {
       const current_user_afk = await afkModel.findOne({
         userId: message.mentions.members.first().id,
@@ -42,11 +47,11 @@ export default class message extends Listener {
         return await dispatchAfkWelcomeEmbed(message, message.member);
       }
     }
-    const autoModModel = getModelForClass(AutoModModel);
     const current_automod = await autoModModel.findOne({
       guildId: message.guild.id,
     });
     if (
+      current_automod !== null &&
       !current_automod.autoModSettings.exemptRoles.find((t) =>
         message.member.roles.cache.findKey((r) => r.id === t)
       )
@@ -61,6 +66,7 @@ export default class message extends Listener {
             message,
             this.client
           );
+          await autoModModel.findOneAndUpdate({ guildId: message.guild.id, userId: message.author.id }, { $inc: { counter: 1 } }, { upsert: true });
           await dispatchAutoModMsg("Sending Links", message, "Warned");
         }
       }
@@ -74,6 +80,7 @@ export default class message extends Listener {
             message,
             this.client
           );
+          await autoModModel.findOneAndUpdate({ guildId: message.guild.id, userId: message.author.id }, { $inc: { counter: 1 } }, { upsert: true });
           await dispatchAutoModMsg("Text Spam", message, "Warned");
         }
       }
@@ -87,6 +94,7 @@ export default class message extends Listener {
             message,
             this.client
           );
+          await autoModModel.findOneAndUpdate({ guildId: message.guild.id, userId: message.author.id }, { $inc: { counter: 1 } }, { upsert: true });
           await dispatchAutoModMsg("N Word", message, "Warned");
         }
       }
@@ -100,6 +108,7 @@ export default class message extends Listener {
             message,
             this.client
           );
+          await autoModModel.findOneAndUpdate({ guildId: message.guild.id }, { $inc: { counter: 1 } }, { upsert: true });
           await dispatchAutoModMsg("Mass Mentioning Users", message, "Warned");
         }
       }
@@ -113,9 +122,30 @@ export default class message extends Listener {
             message,
             this.client
           );
+          await autoModModel.findOneAndUpdate({ guildId: message.guild.id, userId: message.author.id }, { $inc: { counter: 1 } }, { upsert: true });
           await dispatchAutoModMsg("Mentioning Sounddrout", message, "Warned");
         }
       }
+    //   if (current_automod.autoModSettings.messageSpamCount) {
+    //     if (current_automod.msgCounter > current_automod.autoModSettings.messageSpamCount && current_automod.lastMsgDate >= date("now", "-5s")) {
+    //       const ch = <TextChannel>message.channel;
+    //       try {
+    //         ch.bulkDelete(current_automod.msgCounter);
+    //       } catch (e) {
+    //         Logger.error("Bulk Delete", e.message);
+    //       }
+    //       await autoModWarn(
+    //         message.member,
+    //         message.guild,
+    //         "Spamming Text",
+    //         message,
+    //         this.client
+    //       );
+    //       await autoModModel.findOneAndUpdate({ guildId: message.guild.id }, { $inc: { msgCounter: 0 } }, { upsert: true });
+    //       await autoModModel.findOneAndUpdate({ guildId: message.guild.id }, { $inc: { counter: 1 } }, { upsert: true });
+    //       await dispatchAutoModMsg("Mentioning Sounddrout", message, "Warned");
+    //     }
+    //   }
     }
   }
 }

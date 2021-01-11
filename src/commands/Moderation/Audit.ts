@@ -38,7 +38,7 @@ export default class Audit extends Command {
     let errCounter = 0;
     let badArr = [""];
     for (const user of message.guild.members.cache) {
-      if (all === "true") {
+      if (message.content.includes("-a")) {
         if (
           user[1].displayName.match(nWordRegExp || nWordRegExp2) ||
           otherFilters.includes(user[1].displayName)
@@ -56,15 +56,15 @@ export default class Audit extends Command {
         }
       }
     }
-    if (all === "true") {
+    if (message.content.includes("-a")) {
       for (const member of badArr) {
         try {
-          var guildMember = message.guild.members.cache.get(member);
+          var guildMem = await message.guild.members.cache.get(member);
         } catch (e) {
           return;
         }
         try {
-          guildMember.setNickname(`Moderated Nickname ${makeid(6)}`);
+          guildMem.setNickname(`Moderated Nickname ${makeid(6)}`).catch(() => {});
           counter++;
         } catch (e) {
           errCounter++;
@@ -72,7 +72,7 @@ export default class Audit extends Command {
       }
       if (errCounter > 0) {
         return message.util.send(
-          `${errCounter} errors while changing nicknames of user. Please use \`-a false\``
+          `${errCounter} error(s) while changing nicknames of user. Please use \`-a\``
         );
       }
       return message.util.send(

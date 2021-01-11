@@ -41,6 +41,7 @@ export default class Automod extends Command {
       "filterURLs",
       "exemptRoles",
       "soundPingFilter",
+      "messageSpamCount",
     ];
     const embed = new MessageEmbed().setColor(0x1abc9c);
     if (!validOpts.includes(key)) {
@@ -60,6 +61,7 @@ export default class Automod extends Command {
       filterURLs: null,
       soundPingFilter: null,
       exemptRoles: [""],
+      messageSpamCount: null,
     };
     // Iterate through the key's and see if they match one val
     if (key === "mentionLimit") {
@@ -77,6 +79,7 @@ export default class Automod extends Command {
         filterURLs: null,
         soundPingFilter: null,
         exemptRoles: [""],
+        messageSpamCount: null,
       };
     } else if (key === "messageLengthLimit") {
       if (isNaN(parseInt(value))) {
@@ -93,6 +96,7 @@ export default class Automod extends Command {
         filterURLs: null,
         soundPingFilter: null,
         exemptRoles: [""],
+        messageSpamCount: null,
       };
     } else if (key === "nWordFilter") {
       if (value !== "true" ?? value !== "false") {
@@ -109,6 +113,7 @@ export default class Automod extends Command {
         filterURLs: null,
         soundPingFilter: null,
         exemptRoles: [""],
+        messageSpamCount: null,
       };
     } else if (key === "filterURLs") {
       if (value !== "true" ?? value !== "false") {
@@ -125,6 +130,7 @@ export default class Automod extends Command {
         filterURLs: strToBool(value) ?? false,
         soundPingFilter: null,
         exemptRoles: [""],
+        messageSpamCount: null,
       };
     } else if (key === "exemptRoles") {
       if (!value.split(" ")) {
@@ -141,6 +147,7 @@ export default class Automod extends Command {
         filterURLs: null,
         soundPingFilter: null,
         exemptRoles: value.split(" "),
+        messageSpamCount: null,
       };
     } else if (key === "soundPingFilter") {
       if (value !== "true" ?? value !== "false") {
@@ -157,6 +164,24 @@ export default class Automod extends Command {
         filterURLs: null,
         soundPingFilter: strToBool(value) ?? false,
         exemptRoles: [""],
+        messageSpamCount: null,
+      };
+    } else if (key === "messageSpamCount") {
+      if (isNaN(parseInt(value))) {
+        embed.setDescription(
+          `Invalid argument for \`value\`. Available arguments:\n\`number\``
+        );
+        embed.setColor(0xff0000);
+        return message.util.send(embed);
+      }
+      defaultAutoModUpdate = {
+        messageLengthLimit: null,
+        mentionLimit: null,
+        nWordFilter: null,
+        filterURLs: null,
+        soundPingFilter: null,
+        exemptRoles: [""],
+        messageSpamCount: parseInt(value),
       };
     }
     try {
