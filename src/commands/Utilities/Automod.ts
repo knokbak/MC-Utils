@@ -183,6 +183,10 @@ export default class Automod extends Command {
         exemptRoles: [""],
         messageSpamCount: parseInt(value),
       };
+    } else {
+      embed.setDescription(`Invalid Option:\n\`${validOpts.join(", ")}\``);
+      embed.setColor(0xff0000);
+      return message.util.send(embed);
     }
     try {
       await autoModModel.findOneAndUpdate(
