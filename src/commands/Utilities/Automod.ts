@@ -45,11 +45,11 @@ export default class Automod extends Command {
     ];
     const embed = new MessageEmbed().setColor(0x1abc9c);
     const autoModModel = getModelForClass(AutoModModel);
+    const settings = (await autoModModel.findOne({ guildId: message.guild.id })).autoModSettings;
     if (!validOpts.includes(key)) {
-      const settings = await autoModModel.findOne({ guildId: message.guild.id });
       embed.setTitle("Current Automod Settings");
       embed.setDescription(
-        `\`\`\`json\n${JSON.stringify(settings.autoModSettings, null, 2)}\`\`\``
+        `\`\`\`json\n${JSON.stringify(settings, null, 2)}\`\`\``
       );
       embed.setColor(0xff0000);
       return message.util.send(embed);
@@ -73,13 +73,13 @@ export default class Automod extends Command {
         return message.util.send(embed);
       }
       defaultAutoModUpdate = {
-        messageLengthLimit: null,
+        messageLengthLimit: settings.messageLengthLimit,
         mentionLimit: parseInt(value),
-        nWordFilter: null,
-        filterURLs: null,
-        soundPingFilter: null,
-        exemptRoles: [""],
-        messageSpamCount: null,
+        nWordFilter: settings.nWordFilter,
+        filterURLs: settings.filterURLs,
+        soundPingFilter: settings.soundPingFilter,
+        exemptRoles: settings.exemptRoles,
+        messageSpamCount: settings.messageSpamCount,
       };
     } else if (key === "messageLengthLimit") {
       if (isNaN(parseInt(value))) {
@@ -91,12 +91,12 @@ export default class Automod extends Command {
       }
       defaultAutoModUpdate = {
         messageLengthLimit: parseInt(value),
-        mentionLimit: null,
-        nWordFilter: null,
-        filterURLs: null,
-        soundPingFilter: null,
-        exemptRoles: [""],
-        messageSpamCount: null,
+        mentionLimit: settings.mentionLimit,
+        nWordFilter: settings.nWordFilter,
+        filterURLs: settings.filterURLs,
+        soundPingFilter: settings.soundPingFilter,
+        exemptRoles: settings.exemptRoles,
+        messageSpamCount: settings.messageSpamCount,
       };
     } else if (key === "nWordFilter") {
       if (value !== "true" ?? value !== "false") {
@@ -107,13 +107,13 @@ export default class Automod extends Command {
         return message.util.send(embed);
       }
       defaultAutoModUpdate = {
-        messageLengthLimit: null,
-        mentionLimit: null,
+        messageLengthLimit: settings.messageLengthLimit,
+        mentionLimit: settings.mentionLimit,
         nWordFilter: strToBool(value) ?? false,
-        filterURLs: null,
-        soundPingFilter: null,
-        exemptRoles: [""],
-        messageSpamCount: null,
+        filterURLs: settings.filterURLs,
+        soundPingFilter: settings.soundPingFilter,
+        exemptRoles: settings.exemptRoles,
+        messageSpamCount: settings.messageSpamCount,
       };
     } else if (key === "filterURLs") {
       if (value !== "true" ?? value !== "false") {
@@ -124,13 +124,13 @@ export default class Automod extends Command {
         return message.util.send(embed);
       }
       defaultAutoModUpdate = {
-        messageLengthLimit: null,
-        mentionLimit: null,
-        nWordFilter: null,
+        messageLengthLimit: settings.messageLengthLimit,
+        mentionLimit: settings.mentionLimit,
+        nWordFilter: settings.nWordFilter,
         filterURLs: strToBool(value) ?? false,
-        soundPingFilter: null,
-        exemptRoles: [""],
-        messageSpamCount: null,
+        soundPingFilter: settings.soundPingFilter,
+        exemptRoles: settings.exemptRoles,
+        messageSpamCount: settings.messageSpamCount,
       };
     } else if (key === "exemptRoles") {
       if (!value.split(" ")) {
@@ -141,13 +141,13 @@ export default class Automod extends Command {
         return message.util.send(embed);
       }
       defaultAutoModUpdate = {
-        messageLengthLimit: null,
-        mentionLimit: null,
-        nWordFilter: null,
-        filterURLs: null,
-        soundPingFilter: null,
-        exemptRoles: value.split(" "),
-        messageSpamCount: null,
+        messageLengthLimit: settings.messageLengthLimit,
+        mentionLimit: settings.mentionLimit,
+        nWordFilter: settings.nWordFilter,
+        filterURLs: settings.filterURLs,
+        soundPingFilter: settings.soundPingFilter,
+        exemptRoles: value.split(", "),
+        messageSpamCount: settings.messageSpamCount,
       };
     } else if (key === "soundPingFilter") {
       if (value !== "true" ?? value !== "false") {
@@ -158,13 +158,13 @@ export default class Automod extends Command {
         return message.util.send(embed);
       }
       defaultAutoModUpdate = {
-        messageLengthLimit: null,
-        mentionLimit: null,
-        nWordFilter: null,
-        filterURLs: null,
+        messageLengthLimit: settings.messageLengthLimit,
+        mentionLimit: settings.mentionLimit,
+        nWordFilter: settings.nWordFilter,
+        filterURLs: settings.filterURLs,
         soundPingFilter: strToBool(value) ?? false,
-        exemptRoles: [""],
-        messageSpamCount: null,
+        exemptRoles: settings.exemptRoles,
+        messageSpamCount: settings.messageSpamCount,
       };
     } else if (key === "messageSpamCount") {
       if (isNaN(parseInt(value))) {
@@ -175,12 +175,12 @@ export default class Automod extends Command {
         return message.util.send(embed);
       }
       defaultAutoModUpdate = {
-        messageLengthLimit: null,
-        mentionLimit: null,
-        nWordFilter: null,
-        filterURLs: null,
-        soundPingFilter: null,
-        exemptRoles: [""],
+        messageLengthLimit: settings.messageLengthLimit,
+        mentionLimit: settings.mentionLimit,
+        nWordFilter: settings.nWordFilter,
+        filterURLs: settings.filterURLs,
+        soundPingFilter: settings.soundPingFilter,
+        exemptRoles: settings.exemptRoles,
         messageSpamCount: parseInt(value),
       };
     } else {
