@@ -44,16 +44,16 @@ export default class Automod extends Command {
       "messageSpamCount",
     ];
     const embed = new MessageEmbed().setColor(0x1abc9c);
+    const autoModModel = getModelForClass(AutoModModel);
     if (!validOpts.includes(key)) {
+      const settings = await autoModModel.findOne({ guildId: message.guild.id });
+      embed.setTitle("Current Automod Settings");
       embed.setDescription(
-        `Invalid argument for \`key\`. Available arguments:\n\`${validOpts.join(
-          ", "
-        )}\``
+        `\`\`\`json\n${JSON.stringify(settings.autoModSettings, null, 2)}\`\`\``
       );
       embed.setColor(0xff0000);
       return message.util.send(embed);
     }
-    const autoModModel = getModelForClass(AutoModModel);
     let defaultAutoModUpdate: AutoModSettings = {
       messageLengthLimit: null,
       mentionLimit: null,
