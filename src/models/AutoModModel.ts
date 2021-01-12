@@ -29,15 +29,7 @@ export default class AutoModModel {
     },
   })
   mute!: Mutes;
-  @prop({
-    default: {
-      messageLengthLimit: null,
-      mentionLimit: null,
-      nWordFilter: true,
-      filterURLs: true,
-      exemptRoles: [""],
-    },
-  })
+  @prop()
   autoModSettings: AutoModSettings;
   @prop()
   counter: number;
