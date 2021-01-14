@@ -27,19 +27,13 @@ export default class DelWarn extends Command {
               `${msg.author}, please provide a valid case ID to delete...`,
           },
         },
-        {
-          id: "reason",
-          type: "string",
-          match: "rest",
-          default: "No reason provided.",
-        },
       ],
     });
   }
 
   public async exec(
     message: Message,
-    { id, reason }: { id: string; reason: string }
+    { id }: { id: string; reason: string }
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x1abc9c);
     const sanctionsModel = getModelForClass(memberModel);
@@ -77,6 +71,28 @@ export default class DelWarn extends Command {
         message.member.permissions.has("MANAGE_GUILD")
       ) {
         //Hmod Role OR Admin OR Manage Guild
+        try {
+          await sanctionsModel.updateOne(
+            {
+              guildId: message.guild.id,
+              "sanctions.caseID": id,
+            },
+            {
+              $pull: {
+                sanctions: {
+                  caseID: id,
+                },
+              },
+            }
+          );
+          await message.util.send(`Case ID ${id} has been deleted.`);
+        } catch (e) {
+          embed.setColor(0xff0000);
+          embed.setDescription(`Error occurred while deleting case: **${e}**`);
+          return message.util.send(embed);
+        }
+      } else if (pendingDeletion.sanctions.find((r) => r.caseID === this.client.user.id)) {
+        // If the punishment is issues by the bot (aka automod, auto unmutes)
         try {
           await sanctionsModel.updateOne(
             {
