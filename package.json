@@ -26,6 +26,7 @@
     "mathjs": "^8.1.0",
     "moment": "^2.29.1",
     "mongoose": "^5.10.8",
+    "mquery": "^3.2.3",
     "ms": "^2.1.2",
     "reflect-metadata": "^0.1.13",
     "uniqid": "^5.2.0",
