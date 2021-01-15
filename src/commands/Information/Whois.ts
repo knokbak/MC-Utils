@@ -38,11 +38,8 @@ export default class Whois extends Command {
       guildId: message.guild.id,
       userId: member.id,
     });
-    if (
-      !sanctionsData.sanctions ??
-      sanctionsData.sanctions === null ??
-      sanctionsData.sanctions === undefined
-    ) warns = "No Infractions";
+    if (!sanctionsData ?? !sanctionsData.sanctions ?? false)
+      warns = "No Infractions";
     warns = sanctionsData.sanctions.length.toString();
     return message.util.send(
       new MessageEmbed()
