@@ -9,7 +9,8 @@
     "compile": "npx tsc",
     "start": "node dist/src/bot.js",
     "start:dev": "nodemon src/bot.ts",
-    "pretty": "npx prettier --write ."
+    "pretty": "npx prettier --write \"./src/**/*.ts\"",
+    "pretty-check": "npx prettier --check \"./src/**/*.ts\""
   },
   "dependencies": {
     "@picklerickdev/discord-webhooks": "^1.1.1",
