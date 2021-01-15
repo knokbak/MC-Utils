@@ -15,6 +15,7 @@
     "@picklerickdev/discord-webhooks": "^1.1.1",
     "@typegoose/typegoose": "^7.4.5",
     "axios": "^0.21.1",
+    "bufferutil": "^4.0.3",
     "chalk": "^4.1.0",
     "common-tags": "^1.8.0",
     "date.js": "^0.3.3",
