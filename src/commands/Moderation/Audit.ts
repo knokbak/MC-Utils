@@ -64,7 +64,9 @@ export default class Audit extends Command {
           return;
         }
         try {
-          guildMem.setNickname(`Moderated Nickname ${makeid(6)}`).catch(() => {});
+          guildMem
+            .setNickname(`Moderated Nickname ${makeid(6)}`)
+            .catch(() => {});
           counter++;
         } catch (e) {
           errCounter++;

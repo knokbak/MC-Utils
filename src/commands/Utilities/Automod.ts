@@ -45,7 +45,8 @@ export default class Automod extends Command {
     ];
     const embed = new MessageEmbed().setColor(0x1abc9c);
     const autoModModel = getModelForClass(AutoModModel);
-    const settings = (await autoModModel.findOne({ guildId: message.guild.id })).autoModSettings;
+    const settings = (await autoModModel.findOne({ guildId: message.guild.id }))
+      .autoModSettings;
     if (!validOpts.includes(key)) {
       embed.setTitle("Current Automod Settings");
       embed.setDescription(

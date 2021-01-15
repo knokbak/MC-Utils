@@ -22,25 +22,25 @@ export default class MStrike extends Command {
       },
       args: [
         {
-            id: "member",
-            type: "member",
-            prompt: {
-               start: (msg: Message) =>
-                `${msg.author}, please provide a valid member...`,
-              retry: (msg: Message) =>
-                `${msg.author}, please provide a valid member...`, 
-            }
+          id: "member",
+          type: "member",
+          prompt: {
+            start: (msg: Message) =>
+              `${msg.author}, please provide a valid member...`,
+            retry: (msg: Message) =>
+              `${msg.author}, please provide a valid member...`,
+          },
         },
         {
-            id: "reason",
-            type: "string",
-            prompt: {
-                start: (msg: Message) =>
-                    `${msg.author}, please provide a reason...`,
-                retry: (msg: Message) =>
-                    `${msg.author}, please provide a valid reason...`
-            }
-        }
+          id: "reason",
+          type: "string",
+          prompt: {
+            start: (msg: Message) =>
+              `${msg.author}, please provide a reason...`,
+            retry: (msg: Message) =>
+              `${msg.author}, please provide a valid reason...`,
+          },
+        },
       ],
     });
   }
@@ -49,41 +49,46 @@ export default class MStrike extends Command {
     message: Message,
     { member, reason }: { member: GuildMember; reason: string }
   ): Promise<Message | void> {
-    if (!config.roles.managerRoles.find((r) => member.roles.cache.findKey((t) => t.id === r))) return;
+    if (
+      !config.roles.managerRoles.find((r) =>
+        member.roles.cache.findKey((t) => t.id === r)
+      )
+    )
+      return;
     const embed = new MessageEmbed().setColor(0x00ff0c);
 
     let caseNum = uniqid();
     let dateString = utc().format("MMMM Do YYYY, h:mm:ss a");
 
     const caseInfo: CaseInfo = {
-        caseID: caseNum,
-        moderator: message.author.tag,
-        moderatorId: message.author.id,
-        user: `${member.user.tag} (${member.user.id})`,
-        date: dateString,
-        type: "Mod Strike",
-        reason,
+      caseID: caseNum,
+      moderator: message.author.tag,
+      moderatorId: message.author.id,
+      user: `${member.user.tag} (${member.user.id})`,
+      date: dateString,
+      type: "Mod Strike",
+      reason,
     };
 
     const memberModel = getModelForClass(ModStrikeModel);
     try {
-        await memberModel.findOneAndUpdate(
-            {
-                userId: member.id,
-                guildId: message.guild.id,
-            },
-            {
-                userId: member.id,
-                $push: {
-                    sanctions: caseInfo
-                }
-            },
-            { upsert: true }
-        )
+      await memberModel.findOneAndUpdate(
+        {
+          userId: member.id,
+          guildId: message.guild.id,
+        },
+        {
+          userId: member.id,
+          $push: {
+            sanctions: caseInfo,
+          },
+        },
+        { upsert: true }
+      );
     } catch (e) {
-        embed.setColor(0xff0000);
-        embed.setDescription(`An error occurred: **${e.message}**`);
-        return message.util.send(embed);
+      embed.setColor(0xff0000);
+      embed.setDescription(`An error occurred: **${e.message}**`);
+      return message.util.send(embed);
     }
 
     embed.setDescription(`Mod Striked **${member.user.tag}** | \`${caseNum}\``);

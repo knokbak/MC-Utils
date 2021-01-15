@@ -91,7 +91,11 @@ export default class DelWarn extends Command {
           embed.setDescription(`Error occurred while deleting case: **${e}**`);
           return message.util.send(embed);
         }
-      } else if (pendingDeletion.sanctions.find((r) => r.moderatorId === this.client.user.id)) {
+      } else if (
+        pendingDeletion.sanctions.find(
+          (r) => r.moderatorId === this.client.user.id
+        )
+      ) {
         // If the punishment is issues by the bot (aka automod, auto unmutes)
         try {
           await sanctionsModel.updateOne(

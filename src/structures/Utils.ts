@@ -35,24 +35,27 @@ export function strToBool(s: string) {
   return regex.test(s);
 }
 
-export async function dispatchAfkEmbed(message: Message, afkReason: string, userAfk: GuildMember) {
+export async function dispatchAfkEmbed(
+  message: Message,
+  afkReason: string,
+  userAfk: GuildMember
+) {
   const embed = new MessageEmbed()
     .setColor(0xff0000)
     .setTitle("User is AFK")
-    .setDescription(
-      `<@!${userAfk.id}> is AFK because:\n**${afkReason}**`
-    )
+    .setDescription(`<@!${userAfk.id}> is AFK because:\n**${afkReason}**`)
     .setThumbnail(userAfk.user.displayAvatarURL({ dynamic: true }));
   return (await message.channel.send(embed)).delete({ timeout: 10000 });
 }
 
-export async function dispatchAfkWelcomeEmbed(message: Message, userAfk: GuildMember) {
+export async function dispatchAfkWelcomeEmbed(
+  message: Message,
+  userAfk: GuildMember
+) {
   const embed = new MessageEmbed()
     .setColor(0xff0000)
     .setTitle("Welcome Back!")
-    .setDescription(
-      `Welcome back, <@!${userAfk.id}>!`
-    )
+    .setDescription(`Welcome back, <@!${userAfk.id}>!`)
     .setThumbnail(userAfk.user.displayAvatarURL({ dynamic: true }));
   return (await message.channel.send(embed)).delete({ timeout: 10000 });
 }

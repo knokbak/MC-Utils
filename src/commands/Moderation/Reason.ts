@@ -76,9 +76,9 @@ export default class Reason extends Command {
         },
         {
           $set: {
-            "sanctions.$.reason": reason
-          }
-        },
+            "sanctions.$.reason": reason,
+          },
+        }
       );
     } catch (e) {
       embed.setColor(0xff0000);

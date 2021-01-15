@@ -14,7 +14,11 @@ export default class Infractions extends Command {
       description: {
         content: "Check infractions (modlogs) of a member.",
         usage: "infractions <-a true/false> [ID or Mention]",
-        examples: ["infractions @Axis#0001", "infractions 379420154955825153", "infractions -a true 379420154955825153"],
+        examples: [
+          "infractions @Axis#0001",
+          "infractions 379420154955825153",
+          "infractions -a true 379420154955825153",
+        ],
       },
       ratelimit: 3,
       args: [
@@ -35,7 +39,7 @@ export default class Infractions extends Command {
 
   public async exec(
     message: Message,
-    { member, automod }: { member: GuildMember; automod: string; }
+    { member, automod }: { member: GuildMember; automod: string }
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
     let userId = member.id;
