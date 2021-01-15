@@ -19,12 +19,6 @@ export default class Slowmode extends Command {
           type: "number",
           default: 0,
           match: "rest",
-          prompt: {
-            start: (msg: Message) =>
-              `${msg.author}, please provide a number in seconds....`,
-            retry: (msg: Message) =>
-              `${msg.author}, please provide a valid number in seconds...`,
-          },
         },
       ],
     });
