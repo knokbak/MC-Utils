@@ -63,8 +63,9 @@ export default class Warn extends Command {
       return message.util.send(embed);
     }
     if (
-      message.member.guild.ownerID !== message.author.id &&
-      member.roles.highest.position > message.member.roles.highest.position ||
+      (message.member.guild.ownerID !== message.author.id &&
+        member.roles.highest.position >
+          message.member.roles.highest.position) ||
       member.roles.highest.position === message.member.roles.highest.position
     ) {
       embed.setColor(0xff0000);

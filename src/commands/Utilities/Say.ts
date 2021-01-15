@@ -8,7 +8,7 @@ export default class Say extends Command {
       channel: "guild",
       category: "Utilities",
       userPermissions: ["MANAGE_CHANNELS"],
-      ratelimit: 3,
+      ratelimit: 2,
       description: {
         content: "Echos a certain phrase or word!",
         usage: "say [string]",

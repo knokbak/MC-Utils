@@ -59,7 +59,7 @@ export default class Ready extends Listener {
         .array()
         .filter((m) => m.mute.endDate <= date("now"))
         .forEach(async (memberData) => {
-          const guild = this.client.guilds.cache.get("719977718858514483");
+          const guild = this.client.guilds.cache.get(Config.mainGuildId);
           if (!guild) return;
           const caseNum = uniqid();
           memberData.mute = {

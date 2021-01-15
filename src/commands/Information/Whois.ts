@@ -48,8 +48,7 @@ export default class Whois extends Command {
         )
         .addField(
           "Joined At",
-          utc(member.joinedAt).format("MMMM Do YYYY, h:mm:ss a") +
-            " (UTC)",
+          utc(member.joinedAt).format("MMMM Do YYYY, h:mm:ss a") + " (UTC)",
           false
         )
         .addField("User ID", member.user.id, true)

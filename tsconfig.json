@@ -1,16 +1,9 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "esnext",
+        "target": "es2019",
         "outDir": "dist",
-        "lib": [
-            "ESNext",
-            "ESNext.Array",
-            "ESNext.AsyncIterable",
-            "ESNext.Intl",
-            "ESNext.Symbol",
-            "DOM"
-        ],
+        "strict": false,
         "sourceMap": false,
         "inlineSourceMap": true,
         "inlineSources": true,
@@ -18,7 +11,7 @@
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
     },
     "include": [
         "src/**/*"
