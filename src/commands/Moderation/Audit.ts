@@ -72,7 +72,7 @@ export default class Audit extends Command {
       }
       if (errCounter > 0) {
         return message.util.send(
-          `${errCounter} error(s) while changing nicknames of user. Please use \`-a\``
+          `${errCounter} error(s) while changing nicknames of user. Please don't use \`-a\``
         );
       }
       return message.util.send(

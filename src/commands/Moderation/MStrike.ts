@@ -5,6 +5,7 @@ import { utc } from "moment";
 import uniqid from "uniqid";
 import { CaseInfo } from "../../models/MemberModel";
 import ModStrikeModel from "../../models/ModStrikeModel";
+import config from "../../config";
 
 export default class MStrike extends Command {
   public constructor() {
@@ -48,7 +49,7 @@ export default class MStrike extends Command {
     message: Message,
     { member, reason }: { member: GuildMember; reason: string }
   ): Promise<Message | void> {
-    if (!this.client.botConfig.roles.managerRoles.find((r) => member.roles.cache.findKey((t) => t.id === r))) return;
+    if (!config.roles.managerRoles.find((r) => member.roles.cache.findKey((t) => t.id === r))) return;
     const embed = new MessageEmbed().setColor(0x00ff0c);
 
     let caseNum = uniqid();
@@ -68,7 +69,8 @@ export default class MStrike extends Command {
     try {
         await memberModel.findOneAndUpdate(
             {
-                userId: member.id
+                userId: member.id,
+                guildId: message.guild.id,
             },
             {
                 userId: member.id,

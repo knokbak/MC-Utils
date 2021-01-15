@@ -85,7 +85,7 @@ export default class Reason extends Command {
       embed.setDescription(`Couldn't update reason due to: **${e.message}**`);
       return message.util.send(embed);
     }
-    embed.setDescription(`Update reason for **${id}** to **${reason}**`);
+    embed.setDescription(`Updated reason for **${id}** to **${reason}**`);
     return message.channel.send(embed);
   }
 }
