@@ -16,67 +16,79 @@ export default class Audit extends Command {
         examples: ["audit"],
       },
       args: [
-          {
-              id: "all",
-              type: "string",
-              flag: "-a ",
-              default: "false",
-          }
-      ]
+        {
+          id: "all",
+          type: "string",
+          flag: "-a ",
+          default: "false",
+        },
+      ],
     });
   }
 
   public async exec(
-      message: Message,
-      { all }: { all: string; }
+    message: Message,
+    { all }: { all: string }
   ): Promise<Message | void> {
     const nWordRegExp = new RegExp("n[i1]gg?[e3]r[s\\$]?");
     const nWordRegExp2 = new RegExp("nniigg");
-    const otherFilters = ['nigg', 'cunt', 'penis', 'dick', 'fuck'];
+    const otherFilters = ["nigg", "cunt", "penis", "dick", "fuck"];
 
     let counter = 0;
     let errCounter = 0;
     let badArr = [""];
     for (const user of message.guild.members.cache) {
-        if (all === "true") {
-            if (
-                user[1].displayName.match(nWordRegExp || nWordRegExp2) ||
-                otherFilters.includes(user[1].displayName)
-            ) {
-                counter++;
-                badArr.push(user[1].id);
-            }
-        } else {
-            if (
-                user[1].displayName.match(nWordRegExp || nWordRegExp2) ||
-                otherFilters.includes(user[1].displayName)
-            ) {
-                counter++;
-                badArr.push(`${user[1].displayName} :: ${user[1].id}`);
-            }
+      if (message.content.includes("-a")) {
+        if (
+          user[1].displayName.match(nWordRegExp || nWordRegExp2) ||
+          otherFilters.includes(user[1].displayName)
+        ) {
+          counter++;
+          badArr.push(user[1].id);
         }
+      } else {
+        if (
+          user[1].displayName.match(nWordRegExp || nWordRegExp2) ||
+          otherFilters.includes(user[1].displayName)
+        ) {
+          counter++;
+          badArr.push(`${user[1].displayName} :: ${user[1].id}`);
+        }
+      }
     }
-    if (all === "true") {
-        for (const member of badArr) {
-            try {
-                var guildMember = message.guild.members.cache.get(member);
-            } catch (e) {
-                return;
-            }
-            try {
-                guildMember.setNickname(`Moderated Nickname ${makeid(6)}`);
-                counter++;
-            } catch (e) {
-                errCounter++;
-            }
+    if (message.content.includes("-a")) {
+      for (const member of badArr) {
+        try {
+          var guildMem = await message.guild.members.cache.get(member);
+        } catch (e) {
+          return;
         }
-        if (errCounter > 0) {
-            return message.util.send(`${errCounter} errors while changing nicknames of user. Please use \`-a false\``);
+        try {
+          guildMem
+            .setNickname(`Moderated Nickname ${makeid(6)}`)
+            .catch(() => {});
+          counter++;
+        } catch (e) {
+          errCounter++;
         }
-        return message.util.send(`${counter} nicknames changed on user(s):\n\`\`\`js\n${badArr.join("\n")}\n\`\`\``);
+      }
+      if (errCounter > 0) {
+        return message.util.send(
+          `${errCounter} error(s) while changing nicknames of user. Please don't use \`-a\``
+        );
+      }
+      return message.util.send(
+        `${counter} nicknames changed on user(s):\n\`\`\`js\n${badArr.join(
+          "\n"
+        )}\n\`\`\``
+      );
     } else {
-        if (counter === 0) return message.util.send("No Matches Found.");
-        return message.util.send(`${counter} users matched filter:\n\`\`\`js\n${badArr.join("\n")}\n\`\`\``);
+      if (counter === 0) return message.util.send("No Matches Found.");
+      return message.util.send(
+        `${counter} users matched filter:\n\`\`\`js\n${badArr.join(
+          "\n"
+        )}\n\`\`\``
+      );
     }
   }
 }

@@ -93,6 +93,7 @@ export default class Unban extends Command {
       Logger.error("DB", e);
     }
     try {
+      await message.guild.fetchBan(user);
       await message.guild.members.unban(user.id, reason);
     } catch (e) {
       embed.setColor(0xff0000);

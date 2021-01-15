@@ -18,7 +18,7 @@ export default class messageEdit extends Listener {
       return;
     }
     let logChannel: TextChannel = this.client.guilds.cache
-      .get("719977718858514483")
+      .get(config.mainGuildId)
       .channels.cache.get(config.channels.logChannel) as TextChannel;
     let dateString: string = utc().format("MMMM Do YYYY, h:mm:ss a");
 

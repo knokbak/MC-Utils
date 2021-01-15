@@ -7,8 +7,8 @@ export default class Nickname extends Command {
       aliases: ["nickname", "nick"],
       channel: "guild",
       category: "Utilities",
-      userPermissions: ["MANAGE_NICKNAMES"], 
-      clientPermissions: ["MANAGE_NICKNAMES"], 
+      userPermissions: ["MANAGE_NICKNAMES"],
+      clientPermissions: ["MANAGE_NICKNAMES"],
       ratelimit: 3,
       description: {
         content: "Changes the nickname of a user",
@@ -27,18 +27,18 @@ export default class Nickname extends Command {
           },
         },
         {
-            id: "nickname",
-            type: "string",
-            match: "rest",
-            default: ""
-        }
+          id: "nickname",
+          type: "string",
+          match: "rest",
+          default: "",
+        },
       ],
     });
   }
 
   public async exec(
     message: Message,
-    { member, nickname }: { member: GuildMember; nickname: string}
+    { member, nickname }: { member: GuildMember; nickname: string }
   ): Promise<Message> {
     const embed = new MessageEmbed().setColor(0x00ff0c);
     if (!nickname) {
@@ -48,13 +48,13 @@ export default class Nickname extends Command {
         return message.util.send(embed);
       }
       try {
-          await member.setNickname(member.user.username);
-      } catch(e) {
-          embed.setColor(0xff0000);
-          embed.setDescription(`Couldn't set nickname because: **${e}**`);
-          return message.util.send(embed);
+        await member.setNickname(member.user.username);
+      } catch (e) {
+        embed.setColor(0xff0000);
+        embed.setDescription(`Couldn't set nickname because: **${e}**`);
+        return message.util.send(embed);
       }
-        
+
       embed.setDescription(`Reset nickname for **<@${member.user.id}>**`);
       return message.util.send(embed);
     } else {
@@ -64,14 +64,16 @@ export default class Nickname extends Command {
         return message.util.send(embed);
       }
       try {
-          member.setNickname(nickname)
-      } catch(e) {
-          embed.setColor(0xff0000);
-          embed.setDescription(`Couldn't set nickname because: **${e}**`);
-          return message.util.send(embed);
+        member.setNickname(nickname);
+      } catch (e) {
+        embed.setColor(0xff0000);
+        embed.setDescription(`Couldn't set nickname because: **${e}**`);
+        return message.util.send(embed);
       }
-        
-      embed.setDescription(`Set nickname for **<@${member.user.id}>** -> **${nickname}**`);
+
+      embed.setDescription(
+        `Set nickname for **<@${member.user.id}>** -> **${nickname}**`
+      );
       return message.util.send(embed);
     }
   }
