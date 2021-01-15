@@ -35,7 +35,9 @@ export default class Slowmode extends Command {
     { number }: { number: number }
   ): Promise<Message> {
     let ch = message.channel as TextChannel;
-
+    if (number === 0) {
+      return await message.util.send(`Channel is currently at **${ch.rateLimitPerUser}** seconds.`);
+    }
     await message.delete();
     if (number > 21600) {
       let msg = await message.util.send(
